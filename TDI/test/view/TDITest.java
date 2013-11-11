@@ -22,7 +22,6 @@ public class TDITest {
 		assertEquals(rot, t.getRotation());
 		t.setRotation(rot1);
 		assertNotEquals(rot1, t.getRotation()); //rotation can't be bigger than 359
-		
 	}
 
 }
