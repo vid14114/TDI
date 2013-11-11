@@ -21,7 +21,7 @@ public class Icon {
 	 * @param position
 	 */
 	public Icon(String name, String execPath, Point position) {
-		throw new UnsupportedOperationException();
+		
 	}
 
 	public String getName() {
