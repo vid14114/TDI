@@ -9,7 +9,7 @@ public class TDI {
 	 */
 	private int id;
 	private ArrayList<Icon> icons;
-	private Float position;
+	private float[] position;
 	/**
 	 * Rotation in int
 	 */
@@ -17,11 +17,11 @@ public class TDI {
 	private int state; //MUST BE ENUM DO NOT FORGET CHANGE THIS YO MATE!!!!! TODOTODOTODOTODO
 	private boolean locked;
 
-	public Float getPosition() {
+	public float[] getPosition() {
 		return this.position;
 	}
 
-	public void setPosition(Float position) {
+	public void setPosition(float[] position) {
 		this.position = position;
 	}
 
@@ -37,7 +37,7 @@ public class TDI {
 	 * Constructor for TDI.
 	 */
 	public TDI() {
-		throw new UnsupportedOperationException();
+		
 	}
 
 	/**
