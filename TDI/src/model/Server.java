@@ -4,8 +4,9 @@ package model;
  * Implements the runnable interface
  * 
  * RUN METHOD CALLS ADD METHOD FROM BIGLOGIC;IS MASTER, IS BIG.
+ * IS SLIGHTLY SMALLER, IS NOT SO BIG.
  */
-public class Server {
+public class Server implements Runnable{
 
 	/**
 	 * ip
