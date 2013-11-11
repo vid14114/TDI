@@ -7,7 +7,7 @@ import view.*;
 /**
  * Implements Runnable interface. Is Master, is big.
  */
-public class BigLogic {
+public class BigLogic implements Runnable{
 
 	private static ArrayList tdis;
 	/**
