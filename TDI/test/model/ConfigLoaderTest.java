@@ -15,6 +15,7 @@ public class ConfigLoaderTest {
 		loadScreensizeTest();
 	}
 	
+	//Should check the structure of the String
 	@Test
 	public void loadIconsTest(){
 		assertTrue(ConfigLoader.loadIcons() instanceof String);
