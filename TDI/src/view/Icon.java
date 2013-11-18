@@ -21,7 +21,31 @@ public class Icon {
 	 * @param position
 	 */
 	public Icon(String name, String execPath, Point position) {
-		throw new UnsupportedOperationException();
+		
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getExecPath() {
+		return execPath;
+	}
+
+	public void setExecPath(String execPath) {
+		this.execPath = execPath;
+	}
+
+	public Point getPosition() {
+		return position;
+	}
+
+	public void setPosition(Point position) {
+		this.position = position;
 	}
 
 }
