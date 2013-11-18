@@ -11,11 +11,7 @@ import view.*;
  */
 public class BigLogic implements Runnable{
 
-<<<<<<< HEAD
 	private ArrayList<TDI> tdis;
-=======
-	private ArrayList tdis;
->>>>>>> branch 'JUnitMaria' of https://github.com/vid14114/TDI.git
 	private Server server;
 	/**
 	 * The wallpaper
@@ -24,13 +20,7 @@ public class BigLogic implements Runnable{
 	/**
 	 * The commands that have to be executed.
 	 */
-<<<<<<< HEAD
 	private ArrayList<String> commands;
-=======
-	private static ArrayList commands;
-	
->>>>>>> branch 'JUnitMaria' of https://github.com/vid14114/TDI.git
-
 	/**
 	 * Lädt Dialog und Desktop configuration
 	 * @param args
