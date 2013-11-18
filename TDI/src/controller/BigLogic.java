@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import model.Server;
+
 import view.*;
 
 /**
@@ -10,6 +12,7 @@ import view.*;
 public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
+	private Server server;
 	/**
 	 * The wallpaper.
 	 */
