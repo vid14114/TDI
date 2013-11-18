@@ -9,15 +9,15 @@ import view.*;
  */
 public class BigLogic implements Runnable{
 
-	private static ArrayList tdis;
+	private ArrayList<TDI> tdis;
 	/**
 	 * The wallpaper.
 	 */
-	private static Wallpaper wallpaper;
+	private Wallpaper wallpaper;
 	/**
 	 * The commands that have to be executed.
 	 */
-	private static ArrayList commands;
+	private ArrayList<String> commands;
 
 	/**
 	 * Lädt Dialog und Desktop configuration
@@ -26,7 +26,7 @@ public class BigLogic implements Runnable{
 	public static void main(String[] args) {
 		throw new UnsupportedOperationException();
 	}
-		//test
+	
 	/**
 	 * The run method that is overriden
 	 */
