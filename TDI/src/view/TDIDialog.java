@@ -1,26 +1,31 @@
 package view;
 
-public class TDIDialog {
+public class TDIDialog{
+	String[] plugin;
+	
+	public TDIDialog(String[] plugin){
+		
+	}
 
-	public static void onWelcome() {
+	public void onWelcome() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void onHelp() {
+	public void onHelp() {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Shows information about connect (connecting)
 	 */
-	public static void onConnect() {
+	public void onConnect() {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Closes the dialog
 	 */
-	public static void onClose() {
+	public void onClose() {
 		throw new UnsupportedOperationException();
 	}
 

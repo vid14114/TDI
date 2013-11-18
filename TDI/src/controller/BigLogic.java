@@ -1,9 +1,9 @@
 package controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import model.Server;
-
 import view.*;
 
 /**
@@ -13,6 +13,8 @@ public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
 	private Server server;
+	private final String pluginPath = System.getProperty("user.home")+"/.tdi/plugins";
+	
 	/**
 	 * The wallpaper
 	 */
@@ -44,4 +46,10 @@ public class BigLogic implements Runnable{
 		throw new UnsupportedOperationException();
 	}
 	
+	public void startPlugins(String [] plugins) throws IOException{
+		for(String plugin:plugins){
+			String []cmd = {"java", "-jar", plugin+".jar"};
+			Runtime.getRuntime().exec(cmd);
+		}
+	}
 }
