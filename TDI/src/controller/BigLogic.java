@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import model.Server;
+
 import view.*;
 
 /**
@@ -10,15 +12,15 @@ import view.*;
 public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
+	private Server server;
 	/**
-	 * The wallpaper.
+	 * The wallpaper
 	 */
 	private Wallpaper wallpaper;
 	/**
 	 * The commands that have to be executed.
 	 */
 	private ArrayList<String> commands;
-
 	/**
 	 * Lädt Dialog und Desktop configuration
 	 * @param args
@@ -38,8 +40,8 @@ public class BigLogic implements Runnable{
 	 * 
 	 * @param command
 	 */
-	public static void addCommand(String command) {
+	public void addCommand(String command) {
 		throw new UnsupportedOperationException();
 	}
-
+	
 }

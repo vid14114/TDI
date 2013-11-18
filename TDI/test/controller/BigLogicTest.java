@@ -10,5 +10,10 @@ public class BigLogicTest {
 	public void test() {
 		fail("Not yet implemented");
 	}
+	
+	public void getAllIcons()
+	{
+		
+	}
 
 }
