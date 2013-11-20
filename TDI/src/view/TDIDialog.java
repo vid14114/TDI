@@ -1,10 +1,10 @@
 package view;
 
-import java.awt.Dialog;
-
 import javax.swing.JDialog;
 
 public class TDIDialog extends JDialog {
+
+	private static final long serialVersionUID = -1221054153637014114L;
 	String[] plugin;
 	
 	public TDIDialog(String[] plugin){
