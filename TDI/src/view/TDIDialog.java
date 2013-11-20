@@ -28,5 +28,12 @@ public class TDIDialog{
 	public void onClose() {
 		throw new UnsupportedOperationException();
 	}
+	
+	/**
+	 * Opens the onPlugin button
+	 */
+	public void onPlugin() {
+		throw new UnsupportedOperationException();
+	}
 
 }
