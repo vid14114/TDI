@@ -6,7 +6,7 @@ public class TDIDialog{
 	public TDIDialog(String[] plugin){
 		
 	}
-
+/**/
 	public void onWelcome() {
 		throw new UnsupportedOperationException();
 	}
