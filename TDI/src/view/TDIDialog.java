@@ -81,14 +81,14 @@ public class TDIDialog extends JDialog implements ActionListener{
 		return main;
 	}
 
-	public void onHelp() {
+	public void onHelp() { //Maria
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Shows information about connect (connecting)
 	 */
-	public void onConnect() {
+	public void onConnect() { //Maria
 		throw new UnsupportedOperationException();
 	}
 	
