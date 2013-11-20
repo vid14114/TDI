@@ -1,6 +1,10 @@
 package view;
 
-public class TDIDialog{
+import java.awt.Dialog;
+
+import javax.swing.JDialog;
+
+public class TDIDialog extends JDialog {
 	String[] plugin;
 	
 	public TDIDialog(String[] plugin){
