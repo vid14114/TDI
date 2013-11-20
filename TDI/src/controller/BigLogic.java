@@ -28,7 +28,7 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		throw new UnsupportedOperationException();
+		TDIDialog t= new TDIDialog(args); //dummy plugin values
 	}
 	
 	/**
