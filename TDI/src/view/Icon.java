@@ -20,8 +20,16 @@ public class Icon {
 	 * @param execPath
 	 * @param position
 	 */
-	public Icon(String name, String execPath, Point position) {
+	public Icon(String name, Point position) {
 		throw new UnsupportedOperationException();
+	}
+
+	public String getExecPath() {
+		return execPath;
+	}
+
+	public void setExecPath(String execPath) {
+		this.execPath = execPath;
 	}
 
 }
