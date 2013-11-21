@@ -21,7 +21,7 @@ public class ConfigLoader {
 	
 	private static final File iconsRc=lastFileModified(System.getProperty("user.home")+"/.config/xfce4/desktop");
 	
-	public static String loadIcons() {
+	public static ArrayList<Icon> loadIcons() {
 		ArrayList<Icon> icons=new ArrayList<Icon>();
 			BufferedReader br;
 			try {
@@ -31,19 +31,22 @@ public class ConfigLoader {
 					String line = br.readLine();
 	                if(line.contains("[")){
 	                	i=new Icon(line.substring(1, line.length()-1), new Point(Integer.parseInt(br.readLine().split("=")[1]), Integer.parseInt(br.readLine().split("=")[1])));
+	                	icons.add(i);
 	                }
 				}
+				br.close();
+				File[] files=new File(System.getProperty("user.home")+"/Desktop").listFiles();
+				
 			} catch (FileNotFoundException e) {
 				// dialog -> config file not found
-				e.printStackTrace();
 			} catch (NumberFormatException e) {
 				// dialog -> config file destroyed
 			} catch (IOException e) {
 				// ka...
-				e.printStackTrace();
 			}
-			
+			return icons;
 		}
+	
 
 	/**
 	 * Returns the wallpaper in form of a buffered image
@@ -59,7 +62,7 @@ public class ConfigLoader {
 		throw new UnsupportedOperationException();
 	}
 	
-	public static File lastFileModified(String dir) {                
+	public static File lastFileModified(String dir) {           
         File[] files = new File(dir).listFiles(new FileFilter() {
                 @Override
                                 public boolean accept(File file) {
