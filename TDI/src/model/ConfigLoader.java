@@ -38,6 +38,38 @@ public class ConfigLoader {
 									Integer.parseInt(br.readLine().split("=")[1])));
 					icons.add(i);
 				}
+
+				br.close();
+				File[] files=new File(System.getProperty("user.home")+"/Desktop").listFiles();
+				for(File file : files)
+				{
+					if(file.getName().contains(".desktop"))
+					{
+						BufferedReader brf=new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+						String name="";
+						String execPath="";
+						while(brf.ready())
+						{
+							String s=brf.readLine();
+							if(s.contains("Name="))
+								name=s.split("=")[1];
+							if(s.contains("Exec="))
+								execPath=s.split("=")[1];
+						}
+						brf.close();
+						for(Icon i : icons)
+						{
+							if(i.getName().equals(name))
+								i.setExecPath(execPath);
+						}
+					}
+				}
+			} catch (FileNotFoundException e) {
+				// dialog -> config file not found
+			} catch (NumberFormatException e) {
+				// dialog -> config file destroyed
+			} catch (IOException e) {
+				// ka...
 			}
 			br.close();
 			File[] files = new File(System.getProperty("user.home")

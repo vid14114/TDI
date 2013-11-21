@@ -39,5 +39,4 @@ public class Icon {
 	public void setExecPath(String execPath) {
 		this.execPath = execPath;
 	}
-
 }
