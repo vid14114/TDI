@@ -13,7 +13,6 @@ public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
 	private Server server;
-	private final String pluginPath = System.getProperty("user.home")+"/.tdi/plugins";
 	
 	/**
 	 * The wallpaper
@@ -28,7 +27,7 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		throw new UnsupportedOperationException();
+		
 	}
 	
 	/**
