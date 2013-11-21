@@ -4,9 +4,7 @@
 package controller;
 
 import java.io.IOException;
-import java.util.Date;
 import model.ConfigLoader;
-import model.Logger;
 
 /**
  * @author abideen
@@ -20,7 +18,6 @@ public final class Executor {
 				Runtime.getRuntime().exec(cmd);
 			}
 		}catch(IOException e){
-			Logger.logError(new Date().toString()+": Executor - Could not execute plugins");
 		}
 	}
 }
