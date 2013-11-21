@@ -46,10 +46,4 @@ public class BigLogic implements Runnable{
 		throw new UnsupportedOperationException();
 	}
 	
-	public void startPlugins(String [] plugins) throws IOException{
-		for(String plugin:plugins){
-			String []cmd = {"java", "-jar", plugin+".jar"};
-			Runtime.getRuntime().exec(cmd);
-		}
-	}
 }
