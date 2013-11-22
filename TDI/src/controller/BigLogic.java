@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import model.ConfigLoader;
 import model.Server;
 import view.*;
 
@@ -27,7 +28,7 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+		ConfigLoader.loadIcons();
 	}
 	
 	/**

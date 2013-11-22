@@ -45,15 +45,19 @@ public class ConfigLoader {
 			for (File file : files) {
 				String name = "";
 				String execPath = "";
+				//.desktop files
 				if (file.getName().contains(".desktop")) {
 					BufferedReader brf = new BufferedReader(
 							new InputStreamReader(new FileInputStream(file)));
 					while (brf.ready()) {
 						String s = brf.readLine();
-						if (s.contains("Name="))
+						if (s.contains("Name=") && name.equals(""))
 							name = s.split("=")[1];
 						if (s.contains("Exec="))
+						{
 							execPath = s.split("=")[1];
+							break;
+						}
 					}
 					brf.close();
 					for (Icon i : icons) {
@@ -64,6 +68,7 @@ public class ConfigLoader {
 						}
 					}
 				}
+				//directories
 				else if(file.isDirectory())
 				{
 					String s=file.getName();
@@ -75,6 +80,7 @@ public class ConfigLoader {
 						}
 				}
 			}
+			//default icons (hoem & trash)
 			for(Icon i : icons)
 			{
 				if(i.getExecPath()==null)
@@ -84,6 +90,31 @@ public class ConfigLoader {
 					if(i.getName().equals("Trash"))
 						i.setExecPath("thunar trash:///");
 				}
+			}
+			// removable devices
+			String cmd[]={"gvfs-mount", "-li"};
+			BufferedReader gvfsMount=new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(cmd).getInputStream()));
+			ArrayList<String> mounts=new ArrayList<String>();
+			int i=0;
+			while(gvfsMount.ready())
+			{
+				String s=gvfsMount.readLine();
+				if(s.contains("Volume("))
+					mounts.add(s.split(":")[1].substring(1));
+				if(s.contains("unix-device"))
+				{
+					s=s.split("'")[1];
+					boolean hasDigit=false;;
+					for(int j=0; j<s.length(); j++)
+						if(Character.isDigit(s.charAt(j)))
+							hasDigit=true;
+					if(hasDigit)
+					{
+						mounts.set(i, mounts.get(i)+"#"+s);
+						i++;
+					}
+				}
+				System.out.println();
 			}
 		} catch (FileNotFoundException e) {
 			// dialog -> config file not found			
