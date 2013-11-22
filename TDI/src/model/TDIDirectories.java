@@ -3,10 +3,40 @@
  */
 package model;
 
+import java.io.File;
+
 /**
  * @author abideen
- *
+ * 
  */
 public class TDIDirectories {
+	/**
+	 * The home directory of TDI
+	 */
+	public static final String TDI_HOME = System.getProperty("user.home")
+			+ "/.tdi/";
+	/**
+	 * TDI plugins directory
+	 * The program can be extended by putting installed plugins 
+	 * which must end with .jar and be runnable with the java .jar command
+	 */
+	public static final String TDI_PLUGINS = TDI_HOME + "plugins";
+	/**
+	 * This folder is used by TDI for restoration purposes
+	 */
+	public static final String TDI_RESTORE = TDI_HOME + "restore";
+	/**
+	 * All program logs are written in this directory
+	 */
+	public static final String TDI_LOGS = TDI_HOME + "logs";
 
+	/**
+	 * Creates all TDI directories needed.
+	 */
+	public static final void createDirectories() {
+		new File(TDI_HOME).mkdirs();
+		new File(TDI_PLUGINS).mkdirs();
+		new File(TDI_RESTORE).mkdirs();
+		new File(TDI_LOGS).mkdirs();
+	}
 }

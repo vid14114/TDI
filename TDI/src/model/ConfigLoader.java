@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+
+import controller.Executor;
 import view.Icon;
 
 /**
@@ -19,11 +22,9 @@ import view.Icon;
  */
 public class ConfigLoader {
 
-	private static final File iconsRc = lastFileModified();
-	public static final String PLUGINS_LOC = System.getProperty("user.home")
-			.concat("/.tdi/plugins");
+	private static File iconsRc = lastFileModified();
 
-	public static ArrayList<Icon> loadIcons() {
+	public ArrayList<Icon> loadIcons() {
 		ArrayList<Icon> icons = new ArrayList<Icon>();	
 		BufferedReader br;		
 		try {
@@ -127,20 +128,29 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Returns the wallpaper in form of a buffered image
+	 * Loads the Wallpaper into the program and saves it into the {@link TDIDirectories.TDI_RESTORE} directory
+	 * @return The Wallpaper of the user
 	 */
-	public static BufferedImage loadWallpaper() {
-		throw new UnsupportedOperationException();
+	public BufferedImage loadWallpaper() {
+		//xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s ~/Desktop/McDonalds-Monopoly-Gewinnspiel.png
+		BufferedImage wallpaper = null;
+		File wallpaperFile = new File(Executor.getBackground());
+		try {
+		    ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)), wallpaperFile.getName().split("\\.")[1], new File(TDIDirectories.TDI_RESTORE+"/"+wallpaperFile.getName()));
+		} catch (IOException e) {
+			TDILogger.logError("An error occured while trying to load the wallpaper");
+		} return wallpaper;
 	}
 
 	/**
 	 * @return The currently configured screen size
 	 */
 	public Point loadScreensize() {
+		iconsRc = lastFileModified();
 		// Split the name of the file to get only the dimension of the file
 		String[] s = iconsRc.getName().split("-")[1].split("x");
 		return new Point(Integer.parseInt(s[0]), Integer.parseInt(s[1]
-				.split(".")[0]));
+				.split("\\.")[0]));
 	}
 
 	/**
@@ -149,7 +159,7 @@ public class ConfigLoader {
 	 * @return An array of plugins
 	 */
 	public String[] getPlugins() {
-		return new File(PLUGINS_LOC).list(new FilenameFilter() {
+		return new File(TDIDirectories.TDI_PLUGINS).list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				if (name.endsWith(".jar"))
