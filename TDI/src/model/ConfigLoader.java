@@ -43,11 +43,11 @@ public class ConfigLoader {
 			File[] files = new File(System.getProperty("user.home")
 					+ "/Desktop").listFiles();
 			for (File file : files) {
+				String name = "";
+				String execPath = "";
 				if (file.getName().contains(".desktop")) {
 					BufferedReader brf = new BufferedReader(
 							new InputStreamReader(new FileInputStream(file)));
-					String name = "";
-					String execPath = "";
 					while (brf.ready()) {
 						String s = brf.readLine();
 						if (s.contains("Name="))
@@ -58,8 +58,31 @@ public class ConfigLoader {
 					brf.close();
 					for (Icon i : icons) {
 						if (i.getName().equals(name))
+						{
 							i.setExecPath(execPath);
+							break;
+						}
 					}
+				}
+				else if(file.isDirectory())
+				{
+					String s=file.getName();
+					for(Icon i : icons)
+						if(i.getName().equals(s))
+						{
+							i.setExecPath("thunar "+file.getPath());
+							break;
+						}
+				}
+			}
+			for(Icon i : icons)
+			{
+				if(i.getExecPath()==null)
+				{
+					if(i.getName().equals("Home"))
+						i.setExecPath("thunar ~");
+					if(i.getName().equals("Trash"))
+						i.setExecPath("thunar trash:///");
 				}
 			}
 		} catch (FileNotFoundException e) {
