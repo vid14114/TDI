@@ -47,7 +47,7 @@ public class ConfigLoader {
 			File[] desktopShortcuts = returnDesktopFiles(new File(
 					System.getProperty("user.home") + "/Desktop")); // .desktop
 																	// files
-			File[] desktopDirectories = returnDirectories(new File(
+			File[] desktopDirectoriesAndFiles = returnDirectoriesAndFiles(new File(
 					System.getProperty("user.home") + "/Desktop"));// directories
 			// File[] otherFiles = returnOthers(new
 			// File(System.getProperty("user.home")+ "/Desktop"));
@@ -81,13 +81,13 @@ public class ConfigLoader {
 							execPath); // Replaced for loop with this --> :)
 				}
 			}
-			// directories
-			for (File file : desktopDirectories) {
+			// directories + NOT .desktop files
+			for (File file : desktopDirectoriesAndFiles) {
 				String[] execPath = { "xdg-open", file.getPath() };
 				icons.get(icons.indexOf(new Icon(file.getName(), null)))
 						.setExecPath(execPath);
 			}
-			// default icons (home & trash & file system)
+			// default icons (home & trash)
 			{
 				String[] home = { "thunar", "~" };
 				String[] trash = { "thunar", "trash:///" };
@@ -129,17 +129,6 @@ public class ConfigLoader {
 		}
 		return icons;
 	}
-
-	private static File[] returnOthers(File file) {
-		return file.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				if (file.isDirectory() || file.getName().contains(".desktop"))
-					return false;
-				return true;
-			}
-		});
-	}
-
 	/**
 	 * Loads the Wallpaper into the program and saves it into the
 	 * {@link TDIDirectories.TDI_RESTORE} directory
@@ -217,10 +206,10 @@ public class ConfigLoader {
 		return choice;
 	}
 
-	private static File[] returnDirectories(File f) {
+	private static File[] returnDirectoriesAndFiles(File f) {
 		return f.listFiles(new FileFilter() {
 			public boolean accept(File file) {
-				return file.isDirectory();
+				return (file.isDirectory() || !file.getName().contains(".desktop"));
 			}
 		});
 	}
