@@ -28,7 +28,6 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ConfigLoader.loadIcons();
 	}
 	
 	/**

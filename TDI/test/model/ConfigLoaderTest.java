@@ -2,8 +2,14 @@ package model;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -12,34 +18,53 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import controller.Executor;
 import view.Icon;
 
-public class ConfigLoaderTest {
-	ArrayList<Icon> shouldIcons = new ArrayList<Icon>();
-	BufferedImage shouldWallpaper;	
-	//Point shouldScreensize = new Point(1366, 768); //Change the screen size, if it s different
-//	String[] shouldPlugins = {};
-	
+public class ConfigLoaderTest {	
 	@Before
-	public void loadEnvironment(){
-		//Set the states the variables should be
-		try {
-			shouldWallpaper = ImageIO.read(new File("/home/abideen/Desktop/McDonalds-Monopoly-Gewinnspiel.png"));			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void createDirectories(){
+		TDIDirectories.createDirectories();
 	}
 	
 	@Test
-	public void testLoad() throws IOException {
-		TDIDirectories.createDirectories(); //Creating the needed directories
+	public void testLoadWallpaper() throws IOException {
+		BufferedImage shouldWallpaper = ImageIO.read(new File(Executor.getBackground())); //Insert your wallpaper path here --> xfce
 		ConfigLoader cf = new ConfigLoader();
 		//Testing whether the wallpaper is correct and if it is, whether it is backed up		
-		Assert.assertEquals(shouldWallpaper.getGraphics(), cf.loadWallpaper().getGraphics());
+		Assert.assertEquals(shouldWallpaper, cf.loadWallpaper());
 		Assert.assertEquals(shouldWallpaper, ImageIO.read(new File(TDIDirectories.TDI_RESTORE).listFiles()[0]));
 		//Testing whether the plugins are found
 		Assert.assertArrayEquals(new String[0], cf.getPlugins());
 	}	
+	
+	@Test
+	public void testLoadIcons(){
+		ConfigLoader cf = new ConfigLoader();	
+		ArrayList <Icon> icons = null;
+		//Test for icons1
+		ConfigLoader.setIconsRc(new File("resources/icons1"));
+		icons = cf.loadIcons();
+		//Asserting for each icon in the file
+		Assert.assertEquals(18, icons.size());
+		Assert.assertSame("Impressionismus.pdf", icons.get(0).getName());
+		Assert.assertSame("MySQL Workbench", icons.get(1).getName());
+		Assert.assertSame("Windows 7", icons.get(2).getName());
+		Assert.assertSame("Home", icons.get(18).getName());
+		Assert.assertSame("File System", icons.get(17).getName());
+		
+		//Test for file icons2
+		ConfigLoader.setIconsRc(new File("resoucres/icons2"));
+		icons = cf.loadIcons();
+		//Assertions begin
+		Assert.assertEquals(15, icons.size());
+		
+		//Test for file icons3
+		ConfigLoader.setIconsRc(new File("resoucres/icons3"));
+		icons = cf.loadIcons();
+		//Assertions begin
+		Assert.assertEquals(16, icons.size());
+	}
 	
 	@Test
 	public void testScreenSize(){
@@ -77,7 +102,6 @@ public class ConfigLoaderTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

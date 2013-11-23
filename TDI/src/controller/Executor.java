@@ -16,10 +16,8 @@ import model.TDILogger;
 public final class Executor {
 	public static final void startPlugins(String [] plugins){
 		try{
-			for(String plugin:plugins){
-				String []cmd = {"java", "-jar", TDIDirectories.TDI_PLUGINS+"/"+plugin+".jar"};
-				Runtime.getRuntime().exec(cmd);
-			}
+			for(String plugin:plugins)
+				Runtime.getRuntime().exec(new String[] {"java", "-jar", TDIDirectories.TDI_PLUGINS+"/"+plugin+".jar"});				
 		}catch(IOException e){
 			TDILogger.logError(e.getMessage());
 		}
@@ -30,9 +28,8 @@ public final class Executor {
 	 */
 	public static final String getBackground(){	
 		String background = null;
-		try {
-			String [] cmd = {"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path"};			
-			BufferedReader b = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(cmd).getInputStream()));
+		try {			
+			BufferedReader b = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path"}).getInputStream()));
 			background = b.readLine();
 			b.close();
 		} catch (IOException e) {
