@@ -26,76 +26,102 @@ public class ConfigLoader {
 
 	public ArrayList<Icon> loadIcons() {
 		// What happens to files like blabla.pdf or bla.doc on the desktop
-		ArrayList<Icon> icons = new ArrayList<Icon>();	
-		BufferedReader br;		
+		ArrayList<Icon> icons = new ArrayList<Icon>();
+		BufferedReader br;
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(
 					iconsRc)));
 			String line;
-			while (br.ready()) 
-				if ((line = br.readLine()).contains("[")) 
-					//Construct a new Icon which needs a name and a position(point)	and adds to arraylist									 
-					icons.add(
-							new Icon(
+			while (br.ready())
+				if ((line = br.readLine()).contains("["))
+					// Construct a new Icon which needs a name and a
+					// position(point) and adds to arraylist
+					icons.add(new Icon(
 							line.substring(1, line.length() - 1),
 							new Point(
 									Integer.parseInt(br.readLine().split("=")[1]),
 									Integer.parseInt(br.readLine().split("=")[1]))));
 			br.close();
-			//Above we got all icons --> now we need to split them into directories, shortcuts and default icons 
-			File[] desktopShortcuts = returnDesktopFiles(new File(System.getProperty("user.home")+ "/Desktop")); //.desktop files
-			File[] desktopDirectories = returnDirectories(new File(System.getProperty("user.home")+ "/Desktop"));//directories
-//			File[] otherFiles = returnOthers(new File(System.getProperty("user.home")+ "/Desktop"));
+			// Above we got all icons --> now we need to split them into
+			// directories, shortcuts and default icons
+			File[] desktopShortcuts = returnDesktopFiles(new File(
+					System.getProperty("user.home") + "/Desktop")); // .desktop
+																	// files
+			File[] desktopDirectories = returnDirectories(new File(
+					System.getProperty("user.home") + "/Desktop"));// directories
+			// File[] otherFiles = returnOthers(new
+			// File(System.getProperty("user.home")+ "/Desktop"));
 
-			//The following code is split up into several parts --> .desktop files, directories, default icons, removable, 
-			{//Parsing of .desktop files
+			// xdg-open: everything inside ~/Desktop
+			
+			// The following code is split up into several parts --> .desktop
+			// files, directories, default icons, removable,
+			{// Parsing of .desktop files
 				for (File file : desktopShortcuts) {
-					Iterator<String> iterator = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).iterator();
+					Iterator<String> iterator = Files.readAllLines(
+							file.toPath(), StandardCharsets.UTF_8).iterator();
 					String name = "";
-					String execPath = "";
-					while (iterator.hasNext() && execPath.isEmpty()) {
-						String s = iterator.next();	
-						if (s.contains("Name=") && name.equals(""))
+					String execPath[] = new String[2];
+					while (iterator.hasNext()) {
+						String s = iterator.next();
+						if (s.contains("Name=") && name.equals("")) // we still
+																	// need this
+																	// for
+																	// association
+																	// with
+																	// iconsRc
+						{
 							name = s.split("=")[1];
-						if (s.contains("Exec="))
-							execPath = s.split("=")[1];
+							execPath[0] = "xdg-open";
+							execPath[1] = file.getPath();
+							break;
+						}
 					}
-					icons.get(icons.indexOf(new Icon(name, null))).setExecPath(execPath); //Replaced for loop with this --> :)
+					icons.get(icons.indexOf(new Icon(name, null))).setExecPath(
+							execPath); // Replaced for loop with this --> :)
 				}
 			}
-			
-			//	directories
-			for(File file : desktopDirectories)				
-				icons.get(icons.indexOf(new Icon(file.getName(), null))).setExecPath("thunar "+file.getPath());
-			
-			//default icons (home & trash)
-			{
-				icons.get(icons.indexOf(new Icon("Home", null))).setExecPath("thunar ~");
-				icons.get(icons.indexOf(new Icon("Trash", null))).setExecPath("thunar trash:///");
+			// directories
+			for (File file : desktopDirectories) {
+				String[] execPath = { "xdg-open", file.getPath() };
+				icons.get(icons.indexOf(new Icon(file.getName(), null)))
+						.setExecPath(execPath);
 			}
-			
-			{	// removable devices			
-				ArrayList<String> mounts=new ArrayList<String>();
+			// default icons (home & trash & file system)
+			{
+				String[] home = { "thunar", "~" };
+				String[] trash = { "thunar", "trash:///" };
+				String[] fileSystem = { "thunar", "/" };
+				icons.get(icons.indexOf(new Icon("Home", null))).setExecPath(
+						home);
+				icons.get(icons.indexOf(new Icon("Trash", null))).setExecPath(
+						trash);
+				icons.get(icons.indexOf(new Icon("File System", null)))
+						.setExecPath(fileSystem);
+			}
+
+			{ // removable devices
+				ArrayList<String> mounts = new ArrayList<String>();
 				BufferedReader gvfsMount = Executor.getRemovableDiskList();
-				for(int i = 0; gvfsMount.ready();){
-					String s=gvfsMount.readLine();
-					if(s.contains("Volume("))
+				for (int i = 0; gvfsMount.ready();) {
+					String s = gvfsMount.readLine();
+					if (s.contains("Volume("))
 						mounts.add(s.split(":")[1].substring(1));
-					if(s.contains("unix-device")){
-						s=s.split("'")[1];
-						for(int j=0; j<s.length(); j++)
-							if(Character.isDigit(s.charAt(j))){
-								mounts.set(i, mounts.get(i)+"#"+s);
+					if (s.contains("unix-device")) {
+						s = s.split("'")[1];
+						for (int j = 0; j < s.length(); j++)
+							if (Character.isDigit(s.charAt(j))) {
+								mounts.set(i, mounts.get(i) + "#" + s);
 								i++;
 								break;
 							}
 					}
 				}
 			}
-		}catch (IndexOutOfBoundsException e){
-			//Happens when name is not found
-		}catch (FileNotFoundException e) {
-			// dialog -> config file not found			
+		} catch (IndexOutOfBoundsException e) {
+			// Happens when name is not found
+		} catch (FileNotFoundException e) {
+			// dialog -> config file not found
 		} catch (NumberFormatException e) {
 			// dialog -> config file destroyed
 		} catch (IOException e) {
@@ -107,7 +133,7 @@ public class ConfigLoader {
 	private static File[] returnOthers(File file) {
 		return file.listFiles(new FileFilter() {
 			public boolean accept(File file) {
-				if(file.isDirectory() || file.getName().contains(".desktop"))
+				if (file.isDirectory() || file.getName().contains(".desktop"))
 					return false;
 				return true;
 			}
@@ -115,20 +141,29 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Loads the Wallpaper into the program and saves it into the {@link TDIDirectories.TDI_RESTORE} directory
+	 * Loads the Wallpaper into the program and saves it into the
+	 * {@link TDIDirectories.TDI_RESTORE} directory
+	 * 
 	 * @return The Wallpaper of the user
 	 */
 	public BufferedImage loadWallpaper() {
-		//xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -s ~/Desktop/McDonalds-Monopoly-Gewinnspiel.png
+		// xfconf-query -c xfce4-desktop -p
+		// /backdrop/screen0/monitor0/image-path -s
+		// ~/Desktop/McDonalds-Monopoly-Gewinnspiel.png
 		BufferedImage wallpaper = null;
 		File wallpaperFile = new File(Executor.getBackground());
 		File restore;
 		try {
-		    ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)), wallpaperFile.getName().split("\\.")[1], restore = new File(TDIDirectories.TDI_RESTORE+"/"+wallpaperFile.getName()));
-		    restore.deleteOnExit();
+			ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
+					wallpaperFile.getName().split("\\.")[1],
+					restore = new File(TDIDirectories.TDI_RESTORE + "/"
+							+ wallpaperFile.getName()));
+			restore.deleteOnExit();
 		} catch (IOException e) {
-			TDILogger.logError("An error occured while trying to load the wallpaper");
-		} return wallpaper;
+			TDILogger
+					.logError("An error occured while trying to load the wallpaper");
+		}
+		return wallpaper;
 	}
 
 	/**
@@ -181,29 +216,31 @@ public class ConfigLoader {
 		}
 		return choice;
 	}
-	
-	private static File[] returnDirectories(File f){
+
+	private static File[] returnDirectories(File f) {
 		return f.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				return file.isDirectory();
 			}
 		});
 	}
-	
-	private static File[] returnDesktopFiles(File f){
-		return f.listFiles(new FilenameFilter() {			
+
+	private static File[] returnDesktopFiles(File f) {
+		return f.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String filename) {
-				if(filename.contains(".desktop")) 
+				if (filename.contains(".desktop"))
 					return true;
 				return false;
 			}
 		});
 	}
-	
+
 	/**
 	 * This method is implemented for testing purposes
-	 * @param iconsRc the iconsRc to set
+	 * 
+	 * @param iconsRc
+	 *            the iconsRc to set
 	 */
 	public static void setIconsRc(File iconsRc) {
 		ConfigLoader.iconsRc = iconsRc;

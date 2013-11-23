@@ -10,7 +10,7 @@ public class Icon {
 	/**
 	 * The execution path to the program.
 	 */
-	private String execPath;
+	private String[] execPath;
 	/**
 	 * The position of the icon on the desktop
 	 */
@@ -37,11 +37,11 @@ public class Icon {
 		this.name = name;
 	}
 
-	public String getExecPath() {
+	public String[] getExecPath() {
 		return execPath;
 	}
 
-	public void setExecPath(String execPath) {
+	public void setExecPath(String[] execPath) {
 		this.execPath = execPath;
 	}
 
