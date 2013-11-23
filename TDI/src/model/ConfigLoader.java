@@ -25,7 +25,6 @@ public class ConfigLoader {
 	private static File iconsRc = lastFileModified();
 
 	public ArrayList<Icon> loadIcons() {
-		// What happens to files like blabla.pdf or bla.doc on the desktop
 		ArrayList<Icon> icons = new ArrayList<Icon>();
 		BufferedReader br;
 		try {
@@ -49,8 +48,6 @@ public class ConfigLoader {
 																	// files
 			File[] desktopDirectoriesAndFiles = returnDirectoriesAndFiles(new File(
 					System.getProperty("user.home") + "/Desktop"));// directories
-			// File[] otherFiles = returnOthers(new
-			// File(System.getProperty("user.home")+ "/Desktop"));
 
 			// xdg-open: everything inside ~/Desktop
 			
@@ -78,7 +75,7 @@ public class ConfigLoader {
 						}
 					}
 					icons.get(icons.indexOf(new Icon(name, null))).setExecPath(
-							execPath); // Replaced for loop with this --> :)
+							execPath);
 				}
 			}
 			// directories + NOT .desktop files
@@ -87,7 +84,7 @@ public class ConfigLoader {
 				icons.get(icons.indexOf(new Icon(file.getName(), null)))
 						.setExecPath(execPath);
 			}
-			// default icons (home & trash)
+			// default icons (home & trash & file system)
 			{
 				String[] home = { "thunar", "~" };
 				String[] trash = { "thunar", "trash:///" };
