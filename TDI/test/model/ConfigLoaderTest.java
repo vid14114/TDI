@@ -46,11 +46,7 @@ public class ConfigLoaderTest {
 		ConfigLoader.setIconsRc(new File("resources/icons1"));
 		icons = cf.loadIcons();
 		//Asserting for each icon in the file
-		Assert.assertEquals(18, icons.size());
-		Assert.assertSame("Impressionismus.pdf", icons.get(0).getName());
-		Assert.assertSame("MySQL Workbench", icons.get(1).getName());
-		Assert.assertSame("Windows 7", icons.get(2).getName());		
-		Assert.assertSame("File System", icons.get(17).getName());
+		Assert.assertEquals(19, icons.size());		
 		Assert.assertSame("thunar ~", icons.get(icons.indexOf(new Icon("Home", null))).getExecPath());
 		Assert.assertSame("thunar trash:///", icons.get(icons.indexOf(new Icon("Trash", null))).getExecPath());
 		

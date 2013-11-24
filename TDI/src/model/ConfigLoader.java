@@ -30,7 +30,7 @@ public class ConfigLoader {
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(
 					iconsRc)));
-			String line;
+			String line = null;
 			while (br.ready())
 				if ((line = br.readLine()).contains("["))
 					// Construct a new Icon which needs a name and a
@@ -50,51 +50,42 @@ public class ConfigLoader {
 					System.getProperty("user.home") + "/Desktop"));// directories
 
 			// xdg-open: everything inside ~/Desktop
-			
+
 			// The following code is split up into several parts --> .desktop
 			// files, directories, default icons, removable,
 			{// Parsing of .desktop files
 				for (File file : desktopShortcuts) {
 					Iterator<String> iterator = Files.readAllLines(
 							file.toPath(), StandardCharsets.UTF_8).iterator();
-					String name = "";
-					String execPath[] = new String[2];
-					while (iterator.hasNext()) {
-						String s = iterator.next();
-						if (s.contains("Name=") && name.equals("")) // we still
-																	// need this
-																	// for
-																	// association
-																	// with
-																	// iconsRc
-						{
-							name = s.split("=")[1];
-							execPath[0] = "xdg-open";
-							execPath[1] = file.getPath();
+					// Parses through file until "Name=" is found
+					while (iterator.hasNext()) 
+						// we still need this for association with iconsRc
+						if ((line = iterator.next()).contains("Name=")) {
+							icons.get(
+									icons.indexOf(new Icon(line.split("=")[1],
+											null)))
+									.setExecPath(
+											new String[] { "xdg-open",
+													file.getPath() });
 							break;
-						}
-					}
-					icons.get(icons.indexOf(new Icon(name, null))).setExecPath(
-							execPath);
+						}					
 				}
 			}
+
 			// directories + NOT .desktop files
-			for (File file : desktopDirectoriesAndFiles) {
-				String[] execPath = { "xdg-open", file.getPath() };
+			for (File file : desktopDirectoriesAndFiles)
 				icons.get(icons.indexOf(new Icon(file.getName(), null)))
-						.setExecPath(execPath);
-			}
+						.setExecPath(
+								new String[] { "xdg-open", file.getPath() });
+
 			// default icons (home & trash & file system)
-			{
-				String[] home = { "thunar", "~" };
-				String[] trash = { "thunar", "trash:///" };
-				String[] fileSystem = { "thunar", "/" };
+			{// TODO when exception happens, method is skipped --> find solution
 				icons.get(icons.indexOf(new Icon("Home", null))).setExecPath(
-						home);
+						new String[] { "thunar", "~" });
 				icons.get(icons.indexOf(new Icon("Trash", null))).setExecPath(
-						trash);
+						new String[] { "thunar", "trash:///" });
 				icons.get(icons.indexOf(new Icon("File System", null)))
-						.setExecPath(fileSystem);
+						.setExecPath(new String[] { "thunar", "/" });
 			}
 
 			{ // removable devices
@@ -126,6 +117,7 @@ public class ConfigLoader {
 		}
 		return icons;
 	}
+
 	/**
 	 * Loads the Wallpaper into the program and saves it into the
 	 * {@link TDIDirectories.TDI_RESTORE} directory
@@ -164,7 +156,9 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Accesses the ~/.tdi/plugins/ folder to return all available plugins
+	 * Accesses the {@link TDIDirectories.TDI_PLUGINS} directory where program
+	 * plugins are located Any plugin file, file ending with .jar will be loaded
+	 * into the program and the user can select which one to pick
 	 * 
 	 * @return An array of plugins
 	 */
@@ -206,7 +200,8 @@ public class ConfigLoader {
 	private static File[] returnDirectoriesAndFiles(File f) {
 		return f.listFiles(new FileFilter() {
 			public boolean accept(File file) {
-				return (file.isDirectory() || !file.getName().contains(".desktop"));
+				return (file.isDirectory() || !file.getName().contains(
+						".desktop") && !file.getName().startsWith("."));
 			}
 		});
 	}
@@ -223,7 +218,7 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * This method is implemented for testing purposes
+	 * This method is implemented for testing purposes TODO Delete
 	 * 
 	 * @param iconsRc
 	 *            the iconsRc to set
