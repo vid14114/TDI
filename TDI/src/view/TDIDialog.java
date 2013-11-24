@@ -35,8 +35,11 @@ public class TDIDialog extends JDialog implements ActionListener{
 	private JButton pluginButton = new JButton("Plugins");
 	private JButton restoreButton = new JButton("Restore");
 	private JButton helpButton = new JButton("!S.O.S!");
-	private JButton connectButton = new JButton("Connect");
-	
+	private JButton connectButton = new JButton("Start");//different name
+
+	private JButton startTDI = new JButton("connect");// button to start actual program
+	private JButton startTutorial = new JButton("Tutorial");// button to start actual program
+
 	//creating textbox for ip-insert
 	private JTextField ip1=new JTextField();
 	private JTextField ip2=new JTextField();
@@ -121,8 +124,13 @@ public class TDIDialog extends JDialog implements ActionListener{
 		help.setBorder(null);
 		help.setLocation(50,50);
 		
+		startTutorial.setLocation(100, 100);
+		startTutorial.addActionListener(this);
+	//	helpe.setVisible(true);
+		
 		//add everything
 		helpe.add(help);
+		helpe.add(startTutorial);
 		content.add(helpe);
 	}
 
@@ -197,6 +205,11 @@ public class TDIDialog extends JDialog implements ActionListener{
 		ip4.setForeground(new Color(-50));
 		ip4.setBorder(null);
 		
+		//connect button 
+		JButton con=new JButton();
+		
+		
+		//info textfiedl for user to know what to do
 		info.setBounds(new Rectangle(new Dimension(165,20)));
 		info.setText("Please enter your IP-Address");
 		info.setEditable(false);
@@ -205,12 +218,19 @@ public class TDIDialog extends JDialog implements ActionListener{
 		info.setBorder(null);
 		info.setLocation(dot1X-35,ipY-50);
 		
+		//button location
+		startTDI.setVisible(true);
+		startTDI.setPreferredSize(new Dimension(90,30));
+		startTDI.setLocation(50, 50);
+		startTDI.addActionListener(this);
+		
 		//panel parameters
 		ipPanel.setVisible(true);
 		ipPanel.setSize(380,350);
 		ipPanel.setLocation(0,50);
 		
 		//add everything to panel
+		ipPanel.add(startTDI);
 		ipPanel.add(info);
 		ipPanel.add(ip1);
 		ipPanel.add(dot1);
@@ -281,6 +301,16 @@ public class TDIDialog extends JDialog implements ActionListener{
 		if(actionPerformed.getSource()==connectButton){
 			onConnect();
 		}
+		//startTDI clicked
+		if(actionPerformed.getSource()==startTDI){
+			System.out.println("start the TDI connection");
+			//start Program/ BigLogic (Is Master, is big).
+		}
+		//startTutorial clicked
+				if(actionPerformed.getSource()==startTutorial){
+					System.out.println("start Tutorial");
+					//start Tutorial
+				}
 	}
 
 }
