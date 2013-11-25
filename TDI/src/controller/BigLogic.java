@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import model.ConfigLoader;
 import model.Server;
 import view.*;
 
@@ -13,7 +14,6 @@ public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
 	private Server server;
-	private final String pluginPath = System.getProperty("user.home")+"/.tdi/plugins";
 	
 	/**
 	 * The wallpaper
@@ -28,7 +28,8 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		throw new UnsupportedOperationException();
+		ConfigLoader cl=new ConfigLoader();
+		cl.loadIcons();
 	}
 	
 	/**

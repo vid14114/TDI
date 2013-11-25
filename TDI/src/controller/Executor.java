@@ -3,7 +3,14 @@
  */
 package controller;
 
+import java.awt.List;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+
+import model.TDIDirectories;
+import model.TDILogger;
 
 /**
  * @author abideen
@@ -12,12 +19,34 @@ import java.io.IOException;
 public final class Executor {
 	public static final void startPlugins(String [] plugins){
 		try{
-			for(String plugin:plugins){
-				String []cmd = {"java", "-jar", plugin+".jar"};
-				Runtime.getRuntime().exec(cmd);
-			}
+			for(String plugin:plugins)
+				Runtime.getRuntime().exec(new String[] {"java", "-jar", TDIDirectories.TDI_PLUGINS+"/"+plugin+".jar"});				
 		}catch(IOException e){
-			
+			TDILogger.logError(e.getMessage());
 		}
+	}
+	/**
+	 * Calls the xfconf-query method which returns the location of the background
+	 * @return The path of the background picture
+	 */
+	public static final String getBackground(){	
+		String background = null;
+		try {			
+			BufferedReader b = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path"}).getInputStream()));
+			background = b.readLine();
+			b.close();
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}
+		return background;
+	}
+	
+	public static final BufferedReader getRemovableDiskList(){
+		try {
+			return new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"gvfs-mount", "-li"}).getInputStream()));
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}
+		return null;
 	}
 }
