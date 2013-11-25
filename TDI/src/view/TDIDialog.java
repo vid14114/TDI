@@ -8,12 +8,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -47,7 +50,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	private JTextField ip4=new JTextField();
 	
 	//Panel used for onConnect ip insertion
-	private JPanel ipPanel=new JPanel();
+	private JPanel ipPanel=new JPanel(new FlowLayout());
 	
 	//background colors
 	Color colorContent=new Color(100);
@@ -56,7 +59,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	
 	public TDIDialog(String[] plugin){
         super();
-        setTitle("Test"); // Must be changed
+        setTitle("Tangible Desktop Items"); // Must be changed
         setSize(600, 600);
         setLocation(400, 200);
         setContentPane(onWelcome());
@@ -112,6 +115,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		
 		JPanel helpe=new JPanel();
 		
+		
 		//create TextArea
 		JTextArea help=new JTextArea();
 		
@@ -132,8 +136,8 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//panel parameters
 		helpe.setVisible(true);
 		helpe.setBackground(colorContent);
-		helpe.setLocation(0,0);
 		helpe.setSize(new Dimension(500,500));
+		helpe.setLocation(0,0);
 		
 		//add everything
 		helpe.add(help);
@@ -142,8 +146,8 @@ public class TDIDialog extends JDialog implements ActionListener{
 		content.add(helpe);
 		
 		//refresh view
-		content.repaint();
-		helpe.repaint();
+		content.updateUI();
+		helpe.updateUI();
 	}
 
 	/**
@@ -153,6 +157,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		
 		// clear panel
 		content.removeAll();
+		ipPanel.removeAll();
 		
 		//position of elements
 		int dot1X=183;
@@ -178,16 +183,27 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot1.setBounds(5, 5, 5, 5);
 		dot1.setEditable(false);
 		dot1.setLocation(dot1X, dotY);
+		dot1.setBackground(colorContent);
+		dot1.setForeground(new Color(-50));
+		dot1.setBorder(null);
 		
 		dot2.setText(".");
 		dot2.setBounds(5, 5, 5, 5);
 		dot2.setEditable(false);
 		dot2.setLocation(dot2X, dotY);
+		dot2.setBackground(colorContent);
+		dot2.setForeground(new Color(-50));
+		dot2.setBorder(null);
+		
 		
 		dot3.setText(".");
 		dot3.setBounds(5, 5, 5, 5);
 		dot3.setEditable(false);
 		dot3.setLocation(dot3X, dotY);
+		dot3.setBackground(colorContent);
+		dot3.setForeground(new Color(-50));
+		dot3.setBorder(null);
+		
 		
 		ip1.setBounds(ipSize);
 		ip1.setText("0000");
@@ -241,20 +257,20 @@ public class TDIDialog extends JDialog implements ActionListener{
 		ipPanel.setBackground(colorContent);
 		
 		//add everything to panel
-		ipPanel.add(info);
-		ipPanel.add(ip1);
-		ipPanel.add(dot1);
-		ipPanel.add(ip2);
-		ipPanel.add(dot2);
-		ipPanel.add(ip3);
-		ipPanel.add(dot3);
-		ipPanel.add(ip4);	
-		ipPanel.add(startTDI);
+		ipPanel.add(ip1, FlowLayout.LEFT);
+		ipPanel.add(dot1, FlowLayout.CENTER);
+		ipPanel.add(ip2, FlowLayout.CENTER);
+		ipPanel.add(dot2, FlowLayout.CENTER);
+		ipPanel.add(ip3, FlowLayout.CENTER);
+		ipPanel.add(dot3, FlowLayout.CENTER);
+		ipPanel.add(ip4, FlowLayout.CENTER);	
+		ipPanel.add(startTDI, FlowLayout.RIGHT);
+		ipPanel.add(info, FlowLayout.RIGHT);
 		content.add(ipPanel);
 		
 		//referesh
-		content.repaint();
-		ipPanel.repaint();
+		content.updateUI();
+		ipPanel.updateUI();
 				
 	}
 	
