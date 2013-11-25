@@ -12,10 +12,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class TDIDialog extends JDialog implements ActionListener{
@@ -89,16 +94,36 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * Shows information about connect (connecting)
 	 */
 	public void onConnect() {
-		throw new UnsupportedOperationException();
+		content.removeAll();
+		JTextArea connectingJTA = new JTextArea("Connecting");
+		connectingJTA.setBackground(new Color(100));
+		connectingJTA.setForeground(new Color(-50));
+		connectingJTA.setEditable(false);
+		content.add(connectingJTA);
+		content.updateUI();
 	}
 	
 	/**
 	 * Opens the onPlugin button
 	 */
 	public void onPlugin() {
-		//
-		throw new UnsupportedOperationException();
+		content.removeAll();
+		Border noBorder = BorderFactory.createLineBorder(Color.cyan, 0);
+		String[] data = {"Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs"};
+		JList<String> myList = new JList<String>(data);
+		myList.setBackground(new Color(100));
+		myList.setForeground(new Color(-50));
+		JScrollPane scrollPane = new JScrollPane(myList);
+		scrollPane.setPreferredSize(new Dimension(480,520));
+		scrollPane.setBorder(noBorder);
+		
+		
+		content.add(scrollPane);
+		
+		content.setVisible(true);
+		content.updateUI();
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent actionPerformed) {
 		// TODO Auto-generated method stub
@@ -106,6 +131,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//pluginButton clicked
 		if(actionPerformed.getSource()==pluginButton){
 			System.out.println("Plugin");
+			onPlugin();
 		}
 		
 		//helpButton clicked
@@ -121,6 +147,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//connectButton clicked
 		if(actionPerformed.getSource()==connectButton){
 			System.out.println("Connect");
+			onConnect();
 		}
 	}
 
