@@ -1,0 +1,91 @@
+house
+mosque
+pen
+book
+bed
+desk
+door
+key
+chair
+shirt
+star
+doctor
+student
+boy
+man
+dog
+cat
+car
+leg
+this is
+train
+board
+eye glass
+fridge
+primary school
+middle school
+high school
+university
+I
+you
+we
+you(pl.)
+schoolbook
+library
+table
+prayer mat
+backbag
+ruler
+aeroplane
+telephone
+wrist-watch
+white
+black
+red
+yellow
+few
+many
+small
+big
+head
+voice
+quran
+television
+newspaper
+donkey
+camel
+water
+mountain
+elephant
+snow
+sword
+summer
+winter
+bathroom
+toilet
+window
+hand
+ear
+scissors
+tree
+language
+center
+tongue
+what does that mean
+clock
+chewing stick
+pants
+work(noun)
+factory
+heart
+horse
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten

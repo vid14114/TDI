@@ -9,22 +9,43 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.naming.spi.DirectoryManager;
+import javax.swing.text.DefaultEditorKit.CopyAction;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import controller.Executor;
 import view.Icon;
-
 public class ConfigLoaderTest {	
+	
 	@Before
-	public void createDirectories(){
+	public void prepareEnvironment() throws IOException{
+		/* Creates the TDI directory and copies all files in the desktop folder to a backup folder in TDI
+		 * This can then be used for the test
+		 */
 		TDIDirectories.createDirectories();
+		Runtime.getRuntime().exec(new String []{"cp","-r", System.getProperty("user.home")+"/Desktop/*",TDIDirectories.TDI_HOME+"/Desktop"});
+		deleteDesktop();
+	}
+	
+	private void deleteDesktop() throws IOException{
+		Runtime.getRuntime().exec(new String[]{"rm","-r", System.getProperty("user.home")+"/Desktop/*"});
+	}
+	
+	@After
+	public void closeEnviroment() throws IOException{
+		/*
+		 * Reverts the desktop back to its usual form and deletes the backup folder 
+		 */
+		deleteDesktop();
+		Runtime.getRuntime().exec(new String []{"cp","-r",TDIDirectories.TDI_HOME+"/Desktop/*",System.getProperty("user.home")+"/Desktop/"});
+		Runtime.getRuntime().exec(new String[]{"rm","-r", TDIDirectories.TDI_HOME+"/Desktop/*"});
 	}
 	
 //	@Test
@@ -39,28 +60,37 @@ public class ConfigLoaderTest {
 //	}	
 	
 	@Test
-	public void testLoadIcons(){
+	public void testLoadIcons() throws IOException{
 		ConfigLoader cf = new ConfigLoader();	
 		ArrayList <Icon> icons = null;
-		//Test for icons1
-		ConfigLoader.setIconsRc(new File("resources/icons1"));
+
+		//building the environment for the first test
+		ConfigLoader.setIconsRc(new File("resources/ConfigLoaderTest/icons1"));
+		Runtime.getRuntime().exec(new String []{"cp","-r","resources/ConfigLoaderTest/desktop1/*",System.getProperty("user.home")+"/Desktop/"});
 		icons = cf.loadIcons();
+
 		//Asserting for each icon in the file
-		Assert.assertEquals(19, icons.size());		
-		Assert.assertSame("thunar ~", icons.get(icons.indexOf(new Icon("Home", null))).getExecPath());
-		Assert.assertSame("thunar trash:///", icons.get(icons.indexOf(new Icon("Trash", null))).getExecPath());
+		Assert.assertEquals(15, icons.size());		
+		Assert.assertSame("xdg-open ~", icons.get(icons.indexOf(new Icon("Home", null))).getExecPath());
+		Assert.assertSame("xdg-open trash:///", icons.get(icons.indexOf(new Icon("Rubbish Bin", null))).getExecPath());
 		
-		//Test for file icons2
-		ConfigLoader.setIconsRc(new File("resoucres/icons2"));
-		icons = cf.loadIcons();
-		//Assertions begin
-		Assert.assertEquals(15, icons.size());
+		//Building and testing second icon test
+		deleteDesktop();
+		ConfigLoader.setIconsRc(new File("resources/ConfigLoaderTest/icons2"));		
+		Runtime.getRuntime().exec(new String []{"cp","-r","resources/ConfigLoaderTest/desktop2/*",System.getProperty("user.home")+"/Desktop/"});
+		icons = cf.loadIcons();		
 		
-		//Test for file icons3
-		ConfigLoader.setIconsRc(new File("resoucres/icons3"));
-		icons = cf.loadIcons();
 		//Assertions begin
-		Assert.assertEquals(16, icons.size());
+		Assert.assertEquals(12, icons.size());
+		
+		//Building and testing third icon test
+		deleteDesktop();
+		ConfigLoader.setIconsRc(new File("resources/ConfigLoaderTest/icons3"));		
+		Runtime.getRuntime().exec(new String []{"cp","-r","resources/ConfigLoaderTest/desktop3/*",System.getProperty("user.home")+"/Desktop/"});
+		icons = cf.loadIcons();
+		
+		//Assertions begin
+		Assert.assertEquals(11, icons.size());
 	}
 	
 //	@Test

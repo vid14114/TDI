@@ -80,12 +80,13 @@ public class ConfigLoader {
 
 			// default icons (home & trash & file system)
 			{// TODO when exception happens, method is skipped --> find solution
-				icons.get(icons.indexOf(new Icon("Home", null))).setExecPath(
-						new String[] { "thunar", "~" });
-				icons.get(icons.indexOf(new Icon("Trash", null))).setExecPath(
-						new String[] { "thunar", "trash:///" });
-				icons.get(icons.indexOf(new Icon("File System", null)))
-						.setExecPath(new String[] { "thunar", "/" });
+				int index;
+				if((index = icons.indexOf(new Icon("Home",null))) != -1 )
+					icons.get(index).setExecPath(new String[] { "xdg-open", "~" });
+				if((index = icons.indexOf(new Icon("Trash", null))) != -1 || (index = icons.indexOf(new Icon("Rubbish Bin", null))) != 1)
+					icons.get(index).setExecPath(new String[] { "xgd-open", "trash:///" });
+				if((index = icons.indexOf(new Icon("File System", null))) != -1)
+					icons.get(index).setExecPath(new String[] { "thunar", "/" });
 			}
 
 			{ // removable devices
@@ -218,8 +219,8 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * This method is implemented for testing purposes TODO Delete
-	 * 
+	 * This method is implemented for testing purposes 
+	 * TODO Delete
 	 * @param iconsRc
 	 *            the iconsRc to set
 	 */
