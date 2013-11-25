@@ -30,6 +30,7 @@ public class BigLogic implements Runnable{
 	public static void main(String[] args) {
 		ConfigLoader cl=new ConfigLoader();
 		cl.loadIcons();
+		TDIDialog t=new TDIDialog(null);
 	}
 	
 	/**
