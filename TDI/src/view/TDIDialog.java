@@ -271,7 +271,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//referesh
 		content.updateUI();
 		ipPanel.updateUI();
-				
 	}
 	
 	/**
