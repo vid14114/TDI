@@ -17,6 +17,10 @@ public class Icon {
 	private Point position;
 
 	/**
+	 * Command to mount removable drives
+	 */
+	private String[] mountCmd;
+	/**
 	 * Constructor of icon
 	 * @param name
 	 * @param execPath
@@ -58,6 +62,14 @@ public class Icon {
 	public void setPosition(Point position) {
 		if(position == null) return;
 		this.position = position;
+	}
+
+	public String[] getMountPath() {
+		return mountCmd;
+	}
+
+	public void setMountCmd(String[] mountCmd) {
+		this.mountCmd = mountCmd;
 	}
 
 	/**

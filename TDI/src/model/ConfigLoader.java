@@ -92,21 +92,28 @@ public class ConfigLoader {
 			{ // removable devices
 				ArrayList<String> mounts = new ArrayList<String>();
 				BufferedReader gvfsMount = Executor.getRemovableDiskList();
-				for (int i = 0; gvfsMount.ready();) {
-					String s = gvfsMount.readLine();
-					if (s.contains("Volume("))
-						mounts.add(s.split(":")[1].substring(1));
-					if (s.contains("unix-device")) {
-						s = s.split("'")[1];
-						for (int j = 0; j < s.length(); j++)
-							if (Character.isDigit(s.charAt(j))) {
-								mounts.set(i, mounts.get(i) + "#" + s);
+				line=null;
+				for (int i = 0 ; (line=gvfsMount.readLine())!=null;) {
+					if (line.contains("Volume("))
+						mounts.add(line.split(":")[1].substring(1));
+					if (line.contains("unix-device")) {
+						line = line.split("'")[1];
+						for (int j = 0; j < line.length(); j++)
+							if (Character.isDigit(line.charAt(j))) {
+								mounts.set(i, mounts.get(i) + "#" + line);
 								i++;
 								break;
 							}
 					}
 				}
+				for(int i=0; i<mounts.size(); i++)
+				{
+					String[] s=mounts.get(i).split("#");
+					String[] mountCmd={"udisks", "--mount", s[1]};
+					icons.get(icons.indexOf(new Icon(s[0],null))).setMountCmd(mountCmd);
+				}
 			}
+			icons.clone();
 		} catch (IndexOutOfBoundsException e) {
 			// Happens when name is not found
 		} catch (FileNotFoundException e) {
