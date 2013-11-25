@@ -64,7 +64,7 @@ public class TDIDialog extends JDialog implements ActionListener{
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
 	}
-/**/
+
 	public JPanel onWelcome() {
 		main.setLayout(new BorderLayout());
 		
@@ -124,14 +124,26 @@ public class TDIDialog extends JDialog implements ActionListener{
 		help.setBorder(null);
 		help.setLocation(50,50);
 		
-		startTutorial.setLocation(100, 100);
+		//button parameters
+		startTutorial.setLocation(1, 1);
+		startTutorial.setPreferredSize(new Dimension(90,30));
 		startTutorial.addActionListener(this);
-	//	helpe.setVisible(true);
+		
+		//panel parameters
+		helpe.setVisible(true);
+		helpe.setBackground(colorContent);
+		helpe.setLocation(0,0);
+		helpe.setSize(new Dimension(500,500));
 		
 		//add everything
 		helpe.add(help);
 		helpe.add(startTutorial);
+		
 		content.add(helpe);
+		
+		//refresh view
+		content.repaint();
+		helpe.repaint();
 	}
 
 	/**
@@ -142,7 +154,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		// clear panel
 		content.removeAll();
 		
-		//posititon of elements
+		//position of elements
 		int dot1X=183;
 		int dot2X=dot1X+45;
 		int dot3X=dot2X+45;
@@ -219,18 +231,16 @@ public class TDIDialog extends JDialog implements ActionListener{
 		info.setLocation(dot1X-35,ipY-50);
 		
 		//button location
-		startTDI.setVisible(true);
 		startTDI.setPreferredSize(new Dimension(90,30));
-		startTDI.setLocation(50, 50);
+		startTDI.setLocation(100,200);
 		startTDI.addActionListener(this);
 		
 		//panel parameters
-		ipPanel.setVisible(true);
 		ipPanel.setSize(380,350);
 		ipPanel.setLocation(0,50);
+		ipPanel.setBackground(colorContent);
 		
 		//add everything to panel
-		ipPanel.add(startTDI);
 		ipPanel.add(info);
 		ipPanel.add(ip1);
 		ipPanel.add(dot1);
@@ -238,16 +248,20 @@ public class TDIDialog extends JDialog implements ActionListener{
 		ipPanel.add(dot2);
 		ipPanel.add(ip3);
 		ipPanel.add(dot3);
-		ipPanel.add(ip4);
-		
+		ipPanel.add(ip4);	
+		ipPanel.add(startTDI);
 		content.add(ipPanel);
+		
+		//referesh
+		content.repaint();
+		ipPanel.repaint();
 				
 	}
 	
 	/**
 	 * Checks if the entered IP has a valid format and converts it to an integer
-	 * returns the IP
-	 * throws a NumberFormatException
+	 * @return int ip
+	 * @throws NumberFormatException
 	 * */
 	private int checkIp() throws NumberFormatException
 	{
@@ -307,10 +321,10 @@ public class TDIDialog extends JDialog implements ActionListener{
 			//start Program/ BigLogic (Is Master, is big).
 		}
 		//startTutorial clicked
-				if(actionPerformed.getSource()==startTutorial){
-					System.out.println("start Tutorial");
-					//start Tutorial
-				}
+		if(actionPerformed.getSource()==startTutorial){
+			System.out.println("start Tutorial");
+			//start Tutorial
+		}
 	}
 
 }
