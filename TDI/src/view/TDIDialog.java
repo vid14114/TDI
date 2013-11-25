@@ -309,9 +309,23 @@ public class TDIDialog extends JDialog implements ActionListener{
 	/**
 	 * Opens the onPlugin button
 	 */
-	public void onPlugin() {
-		//
-		throw new UnsupportedOperationException();
+	public void onPlugin()  {
+		
+		content.removeAll();
+		Border noBorder = BorderFactory.createLineBorder(Color.cyan, 0);
+		String[] data = {"Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs"};
+		JList<String> myList = new JList<String>(data);
+		myList.setBackground(new Color(100));
+		myList.setForeground(new Color(-50));
+		JScrollPane scrollPane = new JScrollPane(myList);
+		scrollPane.setPreferredSize(new Dimension(480,520));
+		scrollPane.setBorder(noBorder);
+		
+		
+		content.add(scrollPane);
+		
+		content.setVisible(true);
+		content.updateUI();
 	}
 	@Override
 	public void actionPerformed(ActionEvent actionPerformed) {
