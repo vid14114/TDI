@@ -305,6 +305,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * Opens the onPlugin button
 	 */
 	public void onPlugin() {
+		//
 		throw new UnsupportedOperationException();
 	}
 	@Override
