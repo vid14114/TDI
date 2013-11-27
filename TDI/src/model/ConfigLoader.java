@@ -3,18 +3,25 @@ package model;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+
 import javax.imageio.ImageIO;
+
 import controller.Executor;
 import view.Icon;
 
@@ -165,22 +172,53 @@ public class ConfigLoader {
 
 	/**
 	 * Accesses the {@link TDIDirectories.TDI_PLUGINS} directory where program
-	 * plugins are located Any plugin file, file ending with .jar will be loaded
+	 * plugins are located any plugin file, file ending with .jar will be loaded
 	 * into the program and the user can select which one to pick
 	 * 
 	 * @return An array of plugins
 	 */
-	public String[] getPlugins() {
-		return new File(TDIDirectories.TDI_PLUGINS).list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if (name.endsWith(".jar"))
-					return true;
-				return false;
+	public HashMap<String, Boolean> getPlugins() {		
+		HashMap<String, Boolean> plugins = new HashMap<>();
+		try {
+			BufferedReader preference = new BufferedReader(new FileReader(TDIDirectories.TDI_PREFERENCE));
+			String line;
+			ArrayList<String> jars = new ArrayList<String>(Arrays.asList(
+				new File(TDIDirectories.TDI_PLUGINS).list(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					if (name.endsWith(".jar"))
+						return true;
+					return false;
+				}
+			})));								
+			
+			while ((line = preference.readLine()) != null){
+				plugins.put(line, true);
+				jars.remove(line);
 			}
-		});
+			for(String jar : jars)
+				plugins.put(jar, false);			
+			preference.close();								
+		} catch (FileNotFoundException e) {
+			TDILogger.logError("TDI preference text file not found, creating");
+			TDIDirectories.createDirectories();
+		} catch (IOException e) {
+			TDILogger.logError("Couldn't read the preferences file");
+		}
+		return plugins;
 	}
 
+	public void savePlugins(String[] plugins){
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(TDIDirectories.TDI_PREFERENCE, false));
+			for(String line : plugins)
+				bw.write(line+"\n");
+			bw.close();
+		} catch (IOException e) {
+			TDILogger.logError("Error writing to "+TDIDirectories.TDI_PREFERENCE);
+		}
+	}
+	
 	/**
 	 * Searches for the last modified file in the xfce4 desktop folder
 	 * 

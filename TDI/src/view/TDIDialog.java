@@ -33,7 +33,7 @@ import javax.swing.border.Border;
 public class TDIDialog extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = -1221054153637014114L;
-	private String[] plugin;
+	private String[] plugin; //TODO change to hashmap, implement getPlugin()
 	private JPanel main = new JPanel();
 	private JPanel header = new JPanel();
 	private JPanel content = new JPanel();
