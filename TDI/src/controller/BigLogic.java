@@ -28,8 +28,8 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ConfigLoader cl=new ConfigLoader();
-		cl.loadIcons();
+	//	ConfigLoader cl=new ConfigLoader();
+	//	cl.loadIcons();
 		TDIDialog t=new TDIDialog(null);
 	}
 	
