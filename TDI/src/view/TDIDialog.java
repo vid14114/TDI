@@ -55,6 +55,9 @@ public class TDIDialog extends JDialog implements ActionListener{
 	private JTextField ip3=new JTextField();
 	private JTextField ip4=new JTextField();
 	
+	//for errorMessages
+	JTextField errorMessage = new JTextField();
+	
 	//Panel used for onConnect ip insertion
 	private JPanel ipPanel=new JPanel(new FlowLayout());
 	
@@ -175,15 +178,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		ipPanel.setLayout(new BoxLayout(ipPanel, BoxLayout.X_AXIS));
 		OverallPanel.setLayout(new BoxLayout(OverallPanel, BoxLayout.Y_AXIS));
 		
-		//position of elements => not used anymore
-	//	int dot1X=183;
-	//	int dot2X=dot1X+45;
-	//	int dot3X=dot2X+45;
-	//	int dotY=240;
-		
-	//	int ipX=-37;
-	//	int ipY=225;
-		
 		//creating none editable text area for dots x.x.x.x
 		JTextField dot1=new JTextField();
 		JTextField dot2=new JTextField();
@@ -198,7 +192,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot1.setText(".");
 		dot1.setBounds(5, 5, 5, 5);
 		dot1.setEditable(false);
-	//	dot1.setLocation(dot1X, dotY);
 		dot1.setBackground(colorContent);
 		dot1.setForeground(new Color(-50));
 		dot1.setBorder(null);
@@ -206,7 +199,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot2.setText(".");
 		dot2.setBounds(5, 5, 5, 5);
 		dot2.setEditable(false);
-	//	dot2.setLocation(dot2X, dotY);
 		dot2.setBackground(colorContent);
 		dot2.setForeground(new Color(-50));
 		dot2.setBorder(null);
@@ -215,36 +207,32 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot3.setText(".");
 		dot3.setBounds(5, 5, 5, 5);
 		dot3.setEditable(false);
-	//	dot3.setLocation(dot3X, dotY);
 		dot3.setBackground(colorContent);
 		dot3.setForeground(new Color(-50));
 		dot3.setBorder(null);
 		
 		
 		ip1.setBounds(ipSize);
-		ip1.setText("0000");
+		ip1.setText("000");
 	//	ip1.setLocation(ipX+dot1X, ipY);
 		ip1.setBackground(colorContent);
 		ip1.setForeground(new Color(-50));
 		ip1.setBorder(null);
 		
 		ip2.setBounds(ipSize);
-		ip2.setText("0000");
-	//	ip2.setLocation(ipX+dot2X, ipY);
+		ip2.setText("000");
 		ip2.setBackground(colorContent);
 		ip2.setForeground(new Color(-50));
 		ip2.setBorder(null);
 		
 		ip3.setBounds(ipSize);
-		ip3.setText("0000");
-	//	ip3.setLocation(ipX+dot3X, ipY);
+		ip3.setText("000");
 		ip3.setBackground(colorContent);
 		ip3.setForeground(new Color(-50));
 		ip3.setBorder(null);
 		
 		ip4.setBounds(ipSize);
-		ip4.setText("0000");
-	//	ip4.setLocation(ipX+dot3X+46, ipY);
+		ip4.setText("000");
 		ip4.setBackground(colorContent);
 		ip4.setForeground(new Color(-50));
 		ip4.setBorder(null);
@@ -256,21 +244,23 @@ public class TDIDialog extends JDialog implements ActionListener{
 		info.setBackground(colorContent);
 		info.setForeground(new Color(-50));
 		info.setBorder(null);
-		//info.setLocation(dot1X-35,ipY-50);
 		
 		//button location
 		startTDI.setPreferredSize(new Dimension(90,30));
-	//	startTDI.setLocation(100,200);
 		startTDI.addActionListener(this);
 		
+
+		// Display Error Message;
+		errorMessage.setEditable(false);
+		errorMessage.setBackground(colorContent);
+		errorMessage.setForeground(new Color(-200));
+		errorMessage.setBorder(null);
+		
 		//ipPanel parameters
-	//	ipPanel.setSize(100,100);
-		//ipPanel.setLocation(0,50);
 		ipPanel.setBackground(colorContent);
 		
 		//OverallPanel parameters
 		OverallPanel.setPreferredSize(new Dimension(400,400));
-		//OverallPanel.setLocation(0,50);
 		OverallPanel.setBackground(colorContent);
 		
 		//add everything to panel
@@ -282,9 +272,11 @@ public class TDIDialog extends JDialog implements ActionListener{
 		ipPanel.add(dot2);
 		ipPanel.add(ip3);
 		ipPanel.add(dot3);
-		ipPanel.add(ip4);	
+		ipPanel.add(ip4);
 		OverallPanel.add(ipPanel, BorderLayout.CENTER);
-		OverallPanel.add(Box.createRigidArea(new Dimension(450,0)));
+		OverallPanel.add(Box.createRigidArea(new Dimension(350,0)));
+		OverallPanel.add(errorMessage, BorderLayout.CENTER);
+		OverallPanel.add(Box.createRigidArea(new Dimension(100,0)));
 		OverallPanel.add(startTDI, BorderLayout.LINE_END);
 		
 		
@@ -301,27 +293,33 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * @return int ip
 	 * @throws NumberFormatException
 	 * */
-	private int checkIp() throws NumberFormatException
+	private int[] checkIp()
 	{
-		if((ip1.getText().length()==4)&&(ip2.getText().length()==4)&&(ip3.getText().length()==4)&&(ip4.getText().length()==4))
+		int fullIP[] =new int[4];
+		//Checks if appropriate length
+		if((ip1.getText().length()<=3)&&(ip2.getText().length()<=3)&&(ip3.getText().length()<=3)&&(ip4.getText().length()<=3))
 		{
-			String full=ip1.getText()+""+ip2.getText()+""+ip3.getText()+""+ip4.getText();
-			int fullip=Integer.parseInt(full);
-			return fullip;
+			try
+			{
+				fullIP[0] = Integer.parseInt(ip1.getText());
+				fullIP[1] = Integer.parseInt(ip2.getText());
+				fullIP[2] = Integer.parseInt(ip3.getText());
+				fullIP[3] = Integer.parseInt(ip4.getText());
+				System.out.println(fullIP[0]+"."+fullIP[1]+"."+fullIP[2]+"."+fullIP[3]);
+				return fullIP;
+			}
+			catch(NumberFormatException e){
+				errorMessage.setText("Please enter only numbers");
+				ipPanel.updateUI();
+			}
 		}
 		else
 		{
-			throw new NumberFormatException();
+			errorMessage.setText("input only in the following format: 000.000.000.000");
+			ipPanel.updateUI();
+			return fullIP;
 		}
-			
-	}
-	
-	/**
-	 * returns the entered IP as integer
-	 * */
-	public int getIp() 
-	{
-		return checkIp();
+		return fullIP;
 	}
 	
 	/**
@@ -370,7 +368,10 @@ public class TDIDialog extends JDialog implements ActionListener{
 		}
 		//startTDI clicked
 		if(actionPerformed.getSource()==startTDI){
-			System.out.println("start the TDI connection");
+			System.out.println("start the TDI connection"); 
+			errorMessage.setText("");
+			content.updateUI();
+			checkIp();
 			//start Program/ BigLogic (Is Master, is big).
 		}
 		//startTutorial clicked
