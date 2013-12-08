@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Implements the runnable interface
@@ -22,13 +23,13 @@ public class Server implements Runnable{
 	 * ip
 	 */
 	protected static String ip;
-	private ServerSocket server;
+	private Socket client; //we are a client, smartphone is the server
 	private static ObjectOutputStream send;
 	
 	public Server(){
 		try {
-            //Created a new serversocket instance, which is bound to the port 2345
-            server = new ServerSocket(2345);  //ich glaub nicht, dass wir einen ServerSocket brauchen. Das Smartphone ist eig der Server und wir verbinden uns nur hin.
+            //Created a new socket which is bound to the port 2345
+            client = new Socket(ip, 2345);
             Thread t=new Thread(this);
             t.start();
     } catch (IOException e) {
@@ -41,29 +42,28 @@ public class Server implements Runnable{
 	 */
 	public void run() {
 		while(true){
-            try{
-                    Socket client = null;
-                    while(client == null || client.isClosed()){
-                            client = server.accept();
-                    }
-                    client.setKeepAlive(true);
-                    ObjectInputStream read = new ObjectInputStream(client.getInputStream());
-                    send = new ObjectOutputStream(client.getOutputStream());                                
-                    while(client.isConnected()){ //Here the whole message handling is done
-                            String[] message = ((String)read.readObject()).split(";"); //For some reasons, only when the objectoutputstream sends messages, can they be read by the server
-                            switch(message[0].toLowerCase()){
-                            case "LULZ": System.out.println("Lulz was sent"); break;
-                            default: send.writeObject("Unknown command"); break;
-                            }                                
-                    }
-            }
-            catch(IOException e){
-                    e.printStackTrace();
-                    System.out.println(e.getCause().getMessage());
-            } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                    System.out.println(e.getCause().getMessage());
-            }
+                    try {
+						client.setKeepAlive(true);
+						ObjectInputStream read = new ObjectInputStream(client.getInputStream());
+	                    send = new ObjectOutputStream(client.getOutputStream());                                
+	                    while(client.isConnected()){ //Here the whole message handling is done
+	                            String[] message = ((String)read.readObject()).split(";");
+	                            switch(message[0].toLowerCase()){
+	                            case "LULZ": System.out.println("Lulz was sent"); break;
+	                            default: send.writeObject("Unknown command"); break;
+	                            }                                
+	                    }
+					} catch (SocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                    
 		}
 	}
 
