@@ -293,9 +293,10 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * @return int ip
 	 * @throws NumberFormatException
 	 * */
-	private int[] checkIp()
+	private String checkIp()
 	{
 		int fullIP[] =new int[4];
+		String ip="1.1.1.1";
 		//Checks if appropriate length
 		if((ip1.getText().length()<=3)&&(ip2.getText().length()<=3)&&(ip3.getText().length()<=3)&&(ip4.getText().length()<=3))
 		{
@@ -306,7 +307,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 				fullIP[2] = Integer.parseInt(ip3.getText());
 				fullIP[3] = Integer.parseInt(ip4.getText());
 				System.out.println(fullIP[0]+"."+fullIP[1]+"."+fullIP[2]+"."+fullIP[3]);
-				return fullIP;
+				return ip;
 			}
 			catch(NumberFormatException e){
 				errorMessage.setText("Please enter only numbers");
@@ -317,9 +318,9 @@ public class TDIDialog extends JDialog implements ActionListener{
 		{
 			errorMessage.setText("input only in the following format: 000.000.000.000");
 			ipPanel.updateUI();
-			return fullIP;
+			return ip;
 		}
-		return fullIP;
+		return ip;
 	}
 	
 	/**
