@@ -50,18 +50,13 @@ public class Server implements Runnable{
                     while(client.isConnected()){ //Here the whole message handling is done
                             String[] message = ((String)read.readObject()).split(";"); //For some reasons, only when the objectoutputstream sends messages, can they be read by the server
                             switch(message[0].toLowerCase()){
-                            case "51": break;
-                            case "53": break;
-                            case "54": break;
-                            case "61": break;
-                            case "63": sendWI_GET_TRANS(); break;
-                            case "64": sendWI_GET_PLSIZE(); break;
-                            case "65": sendWI_GET_PLSIZE(); break;
-                            case "80": sendWI_SET_STATE(); break;
-                            case "81": break;
-                            case "82": break;
-                            case "83": break;
-                            case "84": break;
+                            case "51": fullPose(); break;
+                            case "53": fullTrans(); break;
+                            case "54": fullRot(); break;
+                            case "61": getPose(); break;
+                            case "63": getTrans(); break;
+                            case "64": getRot(); break;
+                            case "65": getPlsize(); break;
                             default: send.writeObject("Unknown command"); break;
                             }                                
                     }
@@ -92,58 +87,82 @@ public class Server implements Runnable{
 	}
 	
 
-	// ask only translation update of specific TUIO	
-	public static byte sendWI_GET_TRANS() 
-	{
-		return 63;
+	// ask pose update of all TUIOs
+	// format: CMD
+	public static byte fullPose(){
+		return 51;
 	}
-	// ask only rotation update of specific TUIO
-	public static byte sendWI_GET_ROT()
-	{
-		return 64;
+	
+	// ask only translation update of all TUIOs
+	// format: CMD
+	public static byte fullTrans(){
+		return 53;
 	}
-	// ask resolution of playground //also answer to GET messages
-	public static byte sendWI_GET_PLSIZE()
-	{
-		return 65;
+	
+	// ask only rotation update of all TUIOs	
+	// format: CMD
+	public static byte fullRot(){
+		return 54;
 	}
+	
+	// ask pose update of specific TUIO
+	// format: CMD
+	public static byte getPose(){
+		return 61;
+	}
+	
 	// set/send state of specific TUIO
-	public static byte WI_GET_TRANS()
+	// format: CMD
+	public static byte getTrans()
 	{
 		return 63;
 	}
+	
 	// ask only rotation update of specific TUIO
-	public static byte WI_GET_ROT()
+	// format: CMD
+	public static byte getRot()
 	{
 		return 64;
 	}
+	
 	// ask resolution of playground	
-	public static byte WI_GET_PLSIZE()
+	// format: CMD
+	public static byte getPlsize()
 	{
 		return 65;
 	}
+	
 	// set/send state of specific TUIO
-	public static byte WI_SET_STATE()
+	// format: CMD, ID, float[3], float[4], ???
+	public static byte setState()
 	{
 		return 80;
 	}
+	
 	// set/send pose of specific TUIO	
-	public static byte WI_SET_POSE()
+	// format: CMD, ID, float[3], float[4]
+	public static byte setPose()
 	{
 		return 81;
 	}
+	
 	// set/send ext state of specific TUIO	
-	public static byte WI_SET_EXT()
+	// format: CMD, ID, ???
+	public static byte setExt()
 	{
 		return 82;
 	}
+	
 	// set/send only translation update of specific TUIO	
-	public static byte WI_SET_TRANS()
+	// format: CMD, ID, float[3]
+	public static byte setTrans()
 	{
 		return 83;
 	}
+	
 	// set/send only rotation update of specific TUIO	
-	public static byte WI_SET_ROT()
+	// format: CMD, ID, float[4]
+	public static byte setRot()
 	{
 		return 84;
 	}
