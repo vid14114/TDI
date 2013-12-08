@@ -23,7 +23,7 @@ public class Server implements Runnable{
 	 */
 	protected static String ip;
 	private ServerSocket server;
-	private ObjectOutputStream send;
+	private static ObjectOutputStream send;
 	
 	public Server(){
 		try {
@@ -50,13 +50,7 @@ public class Server implements Runnable{
                     while(client.isConnected()){ //Here the whole message handling is done
                             String[] message = ((String)read.readObject()).split(";"); //For some reasons, only when the objectoutputstream sends messages, can they be read by the server
                             switch(message[0].toLowerCase()){
-                            case "51": fullPose(); break;
-                            case "53": fullTrans(); break;
-                            case "54": fullRot(); break;
-                            case "61": getPose(); break;
-                            case "63": getTrans(); break;
-                            case "64": getRot(); break;
-                            case "65": getPlsize(); break;
+                            case "LULZ": System.out.println("Lulz was sent"); break;
                             default: send.writeObject("Unknown command"); break;
                             }                                
                     }
@@ -74,8 +68,12 @@ public class Server implements Runnable{
 	/**
 	 * Sends the specified command
 	 */
-	public static void sendCommand() {
-		throw new UnsupportedOperationException();
+	public static void sendCommand(String cmd) {
+		try {
+            send.writeObject(cmd);
+	    } catch (IOException e) {
+	            e.printStackTrace();
+	    }
 	}
 
 	/**
@@ -89,82 +87,83 @@ public class Server implements Runnable{
 
 	// ask pose update of all TUIOs
 	// format: CMD
-	public static byte fullPose(){
-		return 51;
+	// 51
+	public static void fullPose(){
 	}
 	
 	// ask only translation update of all TUIOs
 	// format: CMD
-	public static byte fullTrans(){
-		return 53;
+	// 53
+	public static void fullTrans(){
 	}
 	
 	// ask only rotation update of all TUIOs	
 	// format: CMD
-	public static byte fullRot(){
-		return 54;
+	// 54
+	public static void fullRot(){
 	}
 	
 	// ask pose update of specific TUIO
-	// format: CMD
-	public static byte getPose(){
-		return 61;
+	// format: CMD, ID
+	// 61
+	public static void getPose(){
 	}
 	
 	// set/send state of specific TUIO
-	// format: CMD
-	public static byte getTrans()
+	// format: CMD, ID
+	// 63
+	public static void getTrans()
 	{
-		return 63;
 	}
 	
 	// ask only rotation update of specific TUIO
-	// format: CMD
-	public static byte getRot()
+	// format: CMD, ID
+	// 64
+	public static void getRot(String id)
 	{
-		return 64;
+		sendCommand("64, "+id);
 	}
 	
 	// ask resolution of playground	
 	// format: CMD
-	public static byte getPlsize()
+	// 65
+	public static void getPlsize()
 	{
-		return 65;
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID, float[3], float[4], ???
-	public static byte setState()
+	// 80
+	public static void setState()
 	{
-		return 80;
 	}
 	
 	// set/send pose of specific TUIO	
 	// format: CMD, ID, float[3], float[4]
-	public static byte setPose()
+	// 81
+	public static void setPose()
 	{
-		return 81;
 	}
 	
 	// set/send ext state of specific TUIO	
 	// format: CMD, ID, ???
-	public static byte setExt()
+	// 82
+	public static void setExt()
 	{
-		return 82;
 	}
 	
 	// set/send only translation update of specific TUIO	
 	// format: CMD, ID, float[3]
-	public static byte setTrans()
+	// 83
+	public static void setTrans()
 	{
-		return 83;
 	}
 	
 	// set/send only rotation update of specific TUIO	
 	// format: CMD, ID, float[4]
-	public static byte setRot()
+	// 84
+	public static void setRot()
 	{
-		return 84;
 	}
 
 	
