@@ -88,25 +88,25 @@ public class Server implements Runnable{
 	// ask pose update of all TUIOs
 	// format: CMD
 	// 51
-	public static void fullPose(String id)
+	public static void fullPose()
 	{
-		sendCommand("51, "+id);
+		sendCommand("51");
 	}
 	
 	// ask only translation update of all TUIOs
 	// format: CMD
 	// 53
-	public static void fullTrans(String id)
+	public static void fullTrans()
 	{
-		sendCommand("53, "+id);
+		sendCommand("53");
 	}
 	
 	// ask only rotation update of all TUIOs	
 	// format: CMD
 	// 54
-	public static void fullRot(String id)
+	public static void fullRot()
 	{
-		sendCommand("54, "+id);
+		sendCommand("54");
 	}
 	
 	// ask pose update of specific TUIO
@@ -136,25 +136,25 @@ public class Server implements Runnable{
 	// ask resolution of playground	
 	// format: CMD
 	// 65
-	public static void getPlsize(String id)
+	public static void getPlsize()
 	{
-		sendCommand("65, "+id);
+		sendCommand("65");
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID, float[3], float[4], ???
 	// 80
-	public static void setState(String id)
+	public static void setState(String id, float[] trans, float[] rot)
 	{
-		sendCommand("80, "+id);
+		sendCommand("80, "+id+", "+trans+", "+rot);
 	}
 	
 	// set/send pose of specific TUIO	
 	// format: CMD, ID, float[3], float[4]
 	// 81
-	public static void setPose(String id)
+	public static void setPose(String id, float[] trans, float[] rot)
 	{
-		sendCommand("81, "+id);
+		sendCommand("80, "+id+", "+trans+", "+rot);
 	}
 	
 	// set/send ext state of specific TUIO	
@@ -168,17 +168,17 @@ public class Server implements Runnable{
 	// set/send only translation update of specific TUIO	
 	// format: CMD, ID, float[3]
 	// 83
-	public static void setTrans(String id)
+	public static void setTrans(String id, float[] rot)
 	{
-		sendCommand("83, "+id);
+		sendCommand("80, "+id+", "+rot);
 	}
 	
 	// set/send only rotation update of specific TUIO	
 	// format: CMD, ID, float[4]
 	// 84
-	public static void setRot(String id)
+	public static void setRot(String id, float[] trans)
 	{
-		sendCommand("84, "+id);
+		sendCommand("80, "+id+", "+trans);
 	}
 
 	
