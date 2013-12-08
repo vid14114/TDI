@@ -93,7 +93,7 @@ public class Server implements Runnable{
 	
 
 	// ask only translation update of specific TUIO	
-	public static byte sendWI_GET_TRANS()
+	public static byte sendWI_GET_TRANS() 
 	{
 		return 63;
 	}
