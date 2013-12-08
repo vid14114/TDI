@@ -303,12 +303,18 @@ public class TDIDialog extends JDialog implements ActionListener{
 		{
 			try
 			{
+				//checks format 
 				fullIP[0] = Integer.parseInt(ip1.getText());
 				fullIP[1] = Integer.parseInt(ip2.getText());
 				fullIP[2] = Integer.parseInt(ip3.getText());
 				fullIP[3] = Integer.parseInt(ip4.getText());
-				System.out.println(fullIP[0]+"."+fullIP[1]+"."+fullIP[2]+"."+fullIP[3]);
-				return ip;
+				
+				//checks ip<255
+				if(fullIP[0]<255&&fullIP[1]<255&&fullIP[2]<255&&fullIP[3]<255)
+				{
+					ip= fullIP[0]+"."+fullIP[1]+""+fullIP[2]+""+fullIP[3];
+					return ip;
+				}
 			}
 			catch(NumberFormatException e){
 				errorMessage.setText("Please enter only numbers");
