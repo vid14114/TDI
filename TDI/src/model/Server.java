@@ -53,10 +53,46 @@ public class Server implements Runnable{
 		return 65;
 	}
 	// set/send state of specific TUIO
-	public static byte sendWI_SET_STATE()
+	public static byte WI_GET_TRANS()
+	{
+		return 63;
+	}
+	// ask only rotation update of specific TUIO
+	public static byte WI_GET_ROT()
+	{
+		return 64;
+	}
+	// ask resolution of playground	
+	public static byte WI_GET_PLSIZE()
+	{
+		return 65;
+	}
+	// set/send state of specific TUIO
+	public static byte WI_SET_STATE()
 	{
 		return 80;
 	}
+	// set/send pose of specific TUIO	
+	public static byte WI_SET_POSE()
+	{
+		return 81;
+	}
+	// set/send ext state of specific TUIO	
+	public static byte WI_SET_EXT()
+	{
+		return 82;
+	}
+	// set/send only translation update of specific TUIO	
+	public static byte WI_SET_TRANS()
+	{
+		return 83;
+	}
+	// set/send only rotation update of specific TUIO	
+	public static byte WI_SET_ROT()
+	{
+		return 84;
+	}
+
 	
 
 }
