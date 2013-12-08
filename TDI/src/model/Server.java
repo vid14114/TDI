@@ -22,13 +22,15 @@ public class Server implements Runnable{
 	 * ip
 	 */
 	protected static String ip;
-	private ServerSocket server;
+	private Socket client; //we are a client, smartphone is the server
 	private static ObjectOutputStream send;
 	
 	public Server(){
 		try {
-            //Created a new serversocket instance, which is bound to the port 1234
-            server = new ServerSocket(1234);
+            //Created a new socket which is bound to the port 2345
+            client = new Socket(ip, 2345);
+            Thread t=new Thread(this);
+            t.start();
     } catch (IOException e) {
     	System.out.print("Error, could not connect to port 1234");
     }
@@ -40,7 +42,7 @@ public class Server implements Runnable{
             try{
                     Socket client = null;
                     while(client == null || client.isClosed()){
-                            client = server.accept();
+                           // client = server.accept();
                     }
                     client.setKeepAlive(true);
                     ObjectInputStream read = new ObjectInputStream(client.getInputStream());
