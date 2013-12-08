@@ -27,8 +27,10 @@ public class Server implements Runnable{
 	
 	public Server(){
 		try {
-            //Created a new serversocket instance, which is bound to the port 1234
-            server = new ServerSocket(2345);
+            //Created a new serversocket instance, which is bound to the port 2345
+            server = new ServerSocket(2345);  //ich glaub nicht, dass wir einen ServerSocket brauchen. Das Smartphone ist eig der Server und wir verbinden uns nur hin.
+            Thread t=new Thread(this);
+            t.start();
     } catch (IOException e) {
     	System.out.print("Error, could not connect to port 2345");
     }
@@ -75,15 +77,6 @@ public class Server implements Runnable{
 	            e.printStackTrace();
 	    }
 	}
-
-	/**
-	 * Sends command to external program
-	 * @param externalCommand
-	 */
-	public static void sendExternalCommand(String externalCommand) {
-		throw new UnsupportedOperationException();
-	}
-	
 
 	// ask pose update of all TUIOs
 	// format: CMD
