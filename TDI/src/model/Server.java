@@ -88,32 +88,41 @@ public class Server implements Runnable{
 	// ask pose update of all TUIOs
 	// format: CMD
 	// 51
-	public static void fullPose(){
+	public static void fullPose(String id)
+	{
+		sendCommand("51, "+id);
 	}
 	
 	// ask only translation update of all TUIOs
 	// format: CMD
 	// 53
-	public static void fullTrans(){
+	public static void fullTrans(String id)
+	{
+		sendCommand("53, "+id);
 	}
 	
 	// ask only rotation update of all TUIOs	
 	// format: CMD
 	// 54
-	public static void fullRot(){
+	public static void fullRot(String id)
+	{
+		sendCommand("54, "+id);
 	}
 	
 	// ask pose update of specific TUIO
 	// format: CMD, ID
 	// 61
-	public static void getPose(){
+	public static void getPose(String id)
+	{
+		sendCommand("61, "+id);
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID
 	// 63
-	public static void getTrans()
+	public static void getTrans(String id)
 	{
+		sendCommand("63, "+id);
 	}
 	
 	// ask only rotation update of specific TUIO
@@ -127,43 +136,49 @@ public class Server implements Runnable{
 	// ask resolution of playground	
 	// format: CMD
 	// 65
-	public static void getPlsize()
+	public static void getPlsize(String id)
 	{
+		sendCommand("65, "+id);
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID, float[3], float[4], ???
 	// 80
-	public static void setState()
+	public static void setState(String id)
 	{
+		sendCommand("80, "+id);
 	}
 	
 	// set/send pose of specific TUIO	
 	// format: CMD, ID, float[3], float[4]
 	// 81
-	public static void setPose()
+	public static void setPose(String id)
 	{
+		sendCommand("81, "+id);
 	}
 	
 	// set/send ext state of specific TUIO	
 	// format: CMD, ID, ???
 	// 82
-	public static void setExt()
+	public static void setExt(String id)
 	{
+		sendCommand("82, "+id);
 	}
 	
 	// set/send only translation update of specific TUIO	
 	// format: CMD, ID, float[3]
 	// 83
-	public static void setTrans()
+	public static void setTrans(String id)
 	{
+		sendCommand("83, "+id);
 	}
 	
 	// set/send only rotation update of specific TUIO	
 	// format: CMD, ID, float[4]
 	// 84
-	public static void setRot()
+	public static void setRot(String id)
 	{
+		sendCommand("84, "+id);
 	}
 
 	
