@@ -304,7 +304,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * */
 	public int getIp() 
 	{
-		return checkIp();
+		return 0;
 	}
 	
 	/**
