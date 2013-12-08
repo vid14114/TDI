@@ -28,15 +28,13 @@ public class Server implements Runnable{
 	public Server(){
 		try {
             //Created a new serversocket instance, which is bound to the port 1234
-            server = new ServerSocket(2345);
+            server = new ServerSocket(1234);
     } catch (IOException e) {
-    	System.out.print("Error, could not connect to port 2345");
+    	System.out.print("Error, could not connect to port 1234");
     }
 	}
 
-	/**
-	 * Overrides the run method of the runnable interface
-	 */
+	@Override
 	public void run() {
 		while(true){
             try{
