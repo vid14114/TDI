@@ -9,6 +9,7 @@ package model;
 public class Server implements Runnable{
 
 	/**
+	 * 
 	 * ip
 	 */
 	protected static String ip;
