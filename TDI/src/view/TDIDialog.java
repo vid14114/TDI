@@ -283,13 +283,14 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * @return int ip
 	 * @throws NumberFormatException
 	 * */
-	private int checkIp() throws NumberFormatException
+	private String checkIp() throws NumberFormatException
 	{
 		if((ip1.getText().length()==4)&&(ip2.getText().length()==4)&&(ip3.getText().length()==4)&&(ip4.getText().length()==4))
 		{
 			String full=ip1.getText()+""+ip2.getText()+""+ip3.getText()+""+ip4.getText();
-			int fullip=Integer.parseInt(full);
-			return fullip;
+			int fullip=Integer.parseInt(full); //just to ckec format
+			full=ip1.getText()+"."+ip2.getText()+"."+ip3.getText()+"."+ip4.getText();
+			return full;
 		}
 		else
 		{
