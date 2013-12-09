@@ -32,7 +32,7 @@ public class Server implements Runnable{
             Thread t=new Thread(this);
             t.start();
     } catch (IOException e) {
-    	System.out.print("Error, could not connect to port 1234");
+    	System.out.print("Error, could not connect to port 2345");
     }
 	}
 
@@ -40,10 +40,6 @@ public class Server implements Runnable{
 	public void run() {
 		while(true){
             try{
-                    Socket client = null;
-                    while(client == null || client.isClosed()){
-                           // client = server.accept();
-                    }
                     client.setKeepAlive(true);
                     ObjectInputStream read = new ObjectInputStream(client.getInputStream());
                     send = new ObjectOutputStream(client.getOutputStream());                                
@@ -68,7 +64,7 @@ public class Server implements Runnable{
 	/**
 	 * Sends the specified command
 	 */
-	public static void sendCommand(String cmd) {
+	public static void sendCommand(ACTOData cmd) {
 		try {
             send.writeObject(cmd);
 	    } catch (IOException e) {
@@ -76,21 +72,13 @@ public class Server implements Runnable{
 	    }
 	}
 
-	/**
-	 * Sends command to external program
-	 * @param externalCommand
-	 */
-	public static void sendExternalCommand(String externalCommand) {
-		throw new UnsupportedOperationException();
-	}
-	
-
 	// ask pose update of all TUIOs
 	// format: CMD
 	// 51
 	public static void fullPose()
 	{
-		sendCommand("51");
+		ACTOData a=new ACTOData(ACTOConst.WI_FULL_POSE);
+		sendCommand(a);
 	}
 	
 	// ask only translation update of all TUIOs
@@ -98,7 +86,8 @@ public class Server implements Runnable{
 	// 53
 	public static void fullTrans()
 	{
-		sendCommand("53");
+		ACTOData a=new ACTOData(ACTOConst.WI_FULL_TRANS);
+		sendCommand(a);
 	}
 	
 	// ask only rotation update of all TUIOs	
@@ -106,31 +95,35 @@ public class Server implements Runnable{
 	// 54
 	public static void fullRot()
 	{
-		sendCommand("54");
+		ACTOData a=new ACTOData(ACTOConst.WI_FULL_ROT);
+		sendCommand(a);
 	}
 	
 	// ask pose update of specific TUIO
 	// format: CMD, ID
 	// 61
-	public static void getPose(String id)
+	public static void getPose(byte id)
 	{
-		sendCommand("61, "+id);
+		ACTOData a=new ACTOData(ACTOConst.WI_GET_POSE, id);
+		sendCommand(a);
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID
 	// 63
-	public static void getTrans(String id)
+	public static void getTrans(byte id)
 	{
-		sendCommand("63, "+id);
+		ACTOData a=new ACTOData(ACTOConst.WI_GET_TRANS, id);
+		sendCommand(a);
 	}
 	
 	// ask only rotation update of specific TUIO
 	// format: CMD, ID
 	// 64
-	public static void getRot(String id)
+	public static void getRot(byte id)
 	{
-		sendCommand("64, "+id);
+		ACTOData a=new ACTOData(ACTOConst.WI_GET_ROT, id);
+		sendCommand(a);
 	}
 	
 	// ask resolution of playground	
@@ -138,47 +131,53 @@ public class Server implements Runnable{
 	// 65
 	public static void getPlsize()
 	{
-		sendCommand("65");
+		ACTOData a=new ACTOData(ACTOConst.WI_GET_PLSIZE);
+		sendCommand(a);
 	}
 	
 	// set/send state of specific TUIO
 	// format: CMD, ID, float[3], float[4], ???
 	// 80
-	public static void setState(String id, float[] trans, float[] rot)
+	public static void setState(byte id, float[] trans, float[] rot)
 	{
-		sendCommand("80, "+id+", "+trans+", "+rot);
+		ACTOData a=new ACTOData(ACTOConst.WI_SET_STATE, id, trans, rot);
+		sendCommand(a);
 	}
 	
 	// set/send pose of specific TUIO	
 	// format: CMD, ID, float[3], float[4]
 	// 81
-	public static void setPose(String id, float[] trans, float[] rot)
+	public static void setPose(byte id, float[] trans, float[] rot)
 	{
-		sendCommand("80, "+id+", "+trans+", "+rot);
+		ACTOData a=new ACTOData(ACTOConst.WI_SET_POSE, id, trans, rot);
+		sendCommand(a);
 	}
 	
 	// set/send ext state of specific TUIO	
 	// format: CMD, ID, ???
 	// 82
-	public static void setExt(String id)
+	public static void setExt(byte id)
 	{
-		sendCommand("82, "+id);
+		ACTOData a=new ACTOData(ACTOConst.WI_SET_EXT, id);
+		sendCommand(a);
 	}
 	
 	// set/send only translation update of specific TUIO	
 	// format: CMD, ID, float[3]
 	// 83
-	public static void setTrans(String id, float[] rot)
+	public static void setTrans(byte id, float[] rot)
 	{
-		sendCommand("80, "+id+", "+rot);
+		ACTOData a=new ACTOData(ACTOConst.WI_SET_TRANS, id, rot);
+		sendCommand(a);
 	}
 	
 	// set/send only rotation update of specific TUIO	
 	// format: CMD, ID, float[4]
 	// 84
-	public static void setRot(String id, float[] trans)
+	public static void setRot(byte id, float[] trans)
 	{
-		sendCommand("80, "+id+", "+trans);
+		ACTOData a=new ACTOData(ACTOConst.WI_SET_ROT, id, trans);
+		sendCommand(a);
 	}
 
 	

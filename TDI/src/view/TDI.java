@@ -7,7 +7,7 @@ public class TDI {
 	/**
 	 * The id defines which TDI this is.
 	 */
-	private int id;
+	private byte id;
 	private ArrayList<Icon> icons;
 	private Float position;
 	/**
