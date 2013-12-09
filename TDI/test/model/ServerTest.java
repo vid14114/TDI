@@ -25,7 +25,6 @@ public class ServerTest implements Runnable{
 			e.printStackTrace();
 		}
 		Server s = new Server();
-		s.sendCommand("lol");
 	}
 
 	@Override
