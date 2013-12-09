@@ -21,6 +21,7 @@ public class Server {
 	private Socket client; // we are a client, smartphone is the server
 	private static ObjectOutputStream send;
 	private static ObjectInputStream read;
+	public boolean forwarding=false; //if the inputs are forwarded to a plugin
 
 	public Server() {
 		try {
