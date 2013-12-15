@@ -301,23 +301,37 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//Checks if appropriate length
 		if((ip1.getText().length()<=3)&&(ip2.getText().length()<=3)&&(ip3.getText().length()<=3)&&(ip4.getText().length()<=3))
 		{
-			try
+			//not null check
+			if((ip1.getText().length()>0)&&(ip2.getText().length()>0)&&(ip3.getText().length()>0)&&(ip4.getText().length()>0))
 			{
-				//checks format 
-				fullIP[0] = Integer.parseInt(ip1.getText());
-				fullIP[1] = Integer.parseInt(ip2.getText());
-				fullIP[2] = Integer.parseInt(ip3.getText());
-				fullIP[3] = Integer.parseInt(ip4.getText());
-				
-				//checks ip<255
-				if(fullIP[0]<255&&fullIP[1]<255&&fullIP[2]<255&&fullIP[3]<255)
+				try
 				{
-					ip= fullIP[0]+"."+fullIP[1]+""+fullIP[2]+""+fullIP[3];
-					return ip;
+					//checks format 
+					fullIP[0] = Integer.parseInt(ip1.getText());
+					fullIP[1] = Integer.parseInt(ip2.getText());
+					fullIP[2] = Integer.parseInt(ip3.getText());
+					fullIP[3] = Integer.parseInt(ip4.getText());
+					
+					//checks ip<255
+					if((fullIP[0]<255)&&(fullIP[1]<255)&&(fullIP[2]<255)&&(fullIP[3]<255))
+					{
+						ip= fullIP[0]+"."+fullIP[1]+"."+fullIP[2]+"."+fullIP[3];
+						return ip;
+					}
+					else
+					{
+						errorMessage.setText("Number must be <255");
+						ipPanel.updateUI();
+					}
+				}
+				catch(NumberFormatException e){
+					errorMessage.setText("Please enter only numbers");
+					ipPanel.updateUI();
 				}
 			}
-			catch(NumberFormatException e){
-				errorMessage.setText("Please enter only numbers");
+			else
+			{
+				errorMessage.setText("Input must not be empty");
 				ipPanel.updateUI();
 			}
 		}
