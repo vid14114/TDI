@@ -9,7 +9,7 @@ public class TDI {
 	 */
 	private byte id;
 	private ArrayList<Icon> icons;
-	private Float position;
+	private float[] position=new float[3];
 	/**
 	 * Rotation in int
 	 */
@@ -17,12 +17,14 @@ public class TDI {
 	private int state; //MUST BE ENUM DO NOT FORGET CHANGE THIS YO MATE!!!!! TODOTODOTODOTODO
 	private boolean locked;
 
-	public Float getPosition() {
+	public float[] getPosition() {
 		return this.position;
 	}
 
-	public void setPosition(Float position) {
-		this.position = position;
+	public void setPosition(float x, float y, float z) {
+		position[0]=x;
+		position[1]=y;
+		position[2]=z;
 	}
 
 	public int getRotation() {
@@ -59,6 +61,14 @@ public class TDI {
 	 */
 	public void toggleLock() {
 		throw new UnsupportedOperationException();
+	}
+
+	public byte getId() {
+		return id;
+	}
+
+	public void setId(byte id) {
+		this.id = id;
 	}
 
 }

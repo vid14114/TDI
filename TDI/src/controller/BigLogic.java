@@ -1,6 +1,5 @@
 package controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import model.ConfigLoader;
@@ -30,7 +29,9 @@ public class BigLogic implements Runnable{
 	public static void main(String[] args) {
 		ConfigLoader cl=new ConfigLoader();
 		cl.loadIcons();
-		TDIDialog t=new TDIDialog();
+		//TDIDialog t=new TDIDialog();
+		Server s=new Server();
+		s.fullPose(tdis);
 	}
 	
 	/**
