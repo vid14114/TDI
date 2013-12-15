@@ -8,7 +8,10 @@ public class TDIDialogTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		TDIDialog t=new TDIDialog(null);
+		while(true){
+			
+		}
 	}
 
 }
