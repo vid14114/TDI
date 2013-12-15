@@ -19,7 +19,7 @@ public class TDIDirectories {
 	/**
 	 * A text file containing a list of the chosen plugins by the user
 	 */
-	public static final String TDI_PREFERENCE = TDI_HOME + "preferences.txt";
+	public static final String TDI_PREFERENCE = TDI_HOME + "/preferences.txt";
 	/**
 	 * TDI plugins directory
 	 * The program can be extended by putting installed plugins 
@@ -33,14 +33,14 @@ public class TDIDirectories {
 	/**
 	 * All program logs are written in this directory
 	 */
-	public static final String TDI_LOGS = TDI_HOME + "/logs";
+	public static final String TDI_LOGS = TDI_HOME + "/logs";	
 		
 	
 	/**
 	 * Creates all TDI directories needed.
 	 * @throws IOException 
 	 */
-	public static final void createDirectories() {
+	public static final void createDirectories() {		
 		if(new File(TDI_PREFERENCE).exists()) return;
 		new File(TDI_HOME).mkdirs();
 		try{

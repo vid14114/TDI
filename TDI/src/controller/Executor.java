@@ -17,7 +17,7 @@ import model.TDILogger;
 public final class Executor {
 	/*
 	 * Environment checking: TODO check enviroment at startup
-	 * command -v wmctrl xdg-open xfconf-query gvfs-mount xprop
+	 * command -v wmctrl xdg-open xfconf-query xprop
 	 */
 	public static final void startPlugins(String [] plugins){
 		try{
@@ -28,6 +28,7 @@ public final class Executor {
 		}
 	}
 	
+	//TODO finish	
 	public static void getStatus() throws IOException{
 		BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("command -v wmctrl xdg-open xfconf-query gvfs-mount").getInputStream()));
 	}
@@ -71,8 +72,8 @@ public final class Executor {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("xprop -root").getInputStream()));
 			String line;
 			while((line = bf.readLine()) != null) 
-				if(line.contains("_NET_ACTIVE_WINDOW(WINDOW)"))
-					wmctrlID = line.split("#")[1].trim();
+				if(line.contains("_NET_ACTIVE_WINDOW(WINDOW)") && wmctrlID == null)
+					wmctrlID = line.split("#")[1].trim().split(",")[0].replaceFirst("0x","0x0");
 		}catch(IOException e){			
 		}
 		return wmctrlID;
