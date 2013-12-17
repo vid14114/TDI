@@ -9,8 +9,6 @@ import java.util.ServiceLoader;
 
 import javax.swing.JOptionPane;
 
-import view.Plugin;
-
 public class PluginServer implements Runnable{
 
 	 private ServerSocket server;
