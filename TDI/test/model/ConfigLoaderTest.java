@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import view.Icon;
 public class ConfigLoaderTest {	
 	
@@ -30,7 +31,8 @@ public class ConfigLoaderTest {
 		 * This can then be used for the test
 		 */
 		TDIDirectories.createDirectories();
-		Runtime.getRuntime().exec(new String []{"cp","-r", System.getProperty("user.home")+"/Desktop/*",TDIDirectories.TDI_HOME+"/Desktop"});
+		new File(TDIDirectories.TDI_HOME+"/Desktop").mkdir();
+		Runtime.getRuntime().exec(new String []{"cp","-r", System.getProperty("user.home")+"/Desktop/*",TDIDirectories.TDI_HOME+"/Desktop/"});
 		deleteDesktop();
 	}
 	

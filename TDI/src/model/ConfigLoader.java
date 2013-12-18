@@ -93,7 +93,7 @@ public class ConfigLoader {
 				if((index = icons.indexOf(new Icon("Trash", null))) != -1 || (index = icons.indexOf(new Icon("Rubbish Bin", null))) != 1)
 					icons.get(index).setExecPath(new String[] { "xgd-open", "trash:///" });
 				if((index = icons.indexOf(new Icon("File System", null))) != -1)
-					icons.get(index).setExecPath(new String[] { "thunar", "/" });
+					icons.get(index).setExecPath(new String[] { "xdg-open", "/" });
 			}
 
 			{ // removable devices
