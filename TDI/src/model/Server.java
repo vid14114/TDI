@@ -16,18 +16,10 @@ import view.TDI;
 
 /**
  * Implements the runnable interface
- * 
- * RUN METHOD CALLS ADD METHOD FROM BIGLOGIC;IS MASTER, IS BIG. IS SLIGHTLY
- * SMALLER, IS NOT SO BIG.
  */
 public class Server {
-
-	/**
-	 * 
-	 * ip
-	 */
 	protected static String ip="127.0.0.1";
-	private Socket client; // we are a client, smartphone is the server
+	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
 	public boolean forwarding=false; //if the inputs are forwarded to a plugin
@@ -65,7 +57,7 @@ public class Server {
 				float q2=read.readFloat();
 				float q3=read.readFloat();
 				float q4=read.readFloat();
-				
+				// TODO interpret input
 				ack=read.readByte();
 			}
 		} catch (IOException e) {
@@ -74,7 +66,7 @@ public class Server {
 		}
 	}
 
-	public static void fullTrans() {
+	public void fullTrans() {
 		try {
 			send.writeByte(ACTOConst.WI_FULL_TRANS);
 			byte ack = 0;
@@ -88,7 +80,7 @@ public class Server {
 		}
 	}
 
-	public static void fullRot() {
+	public void fullRot() {
 		try {
 			send.writeByte(ACTOConst.WI_FULL_ROT);
 			byte ack = 0;
@@ -102,7 +94,7 @@ public class Server {
 		}
 	}
 
-	public static void getPose(byte id) {
+	public void getPose(byte id) {
 		try {
 			send.writeByte(ACTOConst.WI_GET_POSE);
 			send.writeByte(id);
@@ -117,7 +109,7 @@ public class Server {
 		}
 	}
 
-	public static void getTrans(byte id) {
+	public void getTrans(byte id) {
 		try {
 			send.writeByte(ACTOConst.WI_GET_TRANS);
 			send.writeByte(id);
@@ -132,7 +124,7 @@ public class Server {
 		}
 	}
 
-	public static void getRot(byte id) {
+	public void getRot(byte id) {
 		try {
 			send.writeByte(ACTOConst.WI_GET_ROT);
 			send.writeByte(id);
@@ -147,7 +139,7 @@ public class Server {
 		}
 	}
 
-	public static void getPlsize() {
+	public void getPlsize() {
 		try {
 			send.writeByte(ACTOConst.WI_GET_PLSIZE);
 			byte ack = 0;
@@ -162,7 +154,7 @@ public class Server {
 
 	}
 
-	public static void setPose(byte id, float[] trans, float[] rot) {
+	public void setPose(byte id, float[] trans, float[] rot) {
 		try {
 			send.writeByte(ACTOConst.WI_SET_POSE);
 			send.writeByte(id);
@@ -184,7 +176,7 @@ public class Server {
 		}
 	}
 
-	public static void setExt(byte id) { // Not yet implemented in
+	public void setExt(byte id) { // Not yet implemented in
 											// WifiTransmitter
 		try {
 			send.writeByte(ACTOConst.WI_SET_EXT);
@@ -194,10 +186,7 @@ public class Server {
 		}
 	}
 
-	// set/send only translation update of specific TUIO
-	// format: CMD, ID, float[3]
-	// 83
-	public static void setTrans(byte id, float[] trans) {
+	public void setTrans(byte id, float[] trans) {
 		try {
 			send.writeByte(ACTOConst.WI_SET_TRANS);
 			send.writeByte(id);
@@ -215,7 +204,7 @@ public class Server {
 		}
 	}
 
-	public static void setRot(byte id, float[] rot) {
+	public void setRot(byte id, float[] rot) {
 		try {
 			send.writeByte(ACTOConst.WI_SET_ROT);
 			send.writeByte(id);
@@ -234,7 +223,7 @@ public class Server {
 		}
 	}
 	
-	public static float[] quat2Deg(float w, float x, float y, float z) {
+	public float[] quat2Deg(float w, float x, float y, float z) {
 		double angle=2*Math.acos(w);
 		double s=Math.sqrt(1-w*w);
 		if(s>=0.001)
@@ -246,5 +235,4 @@ public class Server {
 		float[] ret={x,y,z};
 		return ret;
 	}
-
 }
