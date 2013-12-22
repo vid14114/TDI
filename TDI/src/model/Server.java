@@ -35,4 +35,29 @@ public class Server implements Runnable{
 		throw new UnsupportedOperationException();
 	}
 
+	// ask only translation update of specific TUIO	
+	public static byte sendWI_GET_TRANS()
+	{
+		return 63;
+	}
+	// ask only rotation update of specific TUIO
+	public static byte sendWI_GET_ROT()
+	{
+		return 64;
+	}
+	// ask resolution of playground //also answer to GET messages
+	public static byte sendWI_GET_PLSIZE()
+	{
+		return 65;
+	}
+	// set/send state of specific TUIO
+	public static byte sendWI_SET_STATE()
+	{
+		return 80;
+	}
+	
+	
+	
+	
+	
 }
