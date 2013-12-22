@@ -30,7 +30,7 @@ public class BigLogic implements Runnable{
 	public static void main(String[] args) {
 		BigLogic bl=new BigLogic();
 		ConfigLoader cl=new ConfigLoader();
-		TDIDialog t=new TDIDialog(cl.getPlugins());
+//		TDIDialog t=new TDIDialog(cl.getPlugins());
 		cl.loadIcons();		
 		Server s=new Server();
 		s.fullPose(bl.tdis);
