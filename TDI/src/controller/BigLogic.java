@@ -28,9 +28,12 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		BigLogic bl=new BigLogic();
 		ConfigLoader cl=new ConfigLoader();
-		cl.loadIcons();		
 		TDIDialog t=new TDIDialog(cl.getPlugins());
+		cl.loadIcons();		
+		Server s=new Server();
+		s.fullPose(bl.tdis);
 	}
 	
 	/**

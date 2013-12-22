@@ -62,7 +62,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	Color colorHeader=new Color(200);
 	
 	
-	public TDIDialog(String[] plugin){
+	public TDIDialog(){
         super();
         setTitle("Tangible Desktop Items"); // Must be changed
         setSize(600, 600);
@@ -283,13 +283,14 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * @return int ip
 	 * @throws NumberFormatException
 	 * */
-	private int checkIp() throws NumberFormatException
+	private String checkIp() throws NumberFormatException
 	{
 		if((ip1.getText().length()==4)&&(ip2.getText().length()==4)&&(ip3.getText().length()==4)&&(ip4.getText().length()==4))
 		{
 			String full=ip1.getText()+""+ip2.getText()+""+ip3.getText()+""+ip4.getText();
-			int fullip=Integer.parseInt(full);
-			return fullip;
+			int fullip=Integer.parseInt(full); //just to ckec format
+			full=ip1.getText()+"."+ip2.getText()+"."+ip3.getText()+"."+ip4.getText();
+			return full;
 		}
 		else
 		{
@@ -303,7 +304,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * */
 	public int getIp() 
 	{
-		return checkIp();
+		return 0;
 	}
 	
 	/**
@@ -313,10 +314,14 @@ public class TDIDialog extends JDialog implements ActionListener{
 		
 		content.removeAll();
 		Border noBorder = BorderFactory.createLineBorder(Color.cyan, 0);
+		
+		
 		String[] data = {"Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs"};
 		JList<String> myList = new JList<String>(data);
 		myList.setBackground(new Color(100));
 		myList.setForeground(new Color(-50));
+		
+		
 		JScrollPane scrollPane = new JScrollPane(myList);
 		scrollPane.setPreferredSize(new Dimension(480,520));
 		scrollPane.setBorder(noBorder);
@@ -334,6 +339,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		//pluginButton clicked
 		if(actionPerformed.getSource()==pluginButton){
 			System.out.println("Plugin");
+			onPlugin();
 		}
 		
 		//helpButton clicked
