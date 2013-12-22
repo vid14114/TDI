@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.print.attribute.standard.Finishings;
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import view.Icon;
 
 public class ProgramHandler {
