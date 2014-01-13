@@ -35,7 +35,6 @@ import javax.swing.border.Border;
 public class TDIDialog extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = -1221054153637014114L;
-	private String[] plugin;
 	private JPanel main = new JPanel();
 	private JPanel header = new JPanel();
 	private JPanel content = new JPanel();
@@ -55,6 +54,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	private JTextField ip2=new JTextField();
 	private JTextField ip3=new JTextField();
 	private JTextField ip4=new JTextField();
+	private Object pluginList[][];
 	
 	//for errorMessages
 	JTextField errorMessage = new JTextField();
@@ -67,8 +67,9 @@ public class TDIDialog extends JDialog implements ActionListener{
 	Color colorHeader=new Color(200);
 	
 	
-	public TDIDialog(String[] plugin){
+	public TDIDialog(Object pluginList[][] ){
         super();
+        this.pluginList = pluginList;
         setTitle("Tangible Desktop Items"); // Must be changed
         setSize(600, 600);
         setLocation(400, 200);
@@ -347,10 +348,10 @@ public class TDIDialog extends JDialog implements ActionListener{
 	/**
 	 * Opens the onPlugin button
 	 */
-	public void onPlugin(Object rowData[][])  {
+	public void onPlugin()  {
 		
 		content.removeAll();
-		PluginTableModel c = new PluginTableModel(rowData);
+		PluginTableModel c = new PluginTableModel(pluginList);
 		final JTable table = new JTable(c);
 //      table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 //      table.setFillsViewportHeight(true);
@@ -358,8 +359,7 @@ public class TDIDialog extends JDialog implements ActionListener{
       //Create the scroll pane and add the table to it.
       JScrollPane scrollPane = new JScrollPane(table);
       
-      content.add(scrollPane);
-		
+      	content.add(scrollPane);
 		content.setVisible(true);
 		content.updateUI();
 	}
@@ -369,9 +369,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 		
 		//pluginButton clicked
 		if(actionPerformed.getSource()==pluginButton){
-			Object rowData[][] = { { "Music", true }, { "Anilator", true }, { "PlugMeIn!", false },
-		      	      { "Bästewogibtplugin", true }, { "Plugin Nr.5", false }, };
-			onPlugin(rowData);
+			onPlugin();
 		}
 		
 		//helpButton clicked
