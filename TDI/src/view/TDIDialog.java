@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.print.attribute.standard.OrientationRequested;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.BorderFactory;
@@ -23,6 +24,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
@@ -33,7 +35,7 @@ import javax.swing.border.Border;
 public class TDIDialog extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = -1221054153637014114L;
-	private String[] plugin; //TODO change to hashmap, implement getPlugin()
+	private String[] plugin;
 	private JPanel main = new JPanel();
 	private JPanel header = new JPanel();
 	private JPanel content = new JPanel();
@@ -46,13 +48,16 @@ public class TDIDialog extends JDialog implements ActionListener{
 	private JButton connectButton = new JButton("Start");//different name
 
 	private JButton startTDI = new JButton("connect");// button to start actual program
-	private JButton startTutorial = new JButton("Tutorial");// button to start actual program
+	private JButton startTutorialButton = new JButton("Tutorial");// button to start Tutorial
 
 	//creating textbox for ip-insert
 	private JTextField ip1=new JTextField();
 	private JTextField ip2=new JTextField();
 	private JTextField ip3=new JTextField();
 	private JTextField ip4=new JTextField();
+	
+	//for errorMessages
+	JTextField errorMessage = new JTextField();
 	
 	//Panel used for onConnect ip insertion
 	private JPanel ipPanel=new JPanel(new FlowLayout());
@@ -62,7 +67,7 @@ public class TDIDialog extends JDialog implements ActionListener{
 	Color colorHeader=new Color(200);
 	
 	
-	public TDIDialog(){
+	public TDIDialog(String[] plugin){
         super();
         setTitle("Tangible Desktop Items"); // Must be changed
         setSize(600, 600);
@@ -118,41 +123,44 @@ public class TDIDialog extends JDialog implements ActionListener{
 		// clear panel
 		content.removeAll();
 		
-		JPanel helpe=new JPanel();
-		
+		JPanel helpContentPanel=new JPanel();
+		helpContentPanel.setLayout(new BoxLayout(helpContentPanel, BoxLayout.PAGE_AXIS));
 		
 		//create TextArea
-		JTextArea help=new JTextArea();
+		JTextArea helpText=new JTextArea();
 		
-		//set parameters
-		help.setText("This is some information don't care about it, its useless anyway - The End");
-		help.setEditable(false);
-		help.setBackground(colorContent);
-		help.setBounds(new Rectangle(new Dimension(500,20)));
-		help.setForeground(new Color(-50));
-		help.setBorder(null);
-		help.setLocation(50,50);
+		//set parameters for Text Area
+		helpText.setText("The first bold line creates a top-to-bottom box layout and sets it up as the layout manager for listPane. The two arguments to the BoxLayout constructor are the container that it manages and the axis along which the components will be laid out. The PAGE_AXIS constant specifies that components should be laid out in the direction that lines flow across a page as determined by the target container's ComponentOrientation property. The LINE_AXIS constant specifies that components should be laid out in the direction of a line of text as determined by the target container's ComponentOrientation property. These constants allow for internationalization, by laying out components in their container with the correct left-to-right, right-to-left or top-to-bottom orientation for the language being used.");
+		helpText.setEditable(false);
+		helpText.setBackground(colorContent);
+		helpText.setBounds(new Rectangle(new Dimension(30,40)));
+		helpText.setLineWrap(true); // line breaks
+		helpText.setAutoscrolls(true);
+		helpText.setForeground(new Color(-50));
+		helpText.setBorder(null);
+		//help.setLocation(50,50);
 		
 		//button parameters
-		startTutorial.setLocation(1, 1);
-		startTutorial.setPreferredSize(new Dimension(90,30));
-		startTutorial.addActionListener(this);
+		//startTutorial.setLocation(1, 1);
+		startTutorialButton.setPreferredSize(new Dimension(90,30));
+		startTutorialButton.addActionListener(this);
 		
-		//panel parameters
-		helpe.setVisible(true);
-		helpe.setBackground(colorContent);
-		helpe.setSize(new Dimension(500,500));
-		helpe.setLocation(0,0);
-		
+		//helpContentPanel parameters
+		helpContentPanel.setVisible(true);
+		helpContentPanel.setBackground(colorContent);
+		helpContentPanel.setSize(new Dimension(480,550));
+		//helpe.setLocation(0,100);
+			
 		//add everything
-		helpe.add(help);
-		helpe.add(startTutorial);
+		helpContentPanel.add(helpText);
+		helpContentPanel.add(Box.createRigidArea(new Dimension(450,200)));
+		helpContentPanel.add(startTutorialButton);
 		
-		content.add(helpe);
+		content.add(helpContentPanel);
 		
 		//refresh view
 		content.updateUI();
-		helpe.updateUI();
+		helpContentPanel.updateUI();
 	}
 
 	/**
@@ -164,14 +172,12 @@ public class TDIDialog extends JDialog implements ActionListener{
 		content.removeAll();
 		ipPanel.removeAll();
 		
-		//position of elements
-		int dot1X=183;
-		int dot2X=dot1X+45;
-		int dot3X=dot2X+45;
-		int dotY=240;
+		//create OverallPanel to include every component
+		JPanel OverallPanel = new JPanel();
+		OverallPanel.removeAll();
 		
-		int ipX=-37;
-		int ipY=225;
+		ipPanel.setLayout(new BoxLayout(ipPanel, BoxLayout.X_AXIS));
+		OverallPanel.setLayout(new BoxLayout(OverallPanel, BoxLayout.Y_AXIS));
 		
 		//creating none editable text area for dots x.x.x.x
 		JTextField dot1=new JTextField();
@@ -187,7 +193,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot1.setText(".");
 		dot1.setBounds(5, 5, 5, 5);
 		dot1.setEditable(false);
-		dot1.setLocation(dot1X, dotY);
 		dot1.setBackground(colorContent);
 		dot1.setForeground(new Color(-50));
 		dot1.setBorder(null);
@@ -195,7 +200,6 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot2.setText(".");
 		dot2.setBounds(5, 5, 5, 5);
 		dot2.setEditable(false);
-		dot2.setLocation(dot2X, dotY);
 		dot2.setBackground(colorContent);
 		dot2.setForeground(new Color(-50));
 		dot2.setBorder(null);
@@ -204,76 +208,83 @@ public class TDIDialog extends JDialog implements ActionListener{
 		dot3.setText(".");
 		dot3.setBounds(5, 5, 5, 5);
 		dot3.setEditable(false);
-		dot3.setLocation(dot3X, dotY);
 		dot3.setBackground(colorContent);
 		dot3.setForeground(new Color(-50));
 		dot3.setBorder(null);
 		
 		
 		ip1.setBounds(ipSize);
-		ip1.setText("0000");
-		ip1.setLocation(ipX+dot1X, ipY);
+		ip1.setText("000");
+	//	ip1.setLocation(ipX+dot1X, ipY);
 		ip1.setBackground(colorContent);
 		ip1.setForeground(new Color(-50));
 		ip1.setBorder(null);
 		
 		ip2.setBounds(ipSize);
-		ip2.setText("0000");
-		ip2.setLocation(ipX+dot2X, ipY);
+		ip2.setText("000");
 		ip2.setBackground(colorContent);
 		ip2.setForeground(new Color(-50));
 		ip2.setBorder(null);
 		
 		ip3.setBounds(ipSize);
-		ip3.setText("0000");
-		ip3.setLocation(ipX+dot3X, ipY);
+		ip3.setText("000");
 		ip3.setBackground(colorContent);
 		ip3.setForeground(new Color(-50));
 		ip3.setBorder(null);
 		
 		ip4.setBounds(ipSize);
-		ip4.setText("0000");
-		ip4.setLocation(ipX+dot3X+46, ipY);
+		ip4.setText("000");
 		ip4.setBackground(colorContent);
 		ip4.setForeground(new Color(-50));
 		ip4.setBorder(null);
 		
-		//connect button 
-		JButton con=new JButton();
-		
-		
 		//info textfiedl for user to know what to do
 		info.setBounds(new Rectangle(new Dimension(165,20)));
-		info.setText("Please enter your IP-Address");
+		info.setText("Please enter your IP-Address:");
 		info.setEditable(false);
 		info.setBackground(colorContent);
 		info.setForeground(new Color(-50));
 		info.setBorder(null);
-		info.setLocation(dot1X-35,ipY-50);
 		
 		//button location
 		startTDI.setPreferredSize(new Dimension(90,30));
-		startTDI.setLocation(100,200);
 		startTDI.addActionListener(this);
 		
-		//panel parameters
-		ipPanel.setSize(380,350);
-		ipPanel.setLocation(0,50);
+
+		// Display Error Message;
+		errorMessage.setEditable(false);
+		errorMessage.setBackground(colorContent);
+		errorMessage.setForeground(new Color(-200));
+		errorMessage.setBorder(null);
+		
+		//ipPanel parameters
 		ipPanel.setBackground(colorContent);
 		
+		//OverallPanel parameters
+		OverallPanel.setPreferredSize(new Dimension(400,400));
+		OverallPanel.setBackground(colorContent);
+		
 		//add everything to panel
-		ipPanel.add(ip1, FlowLayout.LEFT);
-		ipPanel.add(dot1, FlowLayout.CENTER);
-		ipPanel.add(ip2, FlowLayout.CENTER);
-		ipPanel.add(dot2, FlowLayout.CENTER);
-		ipPanel.add(ip3, FlowLayout.CENTER);
-		ipPanel.add(dot3, FlowLayout.CENTER);
-		ipPanel.add(ip4, FlowLayout.CENTER);	
-		ipPanel.add(startTDI, FlowLayout.RIGHT);
-		ipPanel.add(info, FlowLayout.RIGHT);
-		content.add(ipPanel);
+		ipPanel.add(info);
+		ipPanel.add(Box.createRigidArea(new Dimension(10,0)));
+		ipPanel.add(ip1);
+		ipPanel.add(dot1);
+		ipPanel.add(ip2);
+		ipPanel.add(dot2);
+		ipPanel.add(ip3);
+		ipPanel.add(dot3);
+		ipPanel.add(ip4);
+		OverallPanel.add(ipPanel, BorderLayout.CENTER);
+		OverallPanel.add(Box.createRigidArea(new Dimension(350,0)));
+		OverallPanel.add(errorMessage, BorderLayout.CENTER);
+		OverallPanel.add(Box.createRigidArea(new Dimension(100,0)));
+		OverallPanel.add(startTDI, BorderLayout.LINE_END);
+		
+		
+		content.add(OverallPanel);
 		
 		//referesh
+		OverallPanel.updateUI();
 		content.updateUI();
 		ipPanel.updateUI();
 	}
@@ -283,51 +294,71 @@ public class TDIDialog extends JDialog implements ActionListener{
 	 * @return int ip
 	 * @throws NumberFormatException
 	 * */
-	private String checkIp() throws NumberFormatException
+	private String checkIp()
 	{
-		if((ip1.getText().length()==4)&&(ip2.getText().length()==4)&&(ip3.getText().length()==4)&&(ip4.getText().length()==4))
+		int fullIP[] =new int[4];
+		String ip="1.1.1.1";
+		//Checks if appropriate length
+		if((ip1.getText().length()<=3)&&(ip2.getText().length()<=3)&&(ip3.getText().length()<=3)&&(ip4.getText().length()<=3))
 		{
-			String full=ip1.getText()+""+ip2.getText()+""+ip3.getText()+""+ip4.getText();
-			int fullip=Integer.parseInt(full); //just to ckec format
-			full=ip1.getText()+"."+ip2.getText()+"."+ip3.getText()+"."+ip4.getText();
-			return full;
+			//not null check
+			if((ip1.getText().length()>0)&&(ip2.getText().length()>0)&&(ip3.getText().length()>0)&&(ip4.getText().length()>0))
+			{
+				try
+				{
+					//checks format 
+					fullIP[0] = Integer.parseInt(ip1.getText());
+					fullIP[1] = Integer.parseInt(ip2.getText());
+					fullIP[2] = Integer.parseInt(ip3.getText());
+					fullIP[3] = Integer.parseInt(ip4.getText());
+					
+					//checks ip<255
+					if((fullIP[0]<255)&&(fullIP[1]<255)&&(fullIP[2]<255)&&(fullIP[3]<255))
+					{
+						ip= fullIP[0]+"."+fullIP[1]+"."+fullIP[2]+"."+fullIP[3];
+						return ip;
+					}
+					else
+					{
+						errorMessage.setText("Number must be <255");
+						ipPanel.updateUI();
+					}
+				}
+				catch(NumberFormatException e){
+					errorMessage.setText("Please enter only numbers");
+					ipPanel.updateUI();
+				}
+			}
+			else
+			{
+				errorMessage.setText("Input must not be empty");
+				ipPanel.updateUI();
+			}
 		}
 		else
 		{
-			throw new NumberFormatException();
+			errorMessage.setText("input only in the following format: 000.000.000.000");
+			ipPanel.updateUI();
+			return ip;
 		}
-			
-	}
-	
-	/**
-	 * returns the entered IP as integer
-	 * */
-	public int getIp() 
-	{
-		return 0;
+		return ip;
 	}
 	
 	/**
 	 * Opens the onPlugin button
 	 */
-	public void onPlugin()  {
+	public void onPlugin(Object rowData[][])  {
 		
 		content.removeAll();
-		Border noBorder = BorderFactory.createLineBorder(Color.cyan, 0);
-		
-		
-		String[] data = {"Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs","Best plugin ever yo","Spot the TDI","Reset ma everything y'all","Desktopwar TDI extension","I have the power!","I can read with my TDIs"};
-		JList<String> myList = new JList<String>(data);
-		myList.setBackground(new Color(100));
-		myList.setForeground(new Color(-50));
-		
-		
-		JScrollPane scrollPane = new JScrollPane(myList);
-		scrollPane.setPreferredSize(new Dimension(480,520));
-		scrollPane.setBorder(noBorder);
-		
-		
-		content.add(scrollPane);
+		PluginTableModel c = new PluginTableModel(rowData);
+		final JTable table = new JTable(c);
+//      table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+//      table.setFillsViewportHeight(true);
+
+      //Create the scroll pane and add the table to it.
+      JScrollPane scrollPane = new JScrollPane(table);
+      
+      content.add(scrollPane);
 		
 		content.setVisible(true);
 		content.updateUI();
@@ -338,8 +369,9 @@ public class TDIDialog extends JDialog implements ActionListener{
 		
 		//pluginButton clicked
 		if(actionPerformed.getSource()==pluginButton){
-			System.out.println("Plugin");
-			onPlugin();
+			Object rowData[][] = { { "Music", true }, { "Anilator", true }, { "PlugMeIn!", false },
+		      	      { "B�stewogibtplugin", true }, { "Plugin Nr.5", false }, };
+			onPlugin(rowData);
 		}
 		
 		//helpButton clicked
@@ -358,11 +390,14 @@ public class TDIDialog extends JDialog implements ActionListener{
 		}
 		//startTDI clicked
 		if(actionPerformed.getSource()==startTDI){
-			System.out.println("start the TDI connection");
+			System.out.println("start the TDI connection"); 
+			errorMessage.setText("");
+			content.updateUI();
+			checkIp();
 			//start Program/ BigLogic (Is Master, is big).
 		}
 		//startTutorial clicked
-		if(actionPerformed.getSource()==startTutorial){
+		if(actionPerformed.getSource()==startTutorialButton){
 			System.out.println("start Tutorial");
 			//start Tutorial
 		}

@@ -8,7 +8,7 @@ public class TDIDialogTest {
 
 	@Test
 	public void test() {
-		TDIDialog t=new TDIDialog();
+		TDIDialog t=new TDIDialog(null);
 		while(true){
 			
 		}

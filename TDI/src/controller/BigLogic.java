@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,12 +30,18 @@ public class BigLogic implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
+<<<<<<< HEAD
 		BigLogic bl=new BigLogic();
 		ConfigLoader cl=new ConfigLoader();
 		TDIDialog t=new TDIDialog(cl.getPlugins());
 		cl.loadIcons();		
 		Server s=new Server();
 		s.fullPose(bl.tdis);
+=======
+	//	ConfigLoader cl=new ConfigLoader();
+	//	cl.loadIcons();
+		TDIDialog t=new TDIDialog(null);
+>>>>>>> TDIDialog
 	}
 	
 	/**
