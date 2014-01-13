@@ -32,6 +32,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import model.PluginTableModel;
+
 public class TDIDialog extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = -1221054153637014114L;
