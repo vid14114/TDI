@@ -21,8 +21,11 @@ public class Wallpaper {
 	/**
 	 * Marks the area of the tdi with the specified color.
 	 * 
-	 * As parameters we give the array of ids (for the tdis) and the hashtable of selected icons.
-	 * @param colorAreas The TDIs with their icons, and we will generate the markedArea
+	 * As parameters we give the array of ids (for the tdis) and the hashtable
+	 * of selected icons.
+	 * 
+	 * @param colorAreas
+	 *            The TDIs with their icons, and we will generate the markedArea
 	 */
 	public static void markArea(TDI[] colorAreas) {
 		throw new UnsupportedOperationException();

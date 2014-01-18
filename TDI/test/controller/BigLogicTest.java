@@ -1,6 +1,6 @@
 package controller;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -10,10 +10,9 @@ public class BigLogicTest {
 	public void test() {
 		fail("Not yet implemented");
 	}
-	
-	public void getAllIcons()
-	{
-		
+
+	public void getAllIcons() {
+
 	}
 
 }

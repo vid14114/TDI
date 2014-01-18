@@ -19,26 +19,26 @@ import view.Icon;
 public class ProgramHandlerTest {
 
 	@Test
-	public void testAll(){
+	public void testAll() {
 		testOpenProgram();
-		//Should be three
+		// Should be three
 		Assert.assertEquals(3, ProgramHandler.getRunningPrograms().size());
 		testCloseProgram();
 		testRestoreLeft();
-		testRestoreRight();	
+		testRestoreRight();
 		testRestoreRight();
 		testRestoreLeft();
 		testRestoreRight();
 		testMinimizeAllPrograms();
 		testRestoreAllPrograms();
 		testMinimizeAllPrograms();
-		testRestoreAllPrograms();		
+		testRestoreAllPrograms();
 		Assert.assertEquals(2, ProgramHandler.getRunningPrograms().size());
 		testCloseProgram();
 		Assert.assertEquals(0, ProgramHandler.getRunningPrograms().size());
-		testRestoreLeft();				
+		testRestoreLeft();
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link controller.ProgramHandler#openProgram(java.lang.String[])}.

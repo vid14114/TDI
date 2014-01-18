@@ -12,6 +12,7 @@ public class ProgramHandler {
 	 * An arraylist of wmctrlIDs of the programs currently running
 	 */
 	private static ArrayList<ProgramInfo> runningPrograms = new ArrayList<>();
+
 	/**
 	 * @return the runningPrograms
 	 */
@@ -48,12 +49,14 @@ public class ProgramHandler {
 							&& !runningPrograms.contains(new ProgramInfo(line
 									.split(" ")[0], false)))
 						wmctrlID = line.split(" ")[0];
-					else if(line.split(" ")[1].equals("-1") && 
-							line.contains(icon.getName()) && 
-							runningPrograms.contains(new ProgramInfo(line.split(" ")[0], false)))
+					else if (line.split(" ")[1].equals("-1")
+							&& line.contains(icon.getName())
+							&& runningPrograms.contains(new ProgramInfo(line
+									.split(" ")[0], false)))
 						wmctrlID = line.split(" ")[0];
 			}
-			runningPrograms.add(0, new ProgramInfo(wmctrlID, icon.getName(), false));
+			runningPrograms.add(0, new ProgramInfo(wmctrlID, icon.getName(),
+					false));
 		} catch (IOException e) {
 		}
 	}
@@ -62,13 +65,14 @@ public class ProgramHandler {
 	 * Closes the program and removes it from the programs ArrayList
 	 */
 	public static void closeProgram() {
-		if(runningPrograms.size() == 0) return;
+		if (runningPrograms.size() == 0)
+			return;
 		try {
 			String wmctrlID = getFocusedWindow();
 			Runtime.getRuntime().exec(
-					new String[] { "wmctrl", "-i", "-c",
-							wmctrlID});
-			while(runningPrograms.remove(new ProgramInfo(wmctrlID, false)));
+					new String[] { "wmctrl", "-i", "-c", wmctrlID });
+			while (runningPrograms.remove(new ProgramInfo(wmctrlID, false)))
+				;
 		} catch (IOException e) {
 		}
 	}
@@ -89,8 +93,9 @@ public class ProgramHandler {
 	}
 
 	public static void restoreRight() {
-		if(runningPrograms.size() == 0) return;
-		
+		if (runningPrograms.size() == 0)
+			return;
+
 		desktopMode = false;
 		// Put the first element to the back
 		{
@@ -108,8 +113,9 @@ public class ProgramHandler {
 	}
 
 	public static void restoreLeft() {
-		if(runningPrograms.size() == 0) return;
-		
+		if (runningPrograms.size() == 0)
+			return;
+
 		desktopMode = false;
 		// Put the last element to the from
 		{
@@ -131,8 +137,9 @@ public class ProgramHandler {
 	 * The user wnts to minimize the focusedWindow
 	 */
 	public static void minimize() {
-		if(runningPrograms.size() == 0) return;
-		
+		if (runningPrograms.size() == 0)
+			return;
+
 		try {
 			if (runningPrograms.size() == 1)
 				minimizeAllPrograms();
@@ -140,11 +147,12 @@ public class ProgramHandler {
 				minimizeAllPrograms();
 			else {
 				String wmctrlID = getFocusedWindow();
-				Runtime.getRuntime()
-						.exec(new String[] { "wmctrl", "-i", "-r",
-								wmctrlID, "-b", "add,below" });
+				Runtime.getRuntime().exec(
+						new String[] { "wmctrl", "-i", "-r", wmctrlID, "-b",
+								"add,below" });
 				runningPrograms.get(
-						runningPrograms.indexOf(new ProgramInfo(wmctrlID, false)))
+						runningPrograms
+								.indexOf(new ProgramInfo(wmctrlID, false)))
 						.setMinimized(true);
 			}
 		} catch (IOException e) {
@@ -156,18 +164,19 @@ public class ProgramHandler {
 	}
 
 	public static void moveProgram(int x, int y, int widht, int heigth) {
-		if(runningPrograms.size() == 0) return;
+		if (runningPrograms.size() == 0)
+			return;
 		try {
 			Runtime.getRuntime().exec(
-					new String[] { "wmctrl", "-i", "-r",
-							getFocusedWindow(), "-e",
+					new String[] { "wmctrl", "-i", "-r", getFocusedWindow(),
+							"-e",
 							"0," + x + "," + y + "," + widht + "," + heigth });
 		} catch (IOException e) {
 			System.err
 					.println("An error happened while trying to move or resize a program");
 		}
 	}
-	
+
 	/**
 	 * Minimizes all programs
 	 */
@@ -203,10 +212,11 @@ public class ProgramHandler {
 	 * Toggles between maximize and non-maximized
 	 */
 	public static void toggleMaximization() {
-		if(runningPrograms.size() == 0) return;
+		if (runningPrograms.size() == 0)
+			return;
 		try {
-			Runtime.getRuntime().exec(
-					new String[] { "wmctrl", "-i", "-r",
+			Runtime.getRuntime()
+					.exec(new String[] { "wmctrl", "-i", "-r",
 							getFocusedWindow(), "-b", "toggle",
 							"maximized_vert", "maximized_horz" });
 		} catch (IOException e) {
@@ -226,54 +236,57 @@ public class ProgramHandler {
 				nonMinimized++;
 		return nonMinimized;
 	}
-	
 
-	private static String getFocusedWindow(){
+	private static String getFocusedWindow() {
 		String wmctrlID = "0000";
 		int i = 0;
-		while(!runningPrograms.contains(new ProgramInfo(wmctrlID, false))){			
+		while (!runningPrograms.contains(new ProgramInfo(wmctrlID, false))) {
 			wmctrlID = Executor.getFocusedWindow();
-			if(++i == 300){
+			if (++i == 300) {
 				verifyWindows();
 				i = 0;
 			}
 		}
 		return wmctrlID;
 	}
-	
-	private static void verifyWindows(){
+
+	private static void verifyWindows() {
 		try {
-			for(int i = 0; i < runningPrograms.size(); i++){
+			for (int i = 0; i < runningPrograms.size(); i++) {
 				BufferedReader br = Executor.getRunningTasks();
 				String line;
-				//Here we check whether the process has being registered under the right name 
-				while((line = br.readLine()) != null)
-					if(line.contains(runningPrograms.get(i).getWmctrlID())) break;
+				// Here we check whether the process has being registered under
+				// the right name
+				while ((line = br.readLine()) != null)
+					if (line.contains(runningPrograms.get(i).getWmctrlID()))
+						break;
 				br = Executor.getRunningTasks();
-				//If not, we reassign the wmctrlID to the window
-				while((line = br.readLine()) != null)
-					if(line.contains(runningPrograms.get(i).getWindowName())){
+				// If not, we reassign the wmctrlID to the window
+				while ((line = br.readLine()) != null)
+					if (line.contains(runningPrograms.get(i).getWindowName())) {
 						runningPrograms.get(i).setWmctrlID(line.split(" ")[0]);
 						break;
 					}
 			}
-		}
-		catch (IOException e) {
-			//TODO error message
+		} catch (IOException e) {
+			// TODO error message
 		}
 	}
 }
 
 class ProgramInfo {
 	String wmctrlID;
+
 	/**
-	 * @param wmctrlID the wmctrlID to set
+	 * @param wmctrlID
+	 *            the wmctrlID to set
 	 */
 	public void setWmctrlID(String wmctrlID) {
 		this.wmctrlID = wmctrlID;
 	}
 
 	String windowName;
+
 	/**
 	 * @return the windowName
 	 */
@@ -282,7 +295,8 @@ class ProgramInfo {
 	}
 
 	/**
-	 * @param windowName the windowName to set
+	 * @param windowName
+	 *            the windowName to set
 	 */
 	public void setWindowName(String windowName) {
 		this.windowName = windowName;
@@ -304,6 +318,7 @@ class ProgramInfo {
 		this.minimized = minimized;
 		this.windowName = windowName;
 	}
+
 	/**
 	 * @return the exec
 	 */
@@ -334,8 +349,8 @@ class ProgramInfo {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
-			return false;		
-		if (wmctrlID.equals(((ProgramInfo)obj).getWmctrlID()))
+			return false;
+		if (wmctrlID.equals(((ProgramInfo) obj).getWmctrlID()))
 			return true;
 		return false;
 	}

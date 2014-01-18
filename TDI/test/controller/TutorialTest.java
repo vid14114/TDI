@@ -1,7 +1,5 @@
 package controller;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class TutorialTest {
@@ -9,13 +7,14 @@ public class TutorialTest {
 	public void test() {
 		showMessageTest();
 		generateTutorialTest();
-		 checkResultsTest();
-		 showStatusTest();
-		 
+		checkResultsTest();
+		showStatusTest();
+
 	}
-	@Test	
+
+	@Test
 	public void showMessageTest() {
-		
+
 	}
 
 	/**
@@ -23,7 +22,7 @@ public class TutorialTest {
 	 */
 	@Test
 	public void generateTutorialTest() {
-		
+
 	}
 
 	/**
@@ -31,7 +30,7 @@ public class TutorialTest {
 	 */
 	@Test
 	public void checkResultsTest() {
-		
+
 	}
 
 	/**
@@ -39,7 +38,7 @@ public class TutorialTest {
 	 */
 	@Test
 	public void showStatusTest() {
-		
+
 	}
 
 }
