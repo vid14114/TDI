@@ -177,8 +177,8 @@ public class ConfigLoader {
 	 * 
 	 * @return An array of plugins
 	 */
-	public HashMap<String, Boolean> getPlugins() {		
-		HashMap<String, Boolean> plugins = new HashMap<>();
+	public Object[][] getPlugins() {		
+		Object[][] plugins = null;
 		try {
 			BufferedReader preference = new BufferedReader(new FileReader(TDIDirectories.TDI_PREFERENCE));
 			String line;
@@ -192,12 +192,18 @@ public class ConfigLoader {
 				}
 			})));								
 			
-			while ((line = preference.readLine()) != null){
-				plugins.put(line, true);
-				jars.remove(line);
+			plugins = new Object[jars.size()][2];
+			int i = 0;
+			for(;(line = preference.readLine()) != null && jars.remove(line); i++){
+				plugins[i][0] = line;
+				plugins[i][1] = true;				
 			}
-			for(String jar : jars)
-				plugins.put(jar, false);			
+			
+			for(String jar : jars){
+				plugins[i][0] = jar;
+				plugins[i][1] = false;
+				i++;
+			}
 			preference.close();								
 		} catch (FileNotFoundException e) {
 			TDILogger.logError("TDI preference text file not found, creating");
