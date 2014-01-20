@@ -21,9 +21,9 @@ public class TDIDirectories {
 	 */
 	public static final String TDI_PREFERENCE = TDI_HOME + "/preferences.txt";
 	/**
-	 * TDI plugins directory
-	 * The program can be extended by putting installed plugins 
-	 * which must end with .jar and be runnable with the java .jar command
+	 * TDI plugins directory The program can be extended by putting installed
+	 * plugins which must end with .jar and be runnable with the java .jar
+	 * command
 	 */
 	public static final String TDI_PLUGINS = TDI_HOME + "/plugins";
 	/**
@@ -33,21 +33,24 @@ public class TDIDirectories {
 	/**
 	 * All program logs are written in this directory
 	 */
-	public static final String TDI_LOGS = TDI_HOME + "/logs";	
-		
-	
+	public static final String TDI_LOGS = TDI_HOME + "/logs";
+
 	/**
 	 * Creates all TDI directories needed.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
-	public static final void createDirectories() {		
-		if(new File(TDI_PREFERENCE).exists()) return;
+	public static final void createDirectories() {
+		if (new File(TDI_PREFERENCE).exists())
+			return;
 		new File(TDI_HOME).mkdirs();
-		try{
+		try {
 			new File(TDI_PREFERENCE).createNewFile();
-		}catch(IOException e){TDILogger.logError("Couldn't create the TDI preference text file");}
+		} catch (IOException e) {
+			TDILogger.logError("Couldn't create the TDI preference text file");
+		}
 		new File(TDI_PLUGINS).mkdirs();
-		new File(TDI_RESTORE).mkdirs();		
-//		new File(TDI_LOGS).mkdirs();
+		new File(TDI_RESTORE).mkdirs();
+		// new File(TDI_LOGS).mkdirs();
 	}
 }

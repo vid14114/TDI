@@ -20,13 +20,15 @@ public class Icon {
 	 * Command to mount removable drives
 	 */
 	private String[] mountCmd;
+
 	/**
 	 * Constructor of icon
+	 * 
 	 * @param name
 	 * @param execPath
 	 * @param position
 	 */
-	public Icon(String name, Point position){
+	public Icon(String name, Point position) {
 		setName(name);
 		setPosition(position);
 	}
@@ -36,7 +38,7 @@ public class Icon {
 	}
 
 	public void setName(String name) {
-		if(name == null)
+		if (name == null)
 			return;
 		this.name = name;
 	}
@@ -54,13 +56,15 @@ public class Icon {
 	 */
 	public Point getPosition() {
 		return position;
-	} 
+	}
 
 	/**
-	 * @param position the position to set
+	 * @param position
+	 *            the position to set
 	 */
 	public void setPosition(Point position) {
-		if(position == null) return;
+		if (position == null)
+			return;
 		this.position = position;
 	}
 
@@ -73,7 +77,9 @@ public class Icon {
 	}
 
 	/**
-	 * The equals method only checks whether the name is equal all other attributes are ignored
+	 * The equals method only checks whether the name is equal all other
+	 * attributes are ignored
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -87,5 +93,5 @@ public class Icon {
 			return false;
 		return true;
 	}
-	
+
 }

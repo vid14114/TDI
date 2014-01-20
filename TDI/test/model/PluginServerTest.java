@@ -6,17 +6,16 @@ package model;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author abideen
- *
+ * 
  */
 public class PluginServerTest {
 	PluginServer ps = new PluginServer();
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -30,7 +29,7 @@ public class PluginServerTest {
 	 */
 	@Test
 	public void testSendMessage() {
-		new Thread(new Runnable() {				
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -60,10 +59,10 @@ public class PluginServerTest {
 					e.printStackTrace();
 				}
 			}
-		}).start();	
+		}).start();
 		System.out.print("waiting");
-		ps.sendMessage(new byte[]{2, 3, 100, 23});
-		ps.sendMessage(new byte[]{4, 10, 23});
+		ps.sendMessage(new byte[] { 2, 3, 100, 23 });
+		ps.sendMessage(new byte[] { 4, 10, 23 });
 	}
 
 }

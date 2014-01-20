@@ -12,11 +12,12 @@ import view.TDI;
  * Implements the runnable interface
  */
 public class Server {
-	protected static String ip="127.0.0.1";
+	protected static String ip = "127.0.0.1";
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
-	public boolean forwarding=false; //if the inputs are forwarded to a plugin
+	public boolean forwarding = false; // if the inputs are forwarded to a
+										// plugin
 
 	public Server() {
 		try {
@@ -31,121 +32,30 @@ public class Server {
 		}
 	}
 
-	public void fullPose(ArrayList<TDI> tdis) {
+	public ArrayList<TDI> fullPose() {
+		ArrayList<TDI> tdis = new ArrayList<TDI>();
 		try {
 			send.writeByte(ACTOConst.WI_FULL_POSE);
 			read.readByte();
-			byte ack=0;
-			while(ack!=ACTOConst.WI_ACK)
-			{
-				byte id=read.readByte();
-				int i=0;
-				for(; i<tdis.size(); i++)
-					if(tdis.get(i).getId()==id)
-						break;
-				float x=read.readFloat();
-				float y=read.readFloat();
-				float z=read.readFloat();
-				tdis.get(i).setPosition(x,y,z);
-				float q1=read.readFloat();
-				float q2=read.readFloat();
-				float q3=read.readFloat();
-				float q4=read.readFloat();
-				// TODO interpret input
-				ack=read.readByte();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void fullTrans() {
-		try {
-			send.writeByte(ACTOConst.WI_FULL_TRANS);
 			byte ack = 0;
+			ack = read.readByte();
 			while (ack != ACTOConst.WI_ACK) {
+				float x = read.readFloat();
+				float y = read.readFloat();
+				float z = read.readFloat();
+				float q1 = read.readFloat();
+				float q2 = read.readFloat();
+				float q3 = read.readFloat();
+				float q4 = read.readFloat();
+				float rot = quat2Deg(q1, q2, q3, q4)[0];
+				TDI t = new TDI(ack, x, y, z, rot);
+				tdis.add(t);
 				ack = read.readByte();
-				// TODO handle input
 			}
+			return tdis;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
-	}
-
-	public void fullRot() {
-		try {
-			send.writeByte(ACTOConst.WI_FULL_ROT);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void getPose(byte id) {
-		try {
-			send.writeByte(ACTOConst.WI_GET_POSE);
-			send.writeByte(id);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void getTrans(byte id) {
-		try {
-			send.writeByte(ACTOConst.WI_GET_TRANS);
-			send.writeByte(id);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void getRot(byte id) {
-		try {
-			send.writeByte(ACTOConst.WI_GET_ROT);
-			send.writeByte(id);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void getPlsize() {
-		try {
-			send.writeByte(ACTOConst.WI_GET_PLSIZE);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	public void setPose(byte id, float[] trans, float[] rot) {
@@ -171,7 +81,7 @@ public class Server {
 	}
 
 	public void setExt(byte id) { // Not yet implemented in
-											// WifiTransmitter
+									// WifiTransmitter
 		try {
 			send.writeByte(ACTOConst.WI_SET_EXT);
 		} catch (IOException e) {
@@ -188,10 +98,7 @@ public class Server {
 			send.writeFloat(trans[1]);
 			send.writeFloat(trans[2]);
 			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
+			ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -207,26 +114,22 @@ public class Server {
 			send.writeFloat(rot[2]);
 			send.writeFloat(rot[3]);
 			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
+			ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public float[] quat2Deg(float w, float x, float y, float z) {
-		double angle=2*Math.acos(w);
-		double s=Math.sqrt(1-w*w);
-		if(s>=0.001)
-		{
-			x/=s;
-			y/=s;
-			z/=s;
+		double angle = 2 * Math.acos(w);
+		double s = Math.sqrt(1 - w * w);
+		if (s >= 0.001) {
+			x /= s;
+			y /= s;
+			z /= s;
 		}
-		float[] ret={x,y,z};
+		float[] ret = { x, y, z };
 		return ret;
 	}
 }

@@ -9,12 +9,9 @@ public class TDI {
 	 */
 	private byte id;
 	private ArrayList<Icon> icons;
-	private float[] position=new float[3];
-	/**
-	 * Rotation in int
-	 */
-	private int rotation; 
-	private int state; //MUST BE ENUM DO NOT FORGET CHANGE THIS YO MATE!!!!! TODOTODOTODOTODO
+	private float[] position = new float[3];
+	private float rotation;
+	private int state;
 	private boolean locked;
 
 	public float[] getPosition() {
@@ -22,12 +19,12 @@ public class TDI {
 	}
 
 	public void setPosition(float x, float y, float z) {
-		position[0]=x;
-		position[1]=y;
-		position[2]=z;
+		position[0] = x;
+		position[1] = y;
+		position[2] = z;
 	}
 
-	public int getRotation() {
+	public float getRotation() {
 		return this.rotation;
 	}
 
@@ -38,21 +35,26 @@ public class TDI {
 	/**
 	 * Constructor for TDI.
 	 */
-	public TDI() {
-		throw new UnsupportedOperationException();
+
+	public TDI(byte id, float posX, float posY, float posZ, float rot) {
+		this.id = id;
+		position[0] = posX;
+		position[1] = posY;
+		position[2] = posZ;
+		rotation = rot;
 	}
 
 	/**
 	 * Selects next icon
 	 */
-	public void rotateClockwise() {
+	public void rotateClockwise() { // TODO after startup routine
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Selects previous icon
 	 */
-	public void rotateCounter() {
+	public void rotateCounter() { // TODO after startup routine
 		throw new UnsupportedOperationException();
 	}
 
@@ -60,7 +62,7 @@ public class TDI {
 	 * Toggles the lock state
 	 */
 	public void toggleLock() {
-		throw new UnsupportedOperationException();
+		locked = !locked;
 	}
 
 	public byte getId() {
@@ -70,5 +72,4 @@ public class TDI {
 	public void setId(byte id) {
 		this.id = id;
 	}
-
 }

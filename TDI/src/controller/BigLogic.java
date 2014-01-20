@@ -1,22 +1,22 @@
 package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import model.ConfigLoader;
 import model.Server;
-import view.*;
+import view.TDI;
+import view.Wallpaper;
 
 /**
  * Implements Runnable interface. Is Master, is big.
  */
-public class BigLogic implements Runnable{
+public class BigLogic implements Runnable {
 
 	private ArrayList<TDI> tdis;
 	private Server server;
-	
+
 	/**
 	 * The wallpaper
 	 */
@@ -24,19 +24,18 @@ public class BigLogic implements Runnable{
 	/**
 	 * The commands that have to be executed.
 	 */
-	private ArrayList<String> commands;
+	private ArrayList<TDI> commands;
+
 	/**
 	 * Lädt Dialog und Desktop configuration
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BigLogic bl=new BigLogic();
-		ConfigLoader cl=new ConfigLoader();
-		cl.loadIcons();		
-		Server s=new Server();
-		s.fullPose(bl.tdis);
+		BigLogic bl = new BigLogic();
+
 	}
-	
+
 	/**
 	 * The run method that is overriden
 	 */
@@ -51,5 +50,22 @@ public class BigLogic implements Runnable{
 	public void addCommand(String command) {
 		throw new UnsupportedOperationException();
 	}
-	
+
+	public BigLogic() {
+		ConfigLoader cl = new ConfigLoader();
+		cl.loadIcons();
+		final Server s = new Server();
+		Timer mo = new Timer();
+		mo.scheduleAtFixedRate(new TimerTask() {
+
+			@Override
+			public void run() {
+				ArrayList<TDI> tdis = s.fullPose();
+				for (TDI t : tdis) {
+					commands.add(t);
+				}
+			}
+		}, 0, 500);
+	}
+
 }

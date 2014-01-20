@@ -22,8 +22,8 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-import controller.Executor;
 import view.Icon;
+import controller.Executor;
 
 /**
  * Make a backup of wallpaper. Load the configs.
@@ -65,7 +65,7 @@ public class ConfigLoader {
 					Iterator<String> iterator = Files.readAllLines(
 							file.toPath(), StandardCharsets.UTF_8).iterator();
 					// Parses through file until "Name=" is found
-					while (iterator.hasNext()) 
+					while (iterator.hasNext())
 						// we still need this for association with iconsRc
 						if ((line = iterator.next()).contains("Name=")) {
 							icons.get(
@@ -75,7 +75,7 @@ public class ConfigLoader {
 											new String[] { "xdg-open",
 													file.getPath() });
 							break;
-						}					
+						}
 				}
 			}
 
@@ -88,19 +88,24 @@ public class ConfigLoader {
 			// default icons (home & trash & file system)
 			{// TODO when exception happens, method is skipped --> find solution
 				int index;
-				if((index = icons.indexOf(new Icon("Home",null))) != -1 )
-					icons.get(index).setExecPath(new String[] { "xdg-open", "~" });
-				if((index = icons.indexOf(new Icon("Trash", null))) != -1 || (index = icons.indexOf(new Icon("Rubbish Bin", null))) != 1)
-					icons.get(index).setExecPath(new String[] { "xgd-open", "trash:///" });
-				if((index = icons.indexOf(new Icon("File System", null))) != -1)
-					icons.get(index).setExecPath(new String[] { "xdg-open", "/" });
+				if ((index = icons.indexOf(new Icon("Home", null))) != -1)
+					icons.get(index).setExecPath(
+							new String[] { "xdg-open", "~" });
+				if ((index = icons.indexOf(new Icon("Trash", null))) != -1
+						|| (index = icons
+								.indexOf(new Icon("Rubbish Bin", null))) != 1)
+					icons.get(index).setExecPath(
+							new String[] { "xgd-open", "trash:///" });
+				if ((index = icons.indexOf(new Icon("File System", null))) != -1)
+					icons.get(index).setExecPath(
+							new String[] { "xdg-open", "/" });
 			}
 
 			{ // removable devices
 				ArrayList<String> mounts = new ArrayList<String>();
 				BufferedReader gvfsMount = Executor.getRemovableDiskList();
-				line=null;
-				for (int i = 0 ; (line=gvfsMount.readLine())!=null;) {
+				line = null;
+				for (int i = 0; (line = gvfsMount.readLine()) != null;) {
 					if (line.contains("Volume("))
 						mounts.add(line.split(":")[1].substring(1));
 					if (line.contains("unix-device")) {
@@ -113,11 +118,11 @@ public class ConfigLoader {
 							}
 					}
 				}
-				for(int i=0; i<mounts.size(); i++)
-				{
-					String[] s=mounts.get(i).split("#");
-					String[] mountCmd={"udisks", "--mount", s[1]};
-					icons.get(icons.indexOf(new Icon(s[0],null))).setMountCmd(mountCmd);
+				for (int i = 0; i < mounts.size(); i++) {
+					String[] s = mounts.get(i).split("#");
+					String[] mountCmd = { "udisks", "--mount", s[1] };
+					icons.get(icons.indexOf(new Icon(s[0], null))).setMountCmd(
+							mountCmd);
 				}
 			}
 			icons.clone();
@@ -177,34 +182,36 @@ public class ConfigLoader {
 	 * 
 	 * @return An array of plugins
 	 */
-	public Object[][] getPlugins() {		
+	public Object[][] getPlugins() {
 		Object[][] plugins = null;
 		try {
-			BufferedReader preference = new BufferedReader(new FileReader(TDIDirectories.TDI_PREFERENCE));
+			BufferedReader preference = new BufferedReader(new FileReader(
+					TDIDirectories.TDI_PREFERENCE));
 			String line;
-			ArrayList<String> jars = new ArrayList<String>(Arrays.asList(
-				new File(TDIDirectories.TDI_PLUGINS).list(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					if (name.endsWith(".jar"))
-						return true;
-					return false;
-				}
-			})));								
-			
+			ArrayList<String> jars = new ArrayList<String>(
+					Arrays.asList(new File(TDIDirectories.TDI_PLUGINS)
+							.list(new FilenameFilter() {
+								@Override
+								public boolean accept(File dir, String name) {
+									if (name.endsWith(".jar"))
+										return true;
+									return false;
+								}
+							})));
+
 			plugins = new Object[jars.size()][2];
 			int i = 0;
-			for(;(line = preference.readLine()) != null && jars.remove(line); i++){
+			for (; (line = preference.readLine()) != null && jars.remove(line); i++) {
 				plugins[i][0] = line;
-				plugins[i][1] = true;				
+				plugins[i][1] = true;
 			}
-			
-			for(String jar : jars){
+
+			for (String jar : jars) {
 				plugins[i][0] = jar;
 				plugins[i][1] = false;
 				i++;
 			}
-			preference.close();								
+			preference.close();
 		} catch (FileNotFoundException e) {
 			TDILogger.logError("TDI preference text file not found, creating");
 			TDIDirectories.createDirectories();
@@ -214,17 +221,19 @@ public class ConfigLoader {
 		return plugins;
 	}
 
-	public void savePlugins(String[] plugins){
+	public void savePlugins(String[] plugins) {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(TDIDirectories.TDI_PREFERENCE, false));
-			for(String line : plugins)
-				bw.write(line+"\n");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(
+					TDIDirectories.TDI_PREFERENCE, false));
+			for (String line : plugins)
+				bw.write(line + "\n");
 			bw.close();
 		} catch (IOException e) {
-			TDILogger.logError("Error writing to "+TDIDirectories.TDI_PREFERENCE);
+			TDILogger.logError("Error writing to "
+					+ TDIDirectories.TDI_PREFERENCE);
 		}
 	}
-	
+
 	/**
 	 * Searches for the last modified file in the xfce4 desktop folder
 	 * 
@@ -253,7 +262,8 @@ public class ConfigLoader {
 		return f.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				return (file.isDirectory() || !file.getName().contains(
-						".desktop") && !file.getName().startsWith("."));
+						".desktop")
+						&& !file.getName().startsWith("."));
 			}
 		});
 	}
@@ -270,8 +280,8 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * This method is implemented for testing purposes 
-	 * TODO Delete
+	 * This method is implemented for testing purposes TODO Delete
+	 * 
 	 * @param iconsRc
 	 *            the iconsRc to set
 	 */
