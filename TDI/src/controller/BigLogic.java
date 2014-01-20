@@ -16,6 +16,7 @@ public class BigLogic implements Runnable{
 
 	private ArrayList<TDI> tdis;
 	private Server server;
+	private ProgramHandler programHandler;
 	
 	/**
 	 * The wallpaper
@@ -41,7 +42,46 @@ public class BigLogic implements Runnable{
 	 * The run method that is overriden
 	 */
 	public void run() {
-		throw new UnsupportedOperationException();
+		
+	/*	while (true) {
+			   if(commands.size() > 0){
+			   
+				   if(!tdis.contains(commands.get(0)));
+			   
+				   else{
+			     
+					   TDI temp = tdis.get(tdis.indexOf(commands.get(o)));
+			     
+					   if(temp.getPosition() != commands.get(0).getPosition()){
+			      
+						   
+					   }
+			    
+					   if(temp.getRotation() != commands.get(0).getRotation()){
+			      
+						   if(programHandler.getRunningPrograms().isEmpty())
+						   {
+							   if(commands.get(0).getRotation()>0) // rotate clockwise
+							   {
+								   if(temp.getLocked()==false)
+								   {
+									   temp.setRotation(commands.get(0).getRotation());//new rotation
+									   temp.rotateClockwise();								   
+								   }
+							   }
+							   else //rotate counterwise
+							   {
+								   temp.setRotation(commands.get(0).getRotation());//new rotation
+								   temp.rotateCounter();	
+							   }
+						   }
+					   }
+			  
+				   }
+			  
+			   }
+		}*/
+	
 	}
 
 	/**
