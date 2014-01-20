@@ -62,7 +62,7 @@ public class ProgramHandler {
 	 * Closes the program and removes it from the programs ArrayList
 	 */
 	public static void closeProgram() {
-		if(runningPrograms.size() == 0) return;
+		if(runningPrograms.size() == 0 || desktopMode) return;
 		try {
 			String wmctrlID = getFocusedWindow();
 			Runtime.getRuntime().exec(
@@ -131,7 +131,7 @@ public class ProgramHandler {
 	 * The user wnts to minimize the focusedWindow
 	 */
 	public static void minimize() {
-		if(runningPrograms.size() == 0) return;
+		if(runningPrograms.size() == 0 || desktopMode) return;
 		
 		try {
 			if (runningPrograms.size() == 1)
@@ -203,7 +203,7 @@ public class ProgramHandler {
 	 * Toggles between maximize and non-maximized
 	 */
 	public static void toggleMaximization() {
-		if(runningPrograms.size() == 0) return;
+		if(runningPrograms.size() == 0 || desktopMode) return;
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "wmctrl", "-i", "-r",
@@ -227,7 +227,6 @@ public class ProgramHandler {
 		return nonMinimized;
 	}
 	
-
 	private static String getFocusedWindow(){
 		String wmctrlID = "0000";
 		int i = 0;
@@ -261,6 +260,13 @@ public class ProgramHandler {
 		catch (IOException e) {
 			//TODO error message
 		}
+	}
+
+	/**
+	 * @return the desktopMode
+	 */
+	public static boolean isDesktopMode() {
+		return desktopMode;
 	}
 }
 
