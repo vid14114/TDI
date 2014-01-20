@@ -48,15 +48,22 @@ public final class Executor {
 		return background;
 	}
 	
-	public static final String executeProgram(String[] exec){
+	/**
+	 * Executes the given exec
+	 * @param exec The path of the program
+	 */
+	public static final void executeProgram(String[] exec){
 		try {
 			Runtime.getRuntime().exec(exec);			
 		} catch (IOException e) {
 			TDILogger.logError("Unable to start program, is xdg-open installed?");
 		}
-		return exec[1];
 	}
 	
+	/**
+	 * Returns a screenshot in form of a bufferedreader of all the opened windows
+	 * @return a bufferedreader of running tasks
+	 */
 	public static final BufferedReader getRunningTasks(){
 		try {
 			return new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("wmctrl -lp").getInputStream()));
@@ -66,6 +73,10 @@ public final class Executor {
 		return null;
 	}
 	
+	/**
+	 * Get the currently focues window
+	 * @return the wmctrlID of the focused window
+	 */
 	public static final String getFocusedWindow(){
 		String wmctrlID = null;
 		try{
