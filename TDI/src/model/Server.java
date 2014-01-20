@@ -47,7 +47,7 @@ public class Server {
 				float q2 = read.readFloat();
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
-				float rot = quat2Deg(q1, q2, q3, q4)[0];
+				float[] rot = quat2Deg(q1, q2, q3, q4);
 				TDI t = new TDI(ack, x, y, z, rot);
 				tdis.add(t);
 				ack = read.readByte();

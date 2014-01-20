@@ -10,7 +10,7 @@ public class TDI {
 	private byte id;
 	private ArrayList<Icon> icons;
 	private float[] position = new float[3];
-	private float rotation;
+	private float[] rotation = new float[3];
 	private int state;
 	private boolean locked;
 
@@ -24,11 +24,11 @@ public class TDI {
 		position[2] = z;
 	}
 
-	public float getRotation() {
-		return this.rotation;
+	public float[] getRotation() {
+		return rotation;
 	}
 
-	public void setRotation(int rotation) {
+	public void setRotation(float[] rotation) {
 		this.rotation = rotation;
 	}
 
@@ -36,7 +36,7 @@ public class TDI {
 	 * Constructor for TDI.
 	 */
 
-	public TDI(byte id, float posX, float posY, float posZ, float rot) {
+	public TDI(byte id, float posX, float posY, float posZ, float[] rot) {
 		this.id = id;
 		position[0] = posX;
 		position[1] = posY;
