@@ -3,9 +3,12 @@ package controller;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import model.ConfigLoader;
+import model.PluginTableModel;
 import model.Server;
 import view.TDI;
+import view.TDIDialog;
 import view.Wallpaper;
 
 /**
@@ -30,9 +33,10 @@ public class BigLogic implements Runnable {
 	 * 
 	 * @param args
 	 */
+	
 	public static void main(String[] args) {
+		new TDIDialog(new TDIActionListener(new PluginTableModel(new ConfigLoader().getPlugins())));
 		BigLogic bl = new BigLogic();
-
 	}
 
 	/**
@@ -67,7 +71,7 @@ public class BigLogic implements Runnable {
 							   }
 						   }
 					   } */
-					if (tdi.getTilt() != command.getTilt()) {
+					/*if (tdi.getTilt() != command.getTilt()) {
 						if (tdi.getTilt()[0] != command.getTilt()[0]) 
 							ProgramHandler.toggleMaximization();
 						if (tdi.getTilt()[1] != command.getTilt()[1]) 
@@ -79,7 +83,7 @@ public class BigLogic implements Runnable {
 						}
 						if (tdi.getTilt()[3] != command.getTilt()[3])							
 							ProgramHandler.closeProgram();
-					}
+					}*/
 				}
 			}
 		}

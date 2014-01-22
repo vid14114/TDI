@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import controller.TDIActionListener;
 import model.PluginTableModel;
 
 public class TDIDialog extends JDialog implements ActionListener {
@@ -45,7 +46,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 	private JTextField ip2 = new JTextField();
 	private JTextField ip3 = new JTextField();
 	private JTextField ip4 = new JTextField();
-	private Object pluginList[][];
+	private TDIActionListener tdiActionListener;
 
 	// for errorMessages
 	JTextField errorMessage = new JTextField();
@@ -57,9 +58,9 @@ public class TDIDialog extends JDialog implements ActionListener {
 	Color colorContent = new Color(100);
 	Color colorHeader = new Color(200);
 
-	public TDIDialog(Object pluginList[][]) {
+	public TDIDialog(TDIActionListener tdiActionListener) {
 		super();
-		this.pluginList = pluginList;
+		this.tdiActionListener = tdiActionListener;
 		setTitle("Tangible Desktop Items"); // Must be changed
 		setSize(600, 600);
 		setLocation(400, 200);
@@ -89,9 +90,9 @@ public class TDIDialog extends JDialog implements ActionListener {
 		connectButton.setPreferredSize(new Dimension(90, 30));
 
 		pluginButton.addActionListener(this);
-		restoreButton.addActionListener(this);
+		restoreButton.addActionListener(tdiActionListener);
 		helpButton.addActionListener(this);
-		connectButton.addActionListener(this);
+		connectButton.addActionListener(tdiActionListener);
 
 		// Buttons added to options panel
 		options.add(pluginButton);
@@ -135,7 +136,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 		// button parameters
 		// startTutorial.setLocation(1, 1);
 		startTutorialButton.setPreferredSize(new Dimension(90, 30));
-		startTutorialButton.addActionListener(this);
+		startTutorialButton.addActionListener(tdiActionListener);
 
 		// helpContentPanel parameters
 		helpContentPanel.setVisible(true);
@@ -335,8 +336,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 	public void onPlugin() {
 
 		content.removeAll();
-		PluginTableModel c = new PluginTableModel(pluginList);
-		final JTable table = new JTable(c);
+		final JTable table = new JTable(tdiActionListener.getPluginTableModel());
 		// table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		// table.setFillsViewportHeight(true);
 
