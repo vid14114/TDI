@@ -32,7 +32,6 @@ public class BigLogic implements Runnable {
 	 */
 	public static void main(String[] args) {
 		BigLogic bl = new BigLogic();
-
 	}
 
 	/**
@@ -67,17 +66,17 @@ public class BigLogic implements Runnable {
 							   }
 						   }
 					   } */
-					if (tdi.getTilt() != command.getTilt()) {
-						if (tdi.getTilt()[0] != command.getTilt()[0]) 
+					if (tdi.getRotation() != command.getRotation()) {
+						if (tdi.getRotation()[0] != command.getRotation()[0]) 
 							ProgramHandler.toggleMaximization();
-						if (tdi.getTilt()[1] != command.getTilt()[1]) 
+						if (tdi.getRotation()[1] != command.getRotation()[1]) 
 							tdi.toggleLock();
-						if (tdi.getTilt()[2] != command.getTilt()[2]) {
+						if (tdi.getRotation()[2] != command.getRotation()[2]) {
 							ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons
 							if(ProgramHandler.isDesktopMode()); //Go to icons
 							else ;//GO to location of window								
 						}
-						if (tdi.getTilt()[3] != command.getTilt()[3])							
+						if (tdi.getRotation()[3] != command.getRotation()[3])							
 							ProgramHandler.closeProgram();
 					}
 				}
