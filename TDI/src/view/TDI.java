@@ -73,6 +73,7 @@ public class TDI {
 	public void setId(byte id) {
 		this.id = id;
 	}
+
 	@Override
 	public String toString() {
 		return "TDI [id=" + id + ", icons=" + icons + ", position="

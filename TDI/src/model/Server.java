@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-
+import toxi.geom.Quaternion;
 import view.TDI;
 
 /**
@@ -41,9 +41,9 @@ public class Server {
 		try {
 			byte tmp;
 			send.writeByte(ACTOConst.WI_FULL_POSE);
-			byte wi_msg=read.readByte();
+			byte wi_msg = read.readByte();
 			push.unread(wi_msg);
-			while((tmp=read.readByte()) == wi_msg) {
+			while ((tmp = read.readByte()) == wi_msg) {
 				byte id = read.readByte();
 				float x = read.readFloat();
 				float y = read.readFloat();
@@ -52,8 +52,8 @@ public class Server {
 				float q2 = read.readFloat();
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
-				float[] rot = quat2Deg(q1, q2, q3, q4);
-				TDI t = new TDI(id, x, y, z, rot);
+				Quaternion q = new Quaternion(q1, q2, q3, q4);
+				TDI t = new TDI(id, x, y, z, q.toAxisAngle());
 				tdis.add(t);
 			}
 			push.unread(tmp);
@@ -62,6 +62,7 @@ public class Server {
 			return null;
 		}
 	}
+
 	public void setPose(byte id, float[] trans, float[] rot) {
 		try {
 			send.writeByte(ACTOConst.WI_SET_POSE);
@@ -106,30 +107,19 @@ public class Server {
 	}
 
 	public void setRot(byte id, float[] rot) {
+		Quaternion q = Quaternion.createFromEuler(rot[0], rot[1], rot[2]);
 		try {
 			send.writeByte(ACTOConst.WI_SET_ROT);
 			send.writeByte(id);
-			send.writeFloat(rot[0]);
-			send.writeFloat(rot[1]);
-			send.writeFloat(rot[2]);
-			send.writeFloat(rot[3]);
+			send.writeFloat(q.w);
+			send.writeFloat(q.x);
+			send.writeFloat(q.y);
+			send.writeFloat(q.z);
 			byte ack = 0;
 			ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public float[] quat2Deg(float w, float x, float y, float z) {
-		double angle = 2 * Math.acos(w);
-		double s = Math.sqrt(1 - w * w);
-		if (s >= 0.001) {
-			x /= s;
-			y /= s;
-			z /= s;
-		}
-		float[] ret = { x, y, z };
-		return ret;
 	}
 }
