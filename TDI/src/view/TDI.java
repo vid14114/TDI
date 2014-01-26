@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TDI {
 
@@ -71,5 +72,12 @@ public class TDI {
 
 	public void setId(byte id) {
 		this.id = id;
+	}
+	@Override
+	public String toString() {
+		return "TDI [id=" + id + ", icons=" + icons + ", position="
+				+ Arrays.toString(position) + ", rotation="
+				+ Arrays.toString(rotation) + ", state=" + state + ", locked="
+				+ locked + "]";
 	}
 }

@@ -32,7 +32,6 @@ public class BigLogic implements Runnable {
 	 */
 	public static void main(String[] args) {
 		BigLogic bl = new BigLogic();
-
 	}
 
 	/**
@@ -105,6 +104,7 @@ public class BigLogic implements Runnable {
 				ArrayList<TDI> tdis = s.fullPose();
 				for (TDI t : tdis) {
 					commands.add(t);
+					System.out.println(t.toString());
 				}
 			}
 		}, 0, 500);

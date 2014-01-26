@@ -1,8 +1,10 @@
 package model;
 
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PushbackInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -12,10 +14,11 @@ import view.TDI;
  * Implements the runnable interface
  */
 public class Server {
-	protected static String ip = "127.0.0.1";
+	protected static String ip = "192.168.1.36";
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
+	private static PushbackInputStream push;
 	public boolean forwarding = false; // if the inputs are forwarded to a
 										// plugin
 
@@ -26,6 +29,7 @@ public class Server {
 			client.setKeepAlive(true);
 			send = new DataOutputStream(client.getOutputStream());
 			read = new DataInputStream(client.getInputStream());
+			push = new PushbackInputStream(read);
 		} catch (IOException e) {
 			System.out.print("Error, could not connect to port 12435 ");
 			e.printStackTrace();
@@ -35,11 +39,12 @@ public class Server {
 	public ArrayList<TDI> fullPose() {
 		ArrayList<TDI> tdis = new ArrayList<TDI>();
 		try {
+			byte tmp;
 			send.writeByte(ACTOConst.WI_FULL_POSE);
-			read.readByte();
-			byte ack = 0;
-			ack = read.readByte();
-			while (ack != ACTOConst.WI_ACK) {
+			byte wi_msg=read.readByte();
+			push.unread(wi_msg);
+			while((tmp=read.readByte()) == wi_msg) {
+				byte id = read.readByte();
 				float x = read.readFloat();
 				float y = read.readFloat();
 				float z = read.readFloat();
@@ -48,16 +53,15 @@ public class Server {
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
 				float[] rot = quat2Deg(q1, q2, q3, q4);
-				TDI t = new TDI(ack, x, y, z, rot);
+				TDI t = new TDI(id, x, y, z, rot);
 				tdis.add(t);
-				ack = read.readByte();
 			}
+			push.unread(tmp);
 			return tdis;
 		} catch (IOException e) {
 			return null;
 		}
 	}
-
 	public void setPose(byte id, float[] trans, float[] rot) {
 		try {
 			send.writeByte(ACTOConst.WI_SET_POSE);
@@ -69,11 +73,7 @@ public class Server {
 			send.writeFloat(rot[1]);
 			send.writeFloat(rot[2]);
 			send.writeFloat(rot[3]);
-			byte ack = 0;
-			while (ack != ACTOConst.WI_ACK) {
-				ack = read.readByte();
-				// TODO handle input
-			}
+			byte ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
