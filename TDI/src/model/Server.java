@@ -20,7 +20,6 @@ public class Server {
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
-	private static PushbackInputStream push;
 	public boolean forwarding = false; // if the inputs are forwarded to a
 										// plugin
 
@@ -31,7 +30,6 @@ public class Server {
 			client.setKeepAlive(true);
 			send = new DataOutputStream(client.getOutputStream());
 			read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
-			push = new PushbackInputStream(read, 1);
 		} catch (IOException e) {
 			System.out.print("Error, could not connect to port 12435 ");
 			e.printStackTrace();
@@ -41,13 +39,12 @@ public class Server {
 	public ArrayList<TDI> fullPose() {
 		ArrayList<TDI> tdis = new ArrayList<TDI>();
 		try {
-			byte tmp;
 			send.writeByte(ACTOConst.WI_FULL_POSE);
 			byte ack=read.readByte();
 			read.mark(9);
 			byte wi_msg = read.readByte();
 			read.reset();
-			while ((tmp = read.readByte()) == wi_msg) {
+			while (read.available()>0 && read.readByte() == wi_msg) {
 				byte id = read.readByte();
 				float x = read.readFloat();
 				float y = read.readFloat();
@@ -56,8 +53,9 @@ public class Server {
 				float q2 = read.readFloat();
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
-				Quaternion q = new Quaternion(q1, q2, q3, q4);
-				TDI t = new TDI(id, x, y, z, q.toAxisAngle());
+				Quaternion q=new Quaternion(q1, q2, q3, q4);
+				float[] rot=quat2Euler(q.w, q.x, q.y, q.z);
+				TDI t = new TDI(id, x, y, z, rot);
 				tdis.add(t);
 				read.mark(9);
 			}
@@ -126,5 +124,35 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public float[] quat2Euler(float w, float x, float y, float z)
+	{
+		double heading, attitude, bank;
+		double sqw = w*w;
+	    double sqx = x*x;
+	    double sqy = y*y;
+	    double sqz = z*z;
+		double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
+		double test = x*y + z*w;
+		if (test > 0.499*unit) { // singularity at north pole
+			heading = 2 * Math.atan2(x,w);
+			attitude = Math.PI/2;
+			bank = 0;
+			float[] ret={(float) heading, (float) attitude, (float) bank};
+			return ret;
+		}
+		if (test < -0.499*unit) { // singularity at south pole
+			heading = -2 * Math.atan2(x,w);
+			attitude = -Math.PI/2;
+			bank = 0;
+			float[] ret={(float) heading, (float) attitude, (float) bank};
+			return ret;
+		}
+	    heading = Math.atan2(2*y*w-2*x*z , sqx - sqy - sqz + sqw);
+		attitude = Math.asin(2*test/unit);
+		bank = Math.atan2(2*x*w-2*y*z , -sqx + sqy - sqz + sqw);
+		float[] ret={(float) heading, (float) attitude, (float) bank};
+		return ret;
 	}
 }

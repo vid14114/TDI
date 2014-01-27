@@ -23,11 +23,11 @@ public class ServerTest implements Runnable {
 	private DataOutputStream dos = null;
 	boolean listening = true;
 	byte id = 0;
-	float[] rot = { 0, 0, 0 };
+	float[] rot = { 0, 90, 360 };
 	TDI t1 = new TDI(id, 10, 100, 0, rot);
 
 	@Test
-	public void test() throws InterruptedException {
+	public void test() {
 		new Thread(new Runnable() {
 
 			@Override
@@ -61,11 +61,11 @@ public class ServerTest implements Runnable {
 			}
 		}).start();
 		Server s = new Server();
-		ArrayList<TDI> t = s.fullPose();
-		System.out.println(t.get(0).toString());
-		Assert.assertEquals(t1.getId(), t.get(0).getId());
-		Assert.assertEquals(t1.getPosition(), t.get(0).getPosition());
-		Assert.assertEquals(t1.getRotation(), t.get(0).getRotation());
+			ArrayList<TDI> t = s.fullPose();
+			System.out.println(t.get(0).toString());
+			Assert.assertEquals(t1.getId(), t.get(0).getId());
+			Assert.assertArrayEquals(t1.getPosition(), t.get(0).getPosition(), 0f);
+			Assert.assertArrayEquals(t1.getRotation(), t.get(0).getRotation(), 0f);
 	}
 
 	@Override
