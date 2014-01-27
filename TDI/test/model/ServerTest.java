@@ -1,7 +1,5 @@
 package model;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,9 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import junit.framework.Assert;
 import toxi.geom.Quaternion;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import view.TDI;
@@ -29,42 +27,50 @@ public class ServerTest implements Runnable {
 	TDI t1 = new TDI(id, 10, 100, 0, rot);
 
 	@Test
-	public void test() {
+	public void test() throws InterruptedException {
+		new Thread(new Runnable() {
 
-		try {
-			wifiTrans = new ServerSocket(12435);
-			client = wifiTrans.accept();
-			dos = new DataOutputStream(client.getOutputStream());
-			dis = new DataInputStream(client.getInputStream());
+			@Override
+			public void run() {
+				try {
+					wifiTrans = new ServerSocket(12435);
+					client = wifiTrans.accept();
+					dos = new DataOutputStream(client.getOutputStream());
+					dis = new DataInputStream(client.getInputStream());
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		while (listening) {
-			byte input;
-			try {
-				input = dis.readByte();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				break;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				while (listening) {
+					byte input;
+					try {
+						input = dis.readByte();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						break;
+					}
+					switch (input) {
+					case ACTOConst.WI_FULL_POSE:
+						sendFullPose();
+						break;
+					}
+					break;
+				}
 			}
-			switch (input) {
-			case ACTOConst.WI_FULL_POSE:
-				sendFullPose();
-				break;
-			}
-		}
+		}).start();
+		Server s = new Server();
+		ArrayList<TDI> t = s.fullPose();
+		System.out.println(t.get(0).toString());
+		Assert.assertEquals(t1.getId(), t.get(0).getId());
+		Assert.assertEquals(t1.getPosition(), t.get(0).getPosition());
+		Assert.assertEquals(t1.getRotation(), t.get(0).getRotation());
 	}
 
 	@Override
 	public void run() {
-		Server s = new Server();
-		ArrayList<TDI> t = s.fullPose();
-		Assert.assertEquals(t1.getId(), t.get(0).getId());
-		Assert.assertEquals(t1.getPosition(), t.get(0).getPosition());
-		Assert.assertEquals(t1.getRotation(), t.get(0).getRotation());
+		
 	}
 
 	public void sendFullPose() {
@@ -87,5 +93,4 @@ public class ServerTest implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
 }

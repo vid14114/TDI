@@ -1,5 +1,6 @@
 package model;
 
+import java.io.BufferedInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+
 import toxi.geom.Quaternion;
 import view.TDI;
 
@@ -14,7 +16,7 @@ import view.TDI;
  * Implements the runnable interface
  */
 public class Server {
-	protected static String ip = "192.168.1.36";
+	protected static String ip = "127.0.0.1";
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
@@ -28,8 +30,8 @@ public class Server {
 			client = new Socket(ip, 12435);
 			client.setKeepAlive(true);
 			send = new DataOutputStream(client.getOutputStream());
-			read = new DataInputStream(client.getInputStream());
-			push = new PushbackInputStream(read);
+			read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
+			push = new PushbackInputStream(read, 1);
 		} catch (IOException e) {
 			System.out.print("Error, could not connect to port 12435 ");
 			e.printStackTrace();
@@ -41,8 +43,10 @@ public class Server {
 		try {
 			byte tmp;
 			send.writeByte(ACTOConst.WI_FULL_POSE);
+			byte ack=read.readByte();
+			read.mark(9);
 			byte wi_msg = read.readByte();
-			push.unread(wi_msg);
+			read.reset();
 			while ((tmp = read.readByte()) == wi_msg) {
 				byte id = read.readByte();
 				float x = read.readFloat();
@@ -55,8 +59,9 @@ public class Server {
 				Quaternion q = new Quaternion(q1, q2, q3, q4);
 				TDI t = new TDI(id, x, y, z, q.toAxisAngle());
 				tdis.add(t);
+				read.mark(9);
 			}
-			push.unread(tmp);
+			read.reset();
 			return tdis;
 		} catch (IOException e) {
 			return null;
