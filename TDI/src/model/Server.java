@@ -1,17 +1,13 @@
 package model;
 
 import java.io.BufferedInputStream;
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import org.apache.commons.math3.complex.Quaternion;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import view.TDI;
@@ -109,8 +105,7 @@ public class Server {
 			send.writeFloat(trans[0]);
 			send.writeFloat(trans[1]);
 			send.writeFloat(trans[2]);
-			byte ack = 0;
-			ack = read.readByte();
+			byte ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -118,16 +113,16 @@ public class Server {
 	}
 
 	public void setRot(byte id, float[] rot) {
-		Quaternion q = Quaternion.createFromEuler(rot[0], rot[1], rot[2]);
+		Vector3D v=new Vector3D(rot[0], rot[1], rot[2]);
+		Quaternion q=new Quaternion(v.toArray());
 		try {
 			send.writeByte(ACTOConst.WI_SET_ROT);
 			send.writeByte(id);
-			send.writeFloat(q.w);
-			send.writeFloat(q.x);
-			send.writeFloat(q.y);
-			send.writeFloat(q.z);
-			byte ack = 0;
-			ack = read.readByte();
+			send.writeFloat((float) q.getQ0());
+			send.writeFloat((float) q.getQ1());
+			send.writeFloat((float) q.getQ2());
+			send.writeFloat((float) q.getQ3());
+			byte ack = read.readByte();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
