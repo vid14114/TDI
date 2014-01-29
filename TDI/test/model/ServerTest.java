@@ -7,8 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import toxi.geom.Quaternion;
-
+import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class ServerTest implements Runnable {
 	private DataOutputStream dos = null;
 	boolean listening = true;
 	byte id = 0;
-	float[] rot = { 0, 90, 360 };
+	float[] rot = { 1, 2, 4 };
 	TDI t1 = new TDI(id, 10, 100, 0, rot);
 
 	@Test
@@ -62,6 +63,7 @@ public class ServerTest implements Runnable {
 		}).start();
 		Server s = new Server();
 			ArrayList<TDI> t = s.fullPose();
+			System.out.println(t1.toString());
 			System.out.println(t.get(0).toString());
 			Assert.assertEquals(t1.getId(), t.get(0).getId());
 			Assert.assertArrayEquals(t1.getPosition(), t.get(0).getPosition(), 0f);
@@ -81,12 +83,12 @@ public class ServerTest implements Runnable {
 			dos.writeFloat(t1.getPosition()[0]);
 			dos.writeFloat(t1.getPosition()[1]);
 			dos.writeFloat(t1.getPosition()[2]);
-			Quaternion q1 = Quaternion.createFromEuler(t1.getRotation()[0],
-					t1.getRotation()[1], t1.getRotation()[2]);
-			dos.writeFloat(q1.w);
-			dos.writeFloat(q1.x);
-			dos.writeFloat(q1.y);
-			dos.writeFloat(q1.z);
+			Vector3D v=new Vector3D(t1.getRotation()[0], t1.getRotation()[1], t1.getRotation()[2]);
+			Quaternion q=new Quaternion(v.toArray());
+			dos.writeFloat((float) q.getQ0());
+			dos.writeFloat((float) q.getQ1());
+			dos.writeFloat((float) q.getQ2());
+			dos.writeFloat((float) q.getQ3());
 			listening = false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

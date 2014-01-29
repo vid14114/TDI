@@ -9,7 +9,11 @@ import java.io.PushbackInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import toxi.geom.Quaternion;
+import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import view.TDI;
 
 /**
@@ -53,8 +57,12 @@ public class Server {
 				float q2 = read.readFloat();
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
-				Quaternion q=new Quaternion(q1, q2, q3, q4);
-				float[] rot=quat2Euler(q.w, q.x, q.y, q.z);
+				Quaternion q=new Quaternion(q1,q2,q3,q4);
+				double[] angles=q.getVectorPart();
+				float[] rot=new float[3];
+				rot[0]=(float) angles[0];
+				rot[1]=(float) angles[1];
+				rot[2]=(float) angles[2];
 				TDI t = new TDI(id, x, y, z, rot);
 				tdis.add(t);
 				read.mark(9);
@@ -124,35 +132,5 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public float[] quat2Euler(float w, float x, float y, float z)
-	{
-		double heading, attitude, bank;
-		double sqw = w*w;
-	    double sqx = x*x;
-	    double sqy = y*y;
-	    double sqz = z*z;
-		double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
-		double test = x*y + z*w;
-		if (test > 0.499*unit) { // singularity at north pole
-			heading = 2 * Math.atan2(x,w);
-			attitude = Math.PI/2;
-			bank = 0;
-			float[] ret={(float) heading, (float) attitude, (float) bank};
-			return ret;
-		}
-		if (test < -0.499*unit) { // singularity at south pole
-			heading = -2 * Math.atan2(x,w);
-			attitude = -Math.PI/2;
-			bank = 0;
-			float[] ret={(float) heading, (float) attitude, (float) bank};
-			return ret;
-		}
-	    heading = Math.atan2(2*y*w-2*x*z , sqx - sqy - sqz + sqw);
-		attitude = Math.asin(2*test/unit);
-		bank = Math.atan2(2*x*w-2*y*z , -sqx + sqy - sqz + sqw);
-		float[] ret={(float) heading, (float) attitude, (float) bank};
-		return ret;
 	}
 }
