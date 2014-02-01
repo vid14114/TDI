@@ -8,14 +8,15 @@ public class Wallpaper {
 	/**
 	 * The image of the wallpaper
 	 */
-	private static BufferedImage background;
+	private BufferedImage background;
 	/**
-	 * The resolution as a point yo.
-	 */
-	private static Point resolution;
-
-	public void setBackground(BufferedImage background) {
+	 * The block size of each icon
+	 */	
+	private int blockSize;
+	
+	public Wallpaper(BufferedImage background, int blocksize){
 		this.background = background;
+		this.setBlockSize(blocksize);
 	}
 
 	/**
@@ -29,6 +30,12 @@ public class Wallpaper {
 	 */
 	public static void markArea(TDI[] colorAreas) {
 		throw new UnsupportedOperationException();
+	}
+	/**
+	 * @param the size of icon block
+	 */
+	public void setBlockSize(int blockSize) {
+		this.blockSize = blockSize;
 	}
 
 }

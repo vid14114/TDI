@@ -177,44 +177,4 @@ public class ConfigLoaderTest {
 		Assert.assertEquals(4, trues);
 	}
 
-	// @Test
-	// public void testScreenSize(){
-	// ConfigLoader cf = new ConfigLoader();
-	// try {
-	// Runtime.getRuntime().exec(new String[] {"xrandr","-s","1366x768"});
-	// Thread.sleep(2000);
-	// Runtime.getRuntime().exec(new String[] {"xfdesktop","--reload"});
-	// Thread.sleep(2000);
-	// Assert.assertEquals(new Point(1366, 768), cf.loadScreensize());
-	// //Change to 1360x768
-	// Runtime.getRuntime().exec(new String[] {"xrandr","-s","1360x768"});
-	// Thread.sleep(2000);
-	// Runtime.getRuntime().exec(new String[] {"xfdesktop","--reload"});
-	// Thread.sleep(2000);
-	// Assert.assertEquals(new Point(1360, 768), cf.loadScreensize());
-	// //Change to 1024x768
-	// Runtime.getRuntime().exec(new String[] {"xrandr","-s","1028x768"});
-	// Thread.sleep(2000);
-	// Runtime.getRuntime().exec(new String[] {"xfdesktop","--reload"});
-	// Thread.sleep(2000);
-	// Assert.assertEquals(new Point(1024, 768), cf.loadScreensize());
-	// //
-	// Runtime.getRuntime().exec(new String[] {"xrandr","-s","800x600"});
-	// Thread.sleep(2000);
-	// Runtime.getRuntime().exec(new String[] {"xfdesktop","--reload"});
-	// Thread.sleep(2000);
-	// Assert.assertEquals(new Point(800, 600), cf.loadScreensize());
-	// //Change
-	// Runtime.getRuntime().exec(new String[] {"xrandr","-s","1366x768"});
-	// Thread.sleep(2000);
-	// Runtime.getRuntime().exec(new String[] {"xfdesktop","--reload"});
-	// Thread.sleep(2000);
-	// Assert.assertEquals(new Point(1366, 768), cf.loadScreensize());
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 }
