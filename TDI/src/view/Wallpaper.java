@@ -14,6 +14,14 @@ public class Wallpaper {
 	 */
 	private static Point resolution;
 
+	public static Point getResolution() {
+		return resolution;
+	}
+
+	public void setResolution(Point resolution) {
+		Wallpaper.resolution = resolution;
+	}
+
 	public void setBackground(BufferedImage background) {
 		this.background = background;
 	}

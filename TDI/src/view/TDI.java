@@ -2,6 +2,7 @@ package view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TDI {
 
@@ -10,6 +11,14 @@ public class TDI {
 	 */
 	private byte id;
 	private ArrayList<Icon> icons;
+	public ArrayList<Icon> getIcons() {
+		return icons;
+	}
+
+	public void setIcons(List<Icon> icons) {
+		this.icons = (ArrayList<Icon>) icons;
+	}
+
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
 	private int state;
