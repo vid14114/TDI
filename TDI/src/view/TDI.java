@@ -11,13 +11,25 @@ public class TDI {
 	private ArrayList<Icon> icons;
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
-	private int state;
+	private enum state{inapp,desktop,taskbar,window};
 	private boolean locked;
 
 	public float[] getPosition() {
 		return this.position;
 	}
 
+	public String getState()
+	{
+		return "";
+	}
+	public void setState(String state)
+	{
+		//this.state = state;
+	}
+	public boolean getLocked()
+	{
+		return locked;
+	}
 	public void setPosition(float x, float y, float z) {
 		position[0] = x;
 		position[1] = y;
@@ -31,7 +43,6 @@ public class TDI {
 	public void setRotation(float[] rotation) {
 		this.rotation = rotation;
 	}
-
 	/**
 	 * Constructor for TDI.
 	 */
@@ -71,5 +82,9 @@ public class TDI {
 
 	public void setId(byte id) {
 		this.id = id;
+	}
+	public ArrayList<Icon> getIcons()
+	{
+		return icons;
 	}
 }
