@@ -46,8 +46,9 @@ public class BigLogic implements Runnable {
 					TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
 					TDI command = commands.get(0);
 					float[] movParam = new float[3];
+					TDI windFocused=null;
 					if (tdi.getPosition() != command.getPosition()) { //CASE POSITION
-						if (tdi.getPosition()[0] != command.getPosition()[0]) // x Axis changed
+						if (tdi.getPosition()[0] != command.getPosition()[0] || tdi.getPosition()[1] != command.getPosition()[1]) // if x or y axis changed
 						{
 							//SZENARIO A DM
 							if(tdi.getState()=="desktop") // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
@@ -89,7 +90,6 @@ public class BigLogic implements Runnable {
 									}
 									else // neue pos außerhalb der taskbar
 									{
-										TDI windFocused=null;
 										for(TDI t: tdis) // find out if any other TDI has focused a window
 										{
 											if(t.getState()=="window")
@@ -97,8 +97,10 @@ public class BigLogic implements Runnable {
 										}
 										if(windFocused != null) 
 										{
-											if(true)
+											if(StartScaleMode(tdi,windFocused))
 											{
+												tdi.setIsScale(true);
+												windFocused.setIsScale(true);
 												// fokusiertes TDI in nähe des aktuellen
 												// start counter 
 												// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
@@ -110,6 +112,7 @@ public class BigLogic implements Runnable {
 											tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
 										}
 									}
+									
 								}
 								else
 								{
@@ -122,12 +125,19 @@ public class BigLogic implements Runnable {
 							}
 							if(tdi.getState()=="window")
 							{
-								if(true)
+								for(TDI t: tdis) // find out taskbar tdi
+								{
+									if(t.getState()=="taskbar")
+										windFocused=t;
+								}
+								if(StartScaleMode(windFocused, tdi))
 								{
 									// taskbar TDI in nähe des aktuellen
 									// start counter 
 									// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
 									// window TDI repräsentiert obere rechte Ecke des Fensters
+									tdi.setIsScale(true);
+									windFocused.setIsScale(true);
 								}
 								else
 								{
@@ -143,26 +153,151 @@ public class BigLogic implements Runnable {
 					}					
 					//neigen
 					if (tdi.getRotation() != command.getRotation()) {
-						//TDI nach oben neigen TM
-						if (tdi.getRotation()[0] != command.getRotation()[0]) 
-							ProgramHandler.toggleMaximization();
-						//TDI nach rechts neigen DM
-						if (tdi.getRotation()[1] != command.getRotation()[1]) 
-							tdi.toggleLock();
-						// ?
-						if (tdi.getRotation()[2] != command.getRotation()[2]) {
-							// TDI nach unten neigen TM
-							ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons 
-							//TDI nach rechts neigen DM ??
-							if(ProgramHandler.isDesktopMode()); //Go to icons
-							else ;//GO to location of window								
+						if(tdi.getState()=="desktop")
+						{
+							//nach rechts neigen 
+							if (tdi.getRotation()[1] != command.getRotation()[1]) 
+								tdi.toggleLock();
+								//tdi.toggleGreenLED();
 						}
-						//TDI nach links/rechts neigen TM
-						if (tdi.getRotation()[3] != command.getRotation()[3])							
-							ProgramHandler.closeProgram();
-						// missing: TDI nach links neigen DM; ..
-						// => sollte es nicht eher getPosition statt getRotation sein?
+						if(tdi.getState()=="window")
+						{
+							//nach oben
+							if (tdi.getRotation()[0] != command.getRotation()[0])
+							{
+								ProgramHandler.toggleMaximization();
+								if(ProgramHandler.getNonMinimized()==0)
+								{
+									tdi.setState("desktop");
+									tdi.setPosition(1, 1, 1); 
+									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+								}
+							}
+							//nach links neigen
+							if(tdi.getRotation()[3]!=command.getRotation()[3])
+							{
+								ProgramHandler.closeProgram();
+								tdi.getIcons().remove(0);
+							}
+							// TDI nach unten neigen
+							if (tdi.getRotation()[2] != command.getRotation()[2]) {
+								ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons 
+								if(ProgramHandler.isDesktopMode())
+								{
+									tdi.setState("desktop");
+									tdi.setPosition(1, 1, 1); 
+									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+								}
+								else 
+								{
+									tdi.setPosition(1, 1, 1); 
+									//TODO GO to location of window
+								};								
+							}
 						}
+						if(tdi.getState()=="taskbar")
+						{
+						
+					/*	TDI nach oben neigen
+						Alle Fenster werden wiederhergestellt */
+							//nach oben
+							if (tdi.getRotation()[0] != command.getRotation()[0])
+							{
+								//ProgramHandler. TODO maximiseAllPrograms()
+								if(ProgramHandler.isDesktopMode())
+								{
+									if(tdis.get(1).getState()!="taskbar")
+									{
+										tdis.get(1).setState("window");
+										tdis.get(1).setPosition(1, 1, 1); // to maximised window
+									}
+									else
+									{
+										tdis.get(2).setState("window");
+										tdis.get(1).setPosition(1, 1, 1); // to maximised window
+									}
+								}
+								else
+								{
+									for(TDI t:tdis)
+									{
+										if(t.getState()=="window")
+										{
+											t.setPosition(1, 1, 1); // to maximised window
+										}
+									}
+								}
+							}
+							//nach links/rechts neigen
+							if(tdi.getRotation()[3]!=command.getRotation()[3])
+							{
+								ProgramHandler.closeAllPrograms();
+								for(TDI t:tdis)
+								{
+									t.setState("desktop");
+								}
+							}
+							// TDI nach unten neigen
+							if (tdi.getRotation()[2] != command.getRotation()[2]) {
+								ProgramHandler.minimizeAllPrograms();
+								for(TDI t:tdis)
+								{
+									if(t.getState()=="window")
+									{
+										t.setState("desktop");
+										tdi.setPosition(1, 1, 1); 
+										//TODO alle desktop TDIs sind für icon-gruppen zuständig
+									}
+									
+								}
+							}
+							
+						}
+						
+					}
+							
+					// drehen
+					if(tdi.getRotation() != command.getRotation())
+					{
+						if(tdi.getState()=="taskbar")
+						{
+							//nicht im Skaliermodus
+							if(tdi.getIsScale()==false)
+							{
+								//nach links Das vorherige Fenster in der Taskleiste wird fokussiert
+								if(tdi.getRotation()[0] > command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+								}
+								//nach rechts Das nächste Fenster in der Taskleiste wird fokussiert
+								if(tdi.getRotation()[0] < command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(1));
+								}
+							}
+						}
+						if(tdi.getState()=="desktop")
+						{
+								//nach links Das vorherige Icon, wofür das TDI zuständig ist wird ausgewählt
+								if(tdi.getRotation()[0] > command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+								}
+								//nach rechts Das nächste Icon, wofür das TDI zuständig ist wird ausgewählt
+								if(tdi.getRotation()[0] < command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(1));
+								}
+						}
+						if(tdi.getState()=="inapp")
+						{
+							// depends ?!
+						}
+					}
 					}
 				}
 			}
@@ -182,6 +317,18 @@ public class BigLogic implements Runnable {
 	public boolean PosInTaskbar(float x, float y)
 	{
 		return true;
+	}
+	public boolean StartScaleMode(TDI t1, TDI t2)
+	{
+		int range = 5;
+		if(t1.getPosition()[0] <= t2.getPosition()[0]+range && t1.getPosition()[0] >= t2.getPosition()[0]-range || 
+				t1.getPosition()[1] <= t2.getPosition()[1]+range && t1.getPosition()[1] >= t2.getPosition()[1]-range)
+			return true;
+		if(t2.getPosition()[0] <= t1.getPosition()[0]+range && t2.getPosition()[0] >= t1.getPosition()[0]-range || 
+				t2.getPosition()[1] <= t1.getPosition()[1]+range && t2.getPosition()[1] >= t1.getPosition()[1]-range)
+			return true;
+		else
+			return false;
 	}
 
 	public BigLogic() {

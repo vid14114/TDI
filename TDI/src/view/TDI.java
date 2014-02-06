@@ -11,8 +11,9 @@ public class TDI {
 	private ArrayList<Icon> icons;
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
-	private enum state{inapp,desktop,taskbar,window};
+	private enum state{inapp,desktop,taskbar,window,sleep};
 	private boolean locked;
+	private boolean isScale;
 
 	public float[] getPosition() {
 		return this.position;
@@ -29,6 +30,14 @@ public class TDI {
 	public boolean getLocked()
 	{
 		return locked;
+	}
+	public boolean getIsScale()
+	{
+		return isScale;
+	}
+	public void setIsScale(boolean scale)
+	{
+		this.isScale=scale;
 	}
 	public void setPosition(float x, float y, float z) {
 		position[0] = x;
