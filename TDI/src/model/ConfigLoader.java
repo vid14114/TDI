@@ -17,11 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.imageio.ImageIO;
-
 import view.Icon;
 import controller.Executor;
 
@@ -86,7 +83,7 @@ public class ConfigLoader {
 								new String[] { "xdg-open", file.getPath() });
 
 			// default icons (home & trash & file system)
-			{// TODO when exception happens, method is skipped --> find solution
+			{
 				int index;
 				if ((index = icons.indexOf(new Icon("Home", null))) != -1)
 					icons.get(index).setExecPath(
@@ -221,6 +218,10 @@ public class ConfigLoader {
 		return plugins;
 	}
 
+	/**
+	 * 
+	 * @param plugins
+	 */
 	public void savePlugins(String[] plugins) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(
@@ -279,6 +280,39 @@ public class ConfigLoader {
 		});
 	}
 
+	/**
+	 * Calculate the block size of icons on the desktop by using margin and icons size	
+	 * @return Block size of each icon
+	 */
+	public int getBlockSize(){
+		String line;
+		int margin = 0;
+		int iconSize = 0;
+		try{
+			//First get the margin			
+			BufferedReader reader = new BufferedReader(
+					new FileReader(System.getProperty("user.home")
+							+ "/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml"));
+			while ((line = reader.readLine()) != null)
+				if (line.contains("placement_ratio"))
+					margin = Integer.parseInt(line.split("\"")[5]);
+			reader.close();
+			
+			//Now get the icon size
+			reader = new BufferedReader(
+					new FileReader(
+							System.getProperty("user.home")
+									+ "/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"));
+			while ((line = reader.readLine()) != null)
+				if (line.contains("icon-size"))
+					iconSize = Integer.parseInt(line.split("\"")[5]);
+			reader.close();
+		}catch(IOException e){
+			
+		}
+		return iconSize+(2*margin);
+	}
+	
 	/**
 	 * This method is implemented for testing purposes TODO Delete
 	 * 
