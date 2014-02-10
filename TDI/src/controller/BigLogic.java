@@ -3,12 +3,10 @@ package controller;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import model.ConfigLoader;
-import model.PluginTableModel;
 import model.Server;
+import view.Icon;
 import view.TDI;
-import view.TDIDialog;
 import view.Wallpaper;
 
 /**
@@ -30,12 +28,10 @@ public class BigLogic implements Runnable {
 
 	/**
 	 * Lädt Dialog und Desktop configuration
-	 * 
+	 *
 	 * @param args
 	 */
-	
 	public static void main(String[] args) {
-		new TDIDialog(new TDIActionListener(new PluginTableModel(new ConfigLoader().getPlugins())));
 		BigLogic bl = new BigLogic();
 	}
 
@@ -43,58 +39,301 @@ public class BigLogic implements Runnable {
 	 * The run method that is overridden
 	 */
 	public void run() {
-		
+
 		while (true) {
 			if (commands.size() > 0) {
 				if (tdis.contains(commands.get(0))) {
 					TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
 					TDI command = commands.get(0);
-					if (tdi.getPosition() != command.getPosition()) {
+					float[] movParam = new float[3];
+					TDI windFocused=null;
+					if (tdi.getPosition() != command.getPosition()) { //CASE POSITION
+						if (tdi.getPosition()[0] != command.getPosition()[0] || tdi.getPosition()[1] != command.getPosition()[1]) // if x or y axis changed
+						{
+							//SZENARIO A DM
+							if(tdi.getState()=="desktop") // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
+							{
+								if(tdi.getLocked() == false)
+								{
+									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1]) == false)//ist die neue Position in Taskbar?
+									{	
+										// TDI für Icons zuständig
+										// neu berechenen der zugehörigen Icons
+									}
+									else // neue pos in taskbar => setzen des Tdi in taskbar mode öffen von program
+									{
+										tdi.setState("taskbar");
+										ProgramHandler.openProgram(tdi.getIcons().get(0)); //open active icon
+										//Vibrate(); //500ms
+										//setLedRed();
+										tdi.setPosition(0, 0, 0); // linke Ecke der Taskbar
+										for(int x=2,y=10; x < tdis.size() ;x++) // set evry other tdi in the middle of the desk
+										{
+											tdis.get(tdis.indexOf(commands.get(x))).setPosition(0, 0, 0+y); // irgendwo am Rand des Tisches (+y damit sie nicht aufeinander fahren)
+											tdis.get(tdis.indexOf(commands.get(x))).setState("default"); //
+											//setLedGreen();
+
+											//set one tdi in window mode - position = middle of the desk
+											tdis.get(tdis.indexOf(commands.get(1))).setState("window");
+											tdis.get(tdis.indexOf(commands.get(1))).setPosition(0, 0, 0);
+										}
+									}
+								}
+							}
+							if(tdi.getState()=="taskbar")
+							{
+								if(ProgramHandler.getRunningPrograms().size()>0) //if programs are open (at least 1)
+								{
+									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1])) // neue pos immer noch in taskbar
+									{
+										tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
+									}
+									else // neue pos außerhalb der taskbar
+									{
+										for(TDI t: tdis) // find out if any other TDI has focused a window
+										{
+											if(t.getState()=="window")
+												windFocused=t;
+										}
+										if(windFocused != null)
+										{
+											if(StartScaleMode(tdi,windFocused))
+											{
+												tdi.setIsScale(true);
+												windFocused.setIsScale(true);
+												// fokusiertes TDI in nähe des aktuellen
+												// start counter
+												// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
+												// task TDI repräsentiert untere linke Ecke des Fensters
+											}
+										}
+										else
+										{
+											tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
+										}
+									}
+
+								}
+								else
+								{
+									for(int x=0; x < tdis.size() ;x++) // set evry tdi in desktop mode cause no programs are open
+									{
+										tdis.get(tdis.indexOf(commands.get(x))).setState("desktop"); //?
+										tdis.get(tdis.indexOf(commands.get(x))).setPosition(1, 1, 1);// wohin??
+									}
+								}
+							}
+							if(tdi.getState()=="window")
+							{
+								for(TDI t: tdis) // find out taskbar tdi
+								{
+									if(t.getState()=="taskbar")
+										windFocused=t;
+								}
+								if(StartScaleMode(windFocused, tdi))
+								{
+									// taskbar TDI in nähe des aktuellen
+									// start counter TODO set timer thread
+									// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
+									// window TDI repräsentiert obere rechte Ecke des Fensters
+									tdi.setIsScale(true);
+									windFocused.setIsScale(true);
+									//tdi.getPosition(). TODO x2-x1 = width y2-y1 = height
+									//ProgramHandler.resizeProgram(widht, heigth);
+								}
+								else
+								{
+									tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
+									//tdi.getIcons().get(0).setPosition(); new position of program window
+								}
+							}
+							if(tdi.getState()=="inapp")
+							{
+
+							}
+						}
+					}	
+					//neigen
+					if (tdi.getRotation() != command.getRotation()) {
+						if(tdi.getState()=="desktop")
+						{
+							//nach rechts neigen
+							if (tdi.getRotation()[1] != command.getRotation()[1])
+								tdi.toggleLock();
+							//tdi.toggleGreenLED();
+						}
+						if(tdi.getState()=="window")
+						{
+							//nach oben
+							if (tdi.getRotation()[0] != command.getRotation()[0])
+							{
+								ProgramHandler.toggleMaximization();
+								if(ProgramHandler.getNonMinimized()==0)
+								{
+									tdi.setState("desktop");
+									tdi.setPosition(1, 1, 1);
+									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+								}
+							}
+							//nach links neigen
+							if(tdi.getRotation()[3]!=command.getRotation()[3])
+							{
+								ProgramHandler.closeProgram();
+								tdi.getIcons().remove(0);
+							}
+							// TDI nach unten neigen
+							if (tdi.getRotation()[2] != command.getRotation()[2]) {
+								ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons
+								if(ProgramHandler.isDesktopMode())
+								{
+									tdi.setState("desktop");
+									tdi.setPosition(1, 1, 1);
+									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+								}
+								else
+								{
+									tdi.setPosition(1, 1, 1);
+									//TODO GO to location of window
+								};	
+							}
+						}
+						if(tdi.getState()=="taskbar")
+						{
+
+							/* TDI nach oben neigen
+Alle Fenster werden wiederhergestellt */
+							//nach oben
+							if (tdi.getRotation()[0] != command.getRotation()[0])
+							{
+								//ProgramHandler. TODO maximiseAllPrograms()
+								if(ProgramHandler.isDesktopMode())
+								{
+									if(tdis.get(1).getState()!="taskbar")
+									{
+										tdis.get(1).setState("window");
+										tdis.get(1).setPosition(1, 1, 1); // to maximised window
+									}
+									else
+									{
+										tdis.get(2).setState("window");
+										tdis.get(1).setPosition(1, 1, 1); // to maximised window
+									}
+								}
+								else
+								{
+									for(TDI t:tdis)
+									{
+										if(t.getState()=="window")
+										{
+											t.setPosition(1, 1, 1); // to maximised window
+										}
+									}
+								}
+							}
+							//nach links/rechts neigen
+							if(tdi.getRotation()[3]!=command.getRotation()[3])
+							{
+								ProgramHandler.closeAllPrograms();
+								for(TDI t:tdis)
+								{
+									t.setState("desktop");
+								}
+							}
+							// TDI nach unten neigen
+							if (tdi.getRotation()[2] != command.getRotation()[2]) {
+								ProgramHandler.minimizeAllPrograms();
+								for(TDI t:tdis)
+								{
+									if(t.getState()=="window")
+									{
+										t.setState("desktop");
+										tdi.setPosition(1, 1, 1);
+										//TODO alle desktop TDIs sind für icon-gruppen zuständig
+									}
+
+								}
+							}
+
+						}
 
 					}
-					/* if(temp.getRotation() != commands.get(0).getRotation()){
-					      
-						   if(programHandler.getRunningPrograms().isEmpty())
-						   {
-							   if(commands.get(0).getRotation()>0) // rotate clockwise
-							   {
-								   if(temp.getLocked()==false)
-								   {
-									   temp.setRotation(commands.get(0).getRotation());//new rotation
-									   temp.rotateClockwise();								   
-								   }
-							   }
-							   else //rotate counterwise
-							   {
-								   temp.setRotation(commands.get(0).getRotation());//new rotation
-								   temp.rotateCounter();	
-							   }
-						   }
-					   } */
-					/*if (tdi.getTilt() != command.getTilt()) {
-						if (tdi.getTilt()[0] != command.getTilt()[0]) 
-							ProgramHandler.toggleMaximization();
-						if (tdi.getTilt()[1] != command.getTilt()[1]) 
-							tdi.toggleLock();
-						if (tdi.getTilt()[2] != command.getTilt()[2]) {
-							ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons
-							if(ProgramHandler.isDesktopMode()); //Go to icons
-							else ;//GO to location of window								
+
+					// drehen
+					if(tdi.getRotation() != command.getRotation())
+					{
+						if(tdi.getState()=="taskbar")
+						{
+							//nicht im Skaliermodus
+							if(tdi.getIsScale()==false)
+							{
+								//nach links Das vorherige Fenster in der Taskleiste wird fokussiert
+								if(tdi.getRotation()[0] > command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+								}
+								//nach rechts Das nächste Fenster in der Taskleiste wird fokussiert
+								if(tdi.getRotation()[0] < command.getRotation()[0])
+								{
+									tdi.setRotation(command.getRotation());
+									tdi.getIcons().set(0, tdi.getIcons().get(1));
+								}
+							}
 						}
-						if (tdi.getTilt()[3] != command.getTilt()[3])							
-							ProgramHandler.closeProgram();
-					}*/
+						if(tdi.getState()=="desktop")
+						{
+							//nach links Das vorherige Icon, wofür das TDI zuständig ist wird ausgewählt
+							if(tdi.getRotation()[0] > command.getRotation()[0])
+							{
+								tdi.setRotation(command.getRotation());
+								tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+							}
+							//nach rechts Das nächste Icon, wofür das TDI zuständig ist wird ausgewählt
+							if(tdi.getRotation()[0] < command.getRotation()[0])
+							{
+								tdi.setRotation(command.getRotation());
+								tdi.getIcons().set(0, tdi.getIcons().get(1));
+							}
+						}
+						if(tdi.getState()=="inapp")
+						{
+							// depends ?!
+						}
+					}
 				}
 			}
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param command
 	 */
 	public void addCommand(TDI command) {
 		commands.add(command);
+	}
+	/**
+	 * checks if givenPos is in taskbar
+	 * @return
+	 */
+	private boolean PosInTaskbar(float x, float y)
+	{
+		return true;
+	}
+	/**
+	 * checks if a taskbar TDI and a window TDI are near enough to start the scale mode
+	 */
+	private boolean StartScaleMode(TDI t1, TDI t2)
+	{
+		int range = 5;
+		if(t1.getPosition()[0] <= t2.getPosition()[0]+range && t1.getPosition()[0] >= t2.getPosition()[0]-range ||
+				t1.getPosition()[1] <= t2.getPosition()[1]+range && t1.getPosition()[1] >= t2.getPosition()[1]-range)
+			return true;
+		if(t2.getPosition()[0] <= t1.getPosition()[0]+range && t2.getPosition()[0] >= t1.getPosition()[0]-range ||
+				t2.getPosition()[1] <= t1.getPosition()[1]+range && t2.getPosition()[1] >= t1.getPosition()[1]-range)
+			return true;
+		else
+			return false;
 	}
 
 	public BigLogic() {
@@ -113,5 +352,5 @@ public class BigLogic implements Runnable {
 			}
 		}, 0, 500);
 	}
-
 }
+

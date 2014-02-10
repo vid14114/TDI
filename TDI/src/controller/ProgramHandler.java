@@ -217,7 +217,7 @@ public class ProgramHandler {
 	/** 
 	 * @return The amount of non-minimizzed programs
 	 */
-	private static int getNonMinimized() {
+	public static int getNonMinimized() {
 		int nonMinimized = 0;
 		for (ProgramInfo process : runningPrograms)
 			if (!process.isMinimized())
