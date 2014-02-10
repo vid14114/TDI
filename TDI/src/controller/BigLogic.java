@@ -133,11 +133,13 @@ public class BigLogic implements Runnable {
 								if(StartScaleMode(windFocused, tdi))
 								{
 									// taskbar TDI in nähe des aktuellen
-									// start counter 
+									// start counter TODO set timer thread
 									// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
 									// window TDI repräsentiert obere rechte Ecke des Fensters
 									tdi.setIsScale(true);
 									windFocused.setIsScale(true);
+									//tdi.getPosition(). TODO x2-x1 = width y2-y1 = height
+									//ProgramHandler.resizeProgram(widht, heigth);
 								}
 								else
 								{
@@ -314,11 +316,14 @@ public class BigLogic implements Runnable {
 	 * checks if givenPos is in taskbar
 	 * @return 
 	 */
-	public boolean PosInTaskbar(float x, float y)
+	private boolean PosInTaskbar(float x, float y)
 	{
 		return true;
 	}
-	public boolean StartScaleMode(TDI t1, TDI t2)
+	/**
+	 * checks if a taskbar TDI and a window TDI are near enough to start the scale mode
+	 */
+	private boolean StartScaleMode(TDI t1, TDI t2)
 	{
 		int range = 5;
 		if(t1.getPosition()[0] <= t2.getPosition()[0]+range && t1.getPosition()[0] >= t2.getPosition()[0]-range || 
