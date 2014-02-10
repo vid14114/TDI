@@ -2,7 +2,7 @@ package view;
 
 import java.awt.Point;
 
-public class Icon {
+public class Icon implements Comparable<Icon>{
 	/**
 	 * Name of the icon
 	 */
@@ -92,6 +92,12 @@ public class Icon {
 		if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Icon i) {
+		int diff=((position.x-i.position.x)*1000)+position.y-i.position.y;
+		return diff;
 	}
 
 }

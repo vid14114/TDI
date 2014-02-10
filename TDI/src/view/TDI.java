@@ -1,17 +1,22 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TDI {
 
+	enum State{
+		inapp,desktop,taskbar,window,sleep;
+	}
 	/**
 	 * The id defines which TDI this is.
 	 */
 	private byte id;
-	private ArrayList<Icon> icons;
+	private ArrayList<Icon> icons;	
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
-	private enum state{inapp,desktop,taskbar,window,sleep};
+	private State state;
 	private boolean locked;
 	private boolean isScale;
 
@@ -21,7 +26,7 @@ public class TDI {
 
 	public String getState()
 	{
-		return "";
+		return state.toString();
 	}
 	public void setState(String state)
 	{
@@ -95,5 +100,17 @@ public class TDI {
 	public ArrayList<Icon> getIcons()
 	{
 		return icons;
+	}
+
+	public void setIcons(List<Icon> icons) {
+		this.icons = (ArrayList<Icon>) icons;
+	}
+	
+	@Override
+	public String toString() {
+		return "TDI [id=" + id + ", icons=" + icons + ", position="
+				+ Arrays.toString(position) + ", rotation="
+				+ Arrays.toString(rotation) + ", state=" + state.toString() + ", locked="
+				+ locked + "]";
 	}
 }
