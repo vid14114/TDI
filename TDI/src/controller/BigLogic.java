@@ -157,7 +157,9 @@ public class BigLogic implements Runnable {
 							}
 						}
 					}	
-					//neigen
+					//neigen 
+					//TODO change rotation  => 1 wert drehen 2 werte neigen 
+					//welcher der Werte ist neigen (jeweils positiv verändert / negativ verändert) = 4 werte
 					if (tdi.getRotation() != command.getRotation()) {
 						if(tdi.getState()=="desktop")
 						{
@@ -205,7 +207,7 @@ public class BigLogic implements Runnable {
 						{
 
 							/* TDI nach oben neigen
-Alle Fenster werden wiederhergestellt */
+							Alle Fenster werden wiederhergestellt */
 							//nach oben
 							if (tdi.getRotation()[0] != command.getRotation()[0])
 							{
