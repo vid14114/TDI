@@ -214,9 +214,7 @@ public class ProgramHandler {
 		}
 	}
 
-	/**
-	 * Returns the number of non-minimized programs
-	 * 
+	/** 
 	 * @return The amount of non-minimizzed programs
 	 */
 	private static int getNonMinimized() {
