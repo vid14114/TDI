@@ -155,13 +155,26 @@ public class ProgramHandler {
 		}
 	}
 
-	public static void moveProgram(int x, int y, int widht, int heigth) {
+	public static void moveProgram(int x, int y) {
 		if(runningPrograms.size() == 0) return;
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "wmctrl", "-i", "-r",
 							getFocusedWindow(), "-e",
-							"0," + x + "," + y + "," + widht + "," + heigth });
+							"0," + x + "," + y + "," + -1 + "," + -1 });
+		} catch (IOException e) {
+			System.err
+					.println("An error happened while trying to move or resize a program");
+		}
+	}
+	
+	public static void resizeProgram(int widht, int height) {
+		if(runningPrograms.size() == 0) return;
+		try {
+			Runtime.getRuntime().exec(
+					new String[] { "wmctrl", "-i", "-r",
+							getFocusedWindow(), "-e",
+							"0," + -1 + "," + -1 + "," + widht + "," + height });
 		} catch (IOException e) {
 			System.err
 					.println("An error happened while trying to move or resize a program");

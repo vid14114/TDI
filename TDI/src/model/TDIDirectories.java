@@ -34,6 +34,10 @@ public class TDIDirectories {
 	 * All program logs are written in this directory
 	 */
 	public static final String TDI_LOGS = TDI_HOME + "/logs";
+	/**
+	 * Any temporary file needed
+	 */
+	public static final String TDI_TEMP = TDI_HOME + "/temp";
 
 	/**
 	 * Creates all TDI directories needed.
@@ -51,6 +55,7 @@ public class TDIDirectories {
 		}
 		new File(TDI_PLUGINS).mkdirs();
 		new File(TDI_RESTORE).mkdirs();
+		new File(TDI_TEMP).mkdirs();
 		// new File(TDI_LOGS).mkdirs();
 	}
 }

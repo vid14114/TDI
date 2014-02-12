@@ -3,9 +3,13 @@
  */
 package controller;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import javax.imageio.ImageIO;
 
 import model.TDIDirectories;
 import model.TDILogger;
@@ -27,11 +31,27 @@ public final class Executor {
 			TDILogger.logError(e.getMessage());
 		}
 	}
-	
-	//TODO finish	
-	public static void getStatus() throws IOException{
-		BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("command -v wmctrl xdg-open xfconf-query gvfs-mount").getInputStream()));
+
+//	//TODO finish	
+//	public static void getStatus() throws IOException{
+//		BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("command -v wmctrl xdg-open xfconf-query gvfs-mount").getInputStream()));
+//	}
+
+	public static final void saveBackground(BufferedImage image){
+		try {
+			File restore;
+			ImageIO.write(image,
+					".png",
+					restore = new File(TDIDirectories.TDI_TEMP + "/"
+							+ "temp"));			
+			restore.deleteOnExit();
+			Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", restore.getAbsolutePath()});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
 	/**
 	 * Calls the xfconf-query method which returns the location of the background
 	 * @return The path of the background picture
@@ -47,7 +67,7 @@ public final class Executor {
 		}
 		return background;
 	}
-	
+
 	/**
 	 * Executes the given exec
 	 * @param exec The path of the program
@@ -59,7 +79,7 @@ public final class Executor {
 			TDILogger.logError("Unable to start program, is xdg-open installed?");
 		}
 	}
-	
+
 	/**
 	 * Returns a screenshot in form of a bufferedreader of all the opened windows
 	 * @return a bufferedreader of running tasks
@@ -72,7 +92,7 @@ public final class Executor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the currently focues window
 	 * @return the wmctrlID of the focused window
@@ -89,7 +109,7 @@ public final class Executor {
 		}
 		return wmctrlID;
 	}
-	
+
 	public static final BufferedReader getRemovableDiskList(){
 		try {
 			return new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"gvfs-mount", "-li"}).getInputStream()));
