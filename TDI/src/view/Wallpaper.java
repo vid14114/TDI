@@ -31,7 +31,8 @@ public class Wallpaper {
 	 * @param colorAreas
 	 *            The TDIs with their icons, and we will generate the markedArea
 	 */
-	public void markArea(TDI[] colorAreas) {
+	public BufferedImage markArea(TDI[] colorAreas) {
+		BufferedImage b = background;
 		int[][] d = new int[10][10];
 		int tId = 1;
 		
@@ -43,14 +44,14 @@ public class Wallpaper {
 			tId++;
 		}
 		
-		int imageWidth = background.getWidth();
-		int imageHeight = background.getHeight();
+		int imageWidth = b.getWidth();
+		int imageHeight = b.getHeight();
 		
 		int column=0;
 		for(int[] i : d){
 			int row=0;
 			for(int x : i){
-				Graphics2D g2 = background.createGraphics();
+				Graphics2D g2 = b.createGraphics();
 				//Only draw if the is is not 0 - 0 = no icon
 				if(x==0){
 				}
@@ -58,12 +59,13 @@ public class Wallpaper {
 					g2.setColor(Color.blue);
 					//First 2 values define the position of the icon, the other 2 define the size
 					g2.fill(new Rectangle2D.Float(blockSize*row,blockSize*column,blockSize,blockSize));
-					g2.drawImage(background, 0, 0, null);
+					g2.drawImage(b, 0, 0, null);
 				}
 				row++;
 			}
 			column++;
 		}
+		return b;
 	}
 	/**
 	 * @param the size of icon block
