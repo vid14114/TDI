@@ -351,6 +351,7 @@ public class BigLogic implements Runnable {
 //		wallpaper.setResolution(cl.loadScreensize());
 		server = new Server();
 		tdis = server.fullPose();
+		System.out.println(tdis.get(0).toString());
 		splitIcons();
 		Timer mo = new Timer();
 		mo.scheduleAtFixedRate(new TimerTask() {
@@ -371,7 +372,7 @@ public class BigLogic implements Runnable {
 			for (TDI t : tdis) {
 				int f1 = (int) f;
 				int fromIndex = 0;
-				t.setIcons(icons.subList(fromIndex, fromIndex += f1));
+				t.setIcons(new ArrayList<Icon>(icons.subList(fromIndex, fromIndex += f1)));
 			}
 		}
 	}

@@ -108,9 +108,10 @@ public class TDI {
 	
 	@Override
 	public String toString() {
-		return "TDI [id=" + id + ", icons=" + icons + ", position="
-				+ Arrays.toString(position) + ", rotation="
-				+ Arrays.toString(rotation) + ", state=" + state.toString() + ", locked="
-				+ locked + "]";
+		String s="TDI [id=" + id + ", icons=" + icons;
+		s+=", position="+ Arrays.toString(position);
+		s+=", rotation="+ Arrays.toString(rotation);
+		s+=", locked="+ locked + "]";
+		return s;
 	}
 }

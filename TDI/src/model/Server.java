@@ -16,7 +16,7 @@ import view.TDI;
  * Implements the runnable interface
  */
 public class Server {
-	protected static String ip = "127.0.0.1";
+	protected static String ip = "192.168.1.36";
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
@@ -39,13 +39,16 @@ public class Server {
 	public ArrayList<TDI> fullPose() {
 		ArrayList<TDI> tdis = new ArrayList<TDI>();
 		try {
-			send.writeByte(ACTOConst.WI_FULL_POSE);
+			//send.writeByte(ACTOConst.WI_FULL_POSE);
+			send.writeByte(ACTOConst.WI_GET_POSE);
+			send.writeByte(49);
 			byte ack=read.readByte();
-			read.mark(9);
+			read.mark(10);
 			byte wi_msg = read.readByte();
 			read.reset();
-			while (read.available()>0 && read.readByte() == wi_msg) {
-				byte id = read.readByte();
+			byte id;
+			while (read.available()>0 && (id=read.readByte()) == wi_msg) {
+				//byte id = read.readByte();
 				float x = read.readFloat();
 				float y = read.readFloat();
 				float z = read.readFloat();
@@ -60,6 +63,7 @@ public class Server {
 				rot[1]=(float) angles[1];
 				rot[2]=(float) angles[2];
 				TDI t = new TDI(id, x, y, z, rot);
+				System.out.println(t.toString());
 				tdis.add(t);
 				read.mark(9);
 			}
