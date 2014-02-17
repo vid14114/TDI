@@ -33,37 +33,23 @@ public class Wallpaper {
 	 */
 	public BufferedImage markArea(TDI[] colorAreas) {
 		BufferedImage b = background;
-		int[][] d = new int[10][10];
-		int tId = 1;
 		
-		//Fill array with ids
 		for(TDI t : colorAreas){
+			Graphics2D g2 = b.createGraphics();
 			for(Icon i : t.getIcons()){
-				d[i.getPosition().x][i.getPosition().y]=tId;
-			}
-			tId++;
-		}
-		
-		int imageWidth = b.getWidth();
-		int imageHeight = b.getHeight();
-		
-		int column=0;
-		for(int[] i : d){
-			int row=0;
-			for(int x : i){
-				Graphics2D g2 = b.createGraphics();
-				//Only draw if the is is not 0 - 0 = no icon
-				if(x==0){
-				}
-				else{
+				if(t.getId()==1){
 					g2.setColor(Color.blue);
 					//First 2 values define the position of the icon, the other 2 define the size
-					g2.fill(new Rectangle2D.Float(blockSize*row,blockSize*column,blockSize,blockSize));
+					g2.fill(new Rectangle2D.Float(blockSize*i.getPosition().x,blockSize*i.getPosition().y,blockSize,blockSize));
 					g2.drawImage(b, 0, 0, null);
 				}
-				row++;
+				else{
+					g2.setColor(Color.red);
+					//First 2 values define the position of the icon, the other 2 define the size
+					g2.fill(new Rectangle2D.Float(blockSize*i.getPosition().x,blockSize*i.getPosition().y,blockSize,blockSize));
+					g2.drawImage(b, 0, 0, null);
+				}
 			}
-			column++;
 		}
 		return b;
 	}
