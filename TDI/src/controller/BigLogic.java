@@ -17,9 +17,18 @@ import view.Wallpaper;
  */
 public class BigLogic implements Runnable {
 
-	private ArrayList<Icon> icons;
-	private ArrayList<TDI> tdis;
+	public ArrayList<Icon> icons;
+	public ArrayList<TDI> tdis;
 	private Server server;
+	/**
+	 * counter for scaling
+	 */
+	private int scaleCount=0;
+	private int scaleCount2=0;
+	/**
+	 * times(1 = 100ms) to wait for scaling
+	 */
+	private int waitTime=5; 
 
 	/**
 	 * The wallpaper
@@ -28,7 +37,7 @@ public class BigLogic implements Runnable {
 	/**
 	 * The commands that have to be executed.
 	 */
-	private ArrayList<TDI> commands;
+	public ArrayList<TDI> commands;
 
 	/**
 	 * Lädt Dialog und Desktop configuration
@@ -51,6 +60,7 @@ public class BigLogic implements Runnable {
 					TDI command = commands.get(0);
 					float[] movParam = new float[3];
 					TDI windFocused=null;
+					TDI taskFocused=null;
 					if (tdi.getPosition() != command.getPosition()) { //CASE POSITION
 						if (tdi.getPosition()[0] != command.getPosition()[0] || tdi.getPosition()[1] != command.getPosition()[1]) // if x or y axis changed
 						{
@@ -103,12 +113,22 @@ public class BigLogic implements Runnable {
 										{
 											if(StartScaleMode(tdi,windFocused))
 											{
-												tdi.setIsScale(true);
-												windFocused.setIsScale(true);
-												// fokusiertes TDI in nähe des aktuellen
-												// start counter
-												// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
-												// task TDI repräsentiert untere linke Ecke des Fensters
+												scaleCount2=scaleCount2+1;
+												if(scaleCount2==waitTime)
+												{
+													scaleCount2=0;
+													// skaliermodus TDI repräsentiert untere linke Ecke des Fensters
+													taskFocused.setPosition(0, 0, 0);
+													tdi.setIsScale(true);
+													windFocused.setIsScale(true);
+												    float width=windFocused.getPosition()[0]-tdi.getPosition()[0];
+												    float height=windFocused.getPosition()[1]-tdi.getPosition()[1];
+													ProgramHandler.resizeProgram(width, height);
+												}
+												else 
+												{
+													tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
+												}
 											}
 										}
 										else
@@ -132,18 +152,30 @@ public class BigLogic implements Runnable {
 								for(TDI t: tdis) // find out taskbar tdi
 								{
 									if(t.getState()=="taskbar")
-										windFocused=t;
+										taskFocused=t;
+									
 								}
-								if(StartScaleMode(windFocused, tdi))
+								// taskbar TDI in nähe des aktuellen
+								if(StartScaleMode(taskFocused, tdi))
 								{
-									// taskbar TDI in nähe des aktuellen
-									// start counter TODO set timer thread
-									// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
-									// window TDI repräsentiert obere rechte Ecke des Fensters
-									tdi.setIsScale(true);
-									windFocused.setIsScale(true);
-									//tdi.getPosition(). TODO x2-x1 = width y2-y1 = height
-									//ProgramHandler.resizeProgram(widht, heigth);
+									scaleCount=scaleCount+1;
+										if(scaleCount==waitTime)
+										{
+											scaleCount=0;
+											// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
+											tdi.setPosition(0, 0, 0);
+											// TODO window TDI repräsentiert obere rechte Ecke des Fensters
+											taskFocused.setPosition(0, 0, 0);
+											tdi.setIsScale(true);
+											taskFocused.setIsScale(true);
+										    float width=taskFocused.getPosition()[0]-tdi.getPosition()[0];
+										    float height=taskFocused.getPosition()[1]-tdi.getPosition()[1];
+											ProgramHandler.resizeProgram(width, height);
+										}
+										else 
+										{
+											tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
+										}
 								}
 								else
 								{
@@ -178,7 +210,7 @@ public class BigLogic implements Runnable {
 								{
 									tdi.setState("desktop");
 									tdi.setPosition(1, 1, 1);
-									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+									splitIcons();
 								}
 							}
 							//nach links neigen
@@ -194,7 +226,7 @@ public class BigLogic implements Runnable {
 								{
 									tdi.setState("desktop");
 									tdi.setPosition(1, 1, 1);
-									//TODO alle tdis außer Taskbar tdi sind für icon-gruppen zuständig
+									splitIcons();
 								}
 								else
 								{
@@ -211,7 +243,7 @@ public class BigLogic implements Runnable {
 							//nach oben
 							if (tdi.getRotation()[0] != command.getRotation()[0])
 							{
-								//ProgramHandler. TODO maximiseAllPrograms()
+								ProgramHandler.restoreAllPrograms();
 								if(ProgramHandler.isDesktopMode())
 								{
 									if(tdis.get(1).getState()!="taskbar")
@@ -254,7 +286,7 @@ public class BigLogic implements Runnable {
 									{
 										t.setState("desktop");
 										tdi.setPosition(1, 1, 1);
-										//TODO alle desktop TDIs sind für icon-gruppen zuständig
+										splitIcons();
 									}
 
 								}
@@ -310,7 +342,7 @@ public class BigLogic implements Runnable {
 			}
 		}
 	}
-
+	
 	/**
 	 *
 	 * @param command
