@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import view.TDI;
@@ -41,14 +43,15 @@ public class Server {
 		try {
 			//send.writeByte(ACTOConst.WI_FULL_POSE);
 			send.writeByte(ACTOConst.WI_GET_POSE);
-			send.writeByte(49);
+			//send.writeByte(49); //TUIO 1
+			send.writeByte(50); //TUIO 2
 			byte ack=read.readByte();
-			read.mark(10);
+			read.mark(9);
 			byte wi_msg = read.readByte();
 			read.reset();
-			byte id;
-			while (read.available()>0 && (id=read.readByte()) == wi_msg) {
-				//byte id = read.readByte();
+			while (read.available()>0 && read.readByte() == wi_msg)
+			{
+				byte id=read.readByte();
 				float x = read.readFloat();
 				float y = read.readFloat();
 				float z = read.readFloat();
@@ -56,12 +59,12 @@ public class Server {
 				float q2 = read.readFloat();
 				float q3 = read.readFloat();
 				float q4 = read.readFloat();
-				Quaternion q=new Quaternion(q1,q2,q3,q4);
-				double[] angles=q.getVectorPart();
+				Rotation r = new Rotation(q4,q1,q2,q3, true);
+				double angles[] = r.getAngles(RotationOrder.XYZ);
 				float[] rot=new float[3];
-				rot[0]=(float) angles[0];
-				rot[1]=(float) angles[1];
-				rot[2]=(float) angles[2];
+				rot[0]=(float) ((float) angles[0]*180/Math.PI);
+				rot[1]=(float) ((float) angles[1]*180/Math.PI);
+				rot[2]=(float) ((float) angles[2]*180/Math.PI);
 				TDI t = new TDI(id, x, y, z, rot);
 				System.out.println(t.toString());
 				tdis.add(t);

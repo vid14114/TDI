@@ -28,7 +28,7 @@ public class BigLogic implements Runnable {
 	/**
 	 * The commands that have to be executed.
 	 */
-	private ArrayList<TDI> commands;
+	private ArrayList<TDI> commands=new ArrayList<TDI>();
 
 	/**
 	 * Lädt Dialog und Desktop configuration
