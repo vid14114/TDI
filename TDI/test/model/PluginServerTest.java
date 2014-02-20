@@ -5,6 +5,7 @@ package model;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +27,10 @@ public class PluginServerTest {
 
 	/**
 	 * Test method for {@link model.PluginServer#sendMessage(java.lang.String)}.
+	 * @throws IOException 
 	 */
 	@Test
-	public void testSendMessage() {
+	public void testSendMessage() throws IOException {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -36,21 +38,19 @@ public class PluginServerTest {
 					Socket s = new Socket("127.0.0.1", 34000);
 					Socket s1 = new Socket("127.0.0.1", 34000);
 					Socket s2 = new Socket("127.0.0.1", 34000);
-					System.out.println(s.getInputStream().read());
-					System.out.println(s.getInputStream().read());
-					System.out.println(s.getInputStream().read());
-					System.out.println(s.getInputStream().read());
-					System.out.println(s.getInputStream().read());
-					System.out.println(s.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s2.getInputStream().read());
-					System.out.println(s1.getInputStream().read());
-					System.out.println(s2.getInputStream().read());
+					byte[] b = new byte[4];
+					while(s.getInputStream().available() > 1){
+						s.getInputStream().read(b);
+						System.out.println(ByteBuffer.wrap(b).getFloat());
+					}	
+					while(s1.getInputStream().available() > 1){
+						s1.getInputStream().read(b);
+						System.out.println(ByteBuffer.wrap(b).getFloat());
+					}	
+					while(s2.getInputStream().available() > 1){
+						s2.getInputStream().read(b);
+						System.out.println(ByteBuffer.wrap(b).getFloat());
+					}	
 					s.close();
 					s1.close();
 					s2.close();
@@ -60,9 +60,11 @@ public class PluginServerTest {
 				}
 			}
 		}).start();
-		System.out.print("waiting");
-		ps.sendMessage(new byte[] { 2, 3, 100, 23 });
-		ps.sendMessage(new byte[] { 4, 10, 23 });
+		System.out.println("waiting");
+		ps.sendMessage(123,1231,213131,312313,new float[]{132123,12342,123412});
+		ps.sendMessage(223f,234f,243f,242f,new float[]{13234.78f,123.25f,234.3f});
+		System.in.read();
+		
 	}
 
 }

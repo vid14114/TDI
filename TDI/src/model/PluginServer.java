@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class PluginServer implements Runnable {
@@ -35,19 +36,30 @@ public class PluginServer implements Runnable {
 		}
 	}
 
-	/**
-	 * TODO Figure out message format....
-	 * 
+	/**	
 	 * @param message
 	 *            The message in bytes
 	 */
-	public void sendMessage(byte[] message) {
-		for (Socket client : clients)
-			try {
-				client.getOutputStream().write(message);
-			} catch (IOException e) {
-				e.printStackTrace();
+	public void sendMessage(float id, float x, float y, float z, float[] rot) {
+		final byte[][] messages = {ByteBuffer.allocate(4).putFloat(id).array(), 
+				ByteBuffer.allocate(4).putFloat(x).array(),
+				ByteBuffer.allocate(4).putFloat(y).array(),
+				ByteBuffer.allocate(4).putFloat(z).array(),
+				ByteBuffer.allocate(4).putFloat(rot[0]).array(),
+				ByteBuffer.allocate(4).putFloat(rot[1]).array(),
+				ByteBuffer.allocate(4).putFloat(rot[2]).array(),};
+		new Runnable() {			
+			@Override
+			public void run() {
+				for (Socket client : clients)
+					try {
+						for(byte[] message : messages)
+							client.getOutputStream().write(message);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			}
+		}.run();
 	}
 
 	@Override

@@ -102,7 +102,7 @@ public class ProgramHandlerTest {
 	 */
 
 	public void testMoveProgram() {
-		ProgramHandler.moveProgram(10, 30, 40, 100);
+		ProgramHandler.moveProgram(10, 30);
 	}
 
 	/**
