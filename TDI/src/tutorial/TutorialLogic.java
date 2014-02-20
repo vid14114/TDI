@@ -1,6 +1,6 @@
-package controller;
+package tutorial;
 
-public class Tutorial {
+public class TutorialLogic {
 
 	/**
 	 * Shows the message.
