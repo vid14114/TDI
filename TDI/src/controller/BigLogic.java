@@ -335,7 +335,11 @@ public class BigLogic implements Runnable {
 						}
 						if(tdi.getState()=="inapp")
 						{
-							// depends ?!
+							//nach rechts neigen
+							if(tdi.getRotation()[0] > command.getRotation()[0])
+							{
+								tdi.setState("window");
+							}
 						}
 					}
 				}
