@@ -36,9 +36,16 @@ public class PluginServer implements Runnable {
 		}
 	}
 
-	/**	
-	 * @param message
-	 *            The message in bytes
+
+	/**
+	 * Sends data to the plugin clients in the following format:
+	 * {byte[4],byte[4],byte[4],byte[4],byte[4],byte[4],byte[4]}
+	 * The parameters are the byte arrays it sends to the clients
+	 * @param id the id of the TDI
+	 * @param x The x position
+	 * @param y The y position
+	 * @param z The z position
+	 * @param rot The rotation, which is a float array of 3 angles
 	 */
 	public void sendMessage(float id, float x, float y, float z, float[] rot) {
 		final byte[][] messages = {ByteBuffer.allocate(4).putFloat(id).array(), 
