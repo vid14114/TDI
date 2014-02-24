@@ -20,7 +20,7 @@ public class TutorialLogic implements Runnable{
 	@Override
 	public void run() {
 		//First Step
-		Icon temp = tdis.get(0).getIcons(
+		Icon temp = tdis.get(0).getIcons().get(0);
 		tv.setText("1/7\nPlease select Icon "+temp.getName()+ " at position "+temp.getPosition().x+","+temp.getPosition().y+" by turning assigned TDI until the icon is marked. "
 				+"Select the icon tilting the TDI to the right");
 	}

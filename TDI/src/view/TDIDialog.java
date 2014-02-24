@@ -379,11 +379,6 @@ public class TDIDialog extends JDialog implements ActionListener {
 			checkIp();
 			// start Program/ BigLogic (Is Master, is big).
 		}
-		// startTutorial clicked
-		if (actionPerformed.getSource() == startTutorialButton) {
-			System.out.println("start Tutorial");
-			// start Tutorial
-		}
 	}
 
 }
