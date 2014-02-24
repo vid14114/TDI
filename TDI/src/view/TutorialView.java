@@ -1,7 +1,4 @@
-/**
- * 
- */
-package tutorial;
+package view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,7 +17,7 @@ public class TutorialView{
 	public TutorialView(){
 		//Initialize a window and a textfield
 		w = new JWindow();
-		jt = new JTextArea(6,1);
+		jt = new JTextArea(6,1);		
 		//Setting basic properties		
 		w.setSize(350,100);
 		w.setLocation((int)GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth() - 
@@ -28,6 +25,7 @@ public class TutorialView{
 		w.setBackground(Color.GRAY);
 		jt.setFont(new Font(null, Font.BOLD, 14));
 		jt.setText("Welcome to TDI Tutorial\nPlease wait while the tutorial is loading");
+		jt.setLineWrap(true);
 		w.add(jt);
 		
 		w.setVisible(true);

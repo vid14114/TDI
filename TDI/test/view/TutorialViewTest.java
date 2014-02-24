@@ -1,4 +1,4 @@
-package tutorial;
+package view;
 
 import org.junit.Test;
 
