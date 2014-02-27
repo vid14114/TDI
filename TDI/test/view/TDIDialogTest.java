@@ -2,10 +2,8 @@ package view;
 
 import model.ConfigLoader;
 import model.PluginTableModel;
-
 import org.junit.Test;
-
-import controller.TDIActionListener;
+import controller.BigLogic;
 
 public class TDIDialogTest {
 
@@ -15,7 +13,7 @@ public class TDIDialogTest {
 				{ "PlugMeIn!", false }, { "B�stewogibtplugin", true },
 				{ "Plugin Nr.5", false }, };
 		PluginTableModel pluginTableModel = new PluginTableModel(rowData);
-		new TDIDialog(new TDIActionListener(pluginTableModel));
+		new TDIDialog(new BigLogic(), pluginTableModel);
 		//TDIDialog t = new TDIDialog();
 		while (true) {
 

@@ -1,5 +1,6 @@
 package controller;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
@@ -15,8 +16,9 @@ import view.Wallpaper;
 /**
  * Implements Runnable interface. Is Master, is big.
  */
-public class BigLogic implements Runnable {
+public class BigLogic implements Runnable, ActionListener {
 
+	private TDIDialog tdiDialog;
 	private ArrayList<Icon> icons;
 	private ArrayList<TDI> tdis;
 	private Server server;
@@ -361,7 +363,7 @@ public class BigLogic implements Runnable {
 		commands.add(command);
 	}
 	/**
-	 * checks if givenPos is in taskbar
+	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
 	private boolean PosInTaskbar(float x, float y)
@@ -386,12 +388,11 @@ public class BigLogic implements Runnable {
 
 	public BigLogic() {
 		ConfigLoader cl = new ConfigLoader();
-//		TDIDialog td = new TDIDialog(cl.getPlugins());
 		icons = cl.loadIcons();
 		Collections.sort(icons);
 //		wallpaper.setBackground(cl.loadWallpaper());
 //		wallpaper.setResolution(cl.loadScreensize());
-		server = new Server();
+		server = new Server("");
 		tdis = server.fullPose();
 		System.out.println(tdis.get(0).toString());
 		splitIcons();
@@ -417,6 +418,58 @@ public class BigLogic implements Runnable {
 				t.setIcons(new ArrayList<Icon>(icons.subList(fromIndex, fromIndex += f1)));
 			}
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// startTDI clicked
+		if (e.getActionCommand().equals("Start/Connect")){//TODO Choose name
+			tdiDialog.setErrorMessage("");
+			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) != null)
+				;
+		}
+	}
+	
+	/**
+	 * Checks if the entered IP has a valid format and converts it to an integer
+	 * 
+	 * @return int ip
+	 * @throws NumberFormatException
+	 * */
+	private String checkIp(String ip1, String ip2, String ip3, String ip4) {
+		int fullIP[] = new int[4];
+		String ip = null;
+		// Checks if appropriate length
+		if ((ip1.length() <= 3) && (ip2.length() <= 3)
+				&& (ip3.length() <= 3)
+				&& (ip4.length() <= 3)) {
+			// not null check
+			if ((ip1.length() > 0) && (ip2.length() > 0)
+					&& (ip3.length() > 0)
+					&& (ip4.length() > 0)) {
+				try {
+					// checks format
+					fullIP[0] = Integer.parseInt(ip1);
+					fullIP[1] = Integer.parseInt(ip2);
+					fullIP[2] = Integer.parseInt(ip3);
+					fullIP[3] = Integer.parseInt(ip4);
+
+					// checks ip<255
+					if ((fullIP[0] < 255) && (fullIP[1] < 255)
+							&& (fullIP[2] < 255) && (fullIP[3] < 255)) {
+						ip = fullIP[0] + "." + fullIP[1] + "." + fullIP[2]
+								+ "." + fullIP[3];
+						return ip;
+					} else
+						tdiDialog.setErrorMessage("Number must be <255");
+				} catch (NumberFormatException e) {
+					tdiDialog.setErrorMessage("Please enter only numbers");
+				}
+			} else
+				tdiDialog.setErrorMessage("Input must not be empty");
+		} else
+			tdiDialog.setErrorMessage("Input only in the following format: 000.000.000.000");
+		return ip;
 	}
 }
 

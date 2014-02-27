@@ -17,8 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import controller.TDIActionListener;
 import model.PluginTableModel;
 
 public class TDIDialog extends JDialog implements ActionListener {
@@ -46,7 +44,8 @@ public class TDIDialog extends JDialog implements ActionListener {
 	private JTextField ip2 = new JTextField();
 	private JTextField ip3 = new JTextField();
 	private JTextField ip4 = new JTextField();
-	private TDIActionListener tdiActionListener;
+	private ActionListener actionListener;
+	private PluginTableModel pluginTableModel;
 
 	// for errorMessages
 	JTextField errorMessage = new JTextField();
@@ -58,12 +57,13 @@ public class TDIDialog extends JDialog implements ActionListener {
 	Color colorContent = new Color(100);
 	Color colorHeader = new Color(200);
 
-	public TDIDialog(TDIActionListener tdiActionListener) {
-		super();
-		this.tdiActionListener = tdiActionListener;
-		setTitle("Tangible Desktop Items"); // Must be changed
+	public TDIDialog(ActionListener tdiActionListener, PluginTableModel pluginTableModel) {
+		super();		
+		setTitle("Tangible Desktop Items"); //TODO Must be changed
 		setSize(600, 600);
 		setLocation(400, 200);
+		this.actionListener = tdiActionListener;
+		this.pluginTableModel = pluginTableModel;
 		setContentPane(onWelcome());
 		setVisible(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -90,9 +90,9 @@ public class TDIDialog extends JDialog implements ActionListener {
 		connectButton.setPreferredSize(new Dimension(90, 30));
 
 		pluginButton.addActionListener(this);
-		restoreButton.addActionListener(tdiActionListener);
+		restoreButton.addActionListener(actionListener);
 		helpButton.addActionListener(this);
-		connectButton.addActionListener(tdiActionListener);
+		connectButton.addActionListener(actionListener);
 
 		// Buttons added to options panel
 		options.add(pluginButton);
@@ -136,7 +136,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 		// button parameters
 		// startTutorial.setLocation(1, 1);
 		startTutorialButton.setPreferredSize(new Dimension(90, 30));
-		startTutorialButton.addActionListener(tdiActionListener);
+		startTutorialButton.addActionListener(actionListener);
 
 		// helpContentPanel parameters
 		helpContentPanel.setVisible(true);
@@ -279,55 +279,9 @@ public class TDIDialog extends JDialog implements ActionListener {
 		ipPanel.updateUI();
 	}
 
-	/**
-	 * Checks if the entered IP has a valid format and converts it to an integer
-	 * 
-	 * @return int ip
-	 * @throws NumberFormatException
-	 * */
-	private String checkIp() {
-		int fullIP[] = new int[4];
-		String ip = "1.1.1.1";
-		// Checks if appropriate length
-		if ((ip1.getText().length() <= 3) && (ip2.getText().length() <= 3)
-				&& (ip3.getText().length() <= 3)
-				&& (ip4.getText().length() <= 3)) {
-			// not null check
-			if ((ip1.getText().length() > 0) && (ip2.getText().length() > 0)
-					&& (ip3.getText().length() > 0)
-					&& (ip4.getText().length() > 0)) {
-				try {
-					// checks format
-					fullIP[0] = Integer.parseInt(ip1.getText());
-					fullIP[1] = Integer.parseInt(ip2.getText());
-					fullIP[2] = Integer.parseInt(ip3.getText());
-					fullIP[3] = Integer.parseInt(ip4.getText());
-
-					// checks ip<255
-					if ((fullIP[0] < 255) && (fullIP[1] < 255)
-							&& (fullIP[2] < 255) && (fullIP[3] < 255)) {
-						ip = fullIP[0] + "." + fullIP[1] + "." + fullIP[2]
-								+ "." + fullIP[3];
-						return ip;
-					} else {
-						errorMessage.setText("Number must be <255");
-						ipPanel.updateUI();
-					}
-				} catch (NumberFormatException e) {
-					errorMessage.setText("Please enter only numbers");
-					ipPanel.updateUI();
-				}
-			} else {
-				errorMessage.setText("Input must not be empty");
-				ipPanel.updateUI();
-			}
-		} else {
-			errorMessage
-					.setText("input only in the following format: 000.000.000.000");
-			ipPanel.updateUI();
-			return ip;
-		}
-		return ip;
+	public void setErrorMessage(String message){
+		errorMessage.setText(message);
+		ipPanel.updateUI();
 	}
 
 	/**
@@ -336,7 +290,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 	public void onPlugin() {
 
 		content.removeAll();
-		final JTable table = new JTable(tdiActionListener.getPluginTableModel());
+		final JTable table = new JTable(pluginTableModel);
 		// table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		// table.setFillsViewportHeight(true);
 
@@ -350,8 +304,6 @@ public class TDIDialog extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent actionPerformed) {
-		// TODO Auto-generated method stub
-
 		// pluginButton clicked
 		if (actionPerformed.getSource() == pluginButton) {
 			onPlugin();
@@ -362,23 +314,38 @@ public class TDIDialog extends JDialog implements ActionListener {
 			onHelp();
 		}
 
-		// restoreButton clicked
-		if (actionPerformed.getSource() == restoreButton) {
-			System.out.println("Restore");
-		}
-
 		// connectButton clicked
 		if (actionPerformed.getSource() == connectButton) {
 			onConnect();
 		}
-		// startTDI clicked
-		if (actionPerformed.getSource() == startTDI) {
-			System.out.println("start the TDI connection");
-			errorMessage.setText("");
-			content.updateUI();
-			checkIp();
-			// start Program/ BigLogic (Is Master, is big).
-		}
+	}
+
+	/**
+	 * @return the ip1
+	 */
+	public JTextField getIp1() {
+		return ip1;
+	}
+
+	/**
+	 * @return the ip2
+	 */
+	public JTextField getIp2() {
+		return ip2;
+	}
+
+	/**
+	 * @return the ip3
+	 */
+	public JTextField getIp3() {
+		return ip3;
+	}
+
+	/**
+	 * @return the ip4
+	 */
+	public JTextField getIp4() {
+		return ip4;
 	}
 
 }
