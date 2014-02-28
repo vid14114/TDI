@@ -14,6 +14,14 @@ import view.Wallpaper;
 
 /**
  * Implements Runnable interface. Is Master, is big.
+ * rotation(z,x,y) [annahme]
+ * Info:
+ * rechts neigen => x alt > x neu
+ * links neigen => x alt < x neu
+ * oben neigen => y alt > y neu
+ * runter neigen => y alt < y neu
+ * rechts drehen => z alt > z neu 
+ * links drehen => z alt < z neu
  */
 public class BigLogic implements Runnable {
 
@@ -71,7 +79,7 @@ public class BigLogic implements Runnable {
 								(tdi.getPosition()[0]+compVal != command.getPosition()[1] || tdi.getPosition()[0]-compVal != command.getPosition()[1]))) // if x or y axis changed
 						{
 							//SZENARIO A DM
-							if(tdi.getState()=="desktop") // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
+							if(tdi.getState().equals("desktop")) // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
 							{
 								if(tdi.getLocked() == false)
 								{
@@ -100,7 +108,7 @@ public class BigLogic implements Runnable {
 									}
 								}
 							}
-							if(tdi.getState()=="taskbar")
+							if(tdi.getState().equals("taskbar"))
 							{
 								if(ProgramHandler.getRunningPrograms().size()>0) //if programs are open (at least 1)
 								{
@@ -112,7 +120,7 @@ public class BigLogic implements Runnable {
 									{
 										for(TDI t: tdis) // find out if any other TDI has focused a window
 										{
-											if(t.getState()=="window")
+											if(t.getState().equals("window"))
 												windFocused=t;
 										}
 										if(windFocused != null)
@@ -153,11 +161,11 @@ public class BigLogic implements Runnable {
 									}
 								}
 							}
-							if(tdi.getState()=="window")
+							if(tdi.getState().equals("window"))
 							{
 								for(TDI t: tdis) // find out taskbar tdi
 								{
-									if(t.getState()=="taskbar")
+									if(t.getState().equals("taskbar"))
 										taskFocused=t;
 									
 								}
@@ -189,9 +197,9 @@ public class BigLogic implements Runnable {
 									//tdi.getIcons().get(0).setPosition(); new position of program window
 								}
 							}
-							if(tdi.getState()=="inapp")
+							if(tdi.getState().equals("inapp"))
 							{
-								//TODO ?
+								//TODO Server var.
 							}
 						}
 					}	
@@ -199,14 +207,14 @@ public class BigLogic implements Runnable {
 					//TODO change rotation  => 1 wert drehen 2 werte neigen 
 					//welcher der Werte ist neigen (jeweils positiv verändert / negativ verändert) = 4 werte
 					if (tdi.getRotation() != command.getRotation()) {
-						if(tdi.getState()=="desktop")
+						if(tdi.getState().equals("desktop"))
 						{
 							//nach rechts neigen
 							if (tdi.getRotation()[1] != command.getRotation()[1])
 								tdi.toggleLock();
 							//tdi.toggleGreenLED();//TODO
 						}
-						if(tdi.getState()=="window")
+						if(tdi.getState().equals("window"))
 						{
 							//nach oben
 							if (tdi.getRotation()[0] != command.getRotation()[0])
@@ -241,7 +249,7 @@ public class BigLogic implements Runnable {
 								};	
 							}
 						}
-						if(tdi.getState()=="taskbar")
+						if(tdi.getState().equals("taskbar"))
 						{
 
 							/* TDI nach oben neigen
@@ -252,7 +260,7 @@ public class BigLogic implements Runnable {
 								ProgramHandler.restoreAllPrograms();
 								if(ProgramHandler.isDesktopMode())
 								{
-									if(tdis.get(1).getState()!="taskbar")
+									if(!(tdis.get(1).getState().equals("taskbar")))
 									{
 										tdis.get(1).setState("window");
 										tdis.get(1).setPosition(1, 1, 1); // to maximised window
@@ -267,7 +275,7 @@ public class BigLogic implements Runnable {
 								{
 									for(TDI t:tdis)
 									{
-										if(t.getState()=="window")
+										if(t.getState().equals("window"))
 										{
 											t.setPosition(1, 1, 1); // to maximised window
 										}
@@ -288,7 +296,7 @@ public class BigLogic implements Runnable {
 								ProgramHandler.minimizeAllPrograms();
 								for(TDI t:tdis)
 								{
-									if(t.getState()=="window")
+									if(t.getState().equals("window"))
 									{
 										t.setState("desktop");
 										tdi.setPosition(1, 1, 1);
@@ -305,7 +313,7 @@ public class BigLogic implements Runnable {
 					// drehen
 					if(tdi.getRotation() != command.getRotation())
 					{
-						if(tdi.getState()=="taskbar")
+						if(tdi.getState().equals("taskbar"))
 						{
 							//nicht im Skaliermodus
 							if(tdi.getIsScale()==false)
@@ -324,7 +332,7 @@ public class BigLogic implements Runnable {
 								}
 							}
 						}
-						if(tdi.getState()=="desktop")
+						if(tdi.getState().equals("desktop"))
 						{
 							//nach links Das vorherige Icon, wofür das TDI zuständig ist wird ausgewählt
 							if(tdi.getRotation()[0] > command.getRotation()[0])
@@ -339,7 +347,7 @@ public class BigLogic implements Runnable {
 								tdi.getIcons().set(0, tdi.getIcons().get(1));
 							}
 						}
-						if(tdi.getState()=="inapp")
+						if(tdi.getState().equals("inapp"))
 						{
 							//nach rechts neigen
 							if(tdi.getRotation()[0] > command.getRotation()[0])
