@@ -92,7 +92,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 		pluginButton.addActionListener(this);
 		restoreButton.addActionListener(tdiActionListener);
 		helpButton.addActionListener(this);
-		connectButton.addActionListener(tdiActionListener);
+		connectButton.addActionListener(this);
 
 		// Buttons added to options panel
 		options.add(pluginButton);
