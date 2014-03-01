@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import model.ConfigLoader;
+import model.PluginTableModel;
 import model.Server;
 import view.Icon;
 import view.TDI;
@@ -19,6 +20,8 @@ import view.Wallpaper;
 public class BigLogic implements Runnable, ActionListener {
 
 	private TDIDialog tdiDialog;
+	private PluginTableModel pluginTableModel;
+	ConfigLoader configLoader;
 	private ArrayList<Icon> icons;
 	private ArrayList<TDI> tdis;
 	private Server server;
@@ -33,7 +36,7 @@ public class BigLogic implements Runnable, ActionListener {
 	int compVal = 5;
 	float compVal2[]={5,5,5};
 	/**
-	 * times(1 = 100ms) to wait for scaling
+	 * times(1s = 100ms) to wait for scaling
 	 */
 	private int waitTime=5; 
 
@@ -356,13 +359,6 @@ public class BigLogic implements Runnable, ActionListener {
 	}
 
 	/**
-	 *
-	 * @param command
-	 */
-	public void addCommand(TDI command) {
-		commands.add(command);
-	}
-	/**
 	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
@@ -387,8 +383,8 @@ public class BigLogic implements Runnable, ActionListener {
 	}
 
 	public BigLogic() {
-		ConfigLoader cl = new ConfigLoader();
-		icons = cl.loadIcons();
+		configLoader = new ConfigLoader();
+		icons = configLoader.loadIcons();
 		Collections.sort(icons);
 //		wallpaper.setBackground(cl.loadWallpaper());
 //		wallpaper.setResolution(cl.loadScreensize());
@@ -422,11 +418,27 @@ public class BigLogic implements Runnable, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// startTDI clicked
-		if (e.getActionCommand().equals("Start/Connect")){//TODO Choose name
-			tdiDialog.setErrorMessage("");
-			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) != null)
-				;
+		tdiDialog.setErrorMessage("");
+		if(e.getActionCommand().equals("Restore"));
+			//TODO Restore;
+		else
+		{			
+			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) == null) return;			
+			//IP address is correct
+			new Runnable() {
+				public void run() {
+					String[] plugins = new String[pluginTableModel.getRowCount()];
+					for(int i = 0, i2 = 0; i < plugins.length; i++)
+						if((boolean)pluginTableModel.getValueAt(i, 1) == true) 
+							plugins[i2++] = (String) pluginTableModel.getValueAt(i, 0);
+					Executor.startPlugins(plugins);
+					configLoader.savePlugins(plugins);						
+				}
+			}.run();
+			// startTDI clicked
+			if (e.getActionCommand().equals("Start/Connect"));//TODO Choose name
+				//TODO Start server				
+			if(e.getActionCommand().equals("Tutorial")); //TODO STart Tutorial
 		}
 	}
 	
