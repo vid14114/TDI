@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TDI {
 
-	enum State{
+	public enum TDIState{
 		inapp,desktop,taskbar,window,sleep;
 	}
 	/**
@@ -16,7 +16,7 @@ public class TDI {
 	private ArrayList<Icon> icons;	
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
-	private State state;
+	private TDIState state;
 	private boolean locked;
 	private boolean isScale;
 
@@ -24,10 +24,12 @@ public class TDI {
 		return this.position;
 	}
 
-	public String getState()
+	public Enum<TDIState> getState()
 	{
-		return state.toString();
+		return state;
+		
 	}
+	
 	public void setState(String state)
 	{
 		//this.state = state;
