@@ -384,35 +384,22 @@ public class BigLogic implements Runnable, ActionListener {
 
 	public BigLogic() {
 		configLoader = new ConfigLoader();
+		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
+		tdiDialog=new TDIDialog(this, ptm); //TODO Connect tab...
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-//		wallpaper.setBackground(cl.loadWallpaper());
-//		wallpaper.setResolution(cl.loadScreensize());
-		server = new Server("");
-		tdis = server.fullPose();
-		System.out.println(tdis.get(0).toString());
-		splitIcons();
-		Timer mo = new Timer();
-		mo.scheduleAtFixedRate(new TimerTask() {
-
-			@Override
-			public void run() {
-				ArrayList<TDI> tdis = server.fullPose();
-				for (TDI t : tdis) {
-					commands.add(t);
-				}
-			}
-		}, 0, 500);
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
 	}
 	
 	public void splitIcons() {
-		float f = icons.size() / tdis.size();
-		if (icons.size() % tdis.size() == 0) {
-			for (TDI t : tdis) {
-				int f1 = (int) f;
-				int fromIndex = 0;
-				t.setIcons(new ArrayList<Icon>(icons.subList(fromIndex, fromIndex += f1)));
-			}
+		int iconsAssigned = 0;
+		for (int i = 0; i < tdis.size(); i++) {
+			int f = (icons.size() - iconsAssigned) / (tdis.size() - i);
+			if ((icons.size() - iconsAssigned) % (tdis.size() - i) > 0)
+				f++;
+			tdis.get(i).setIcons(
+					new ArrayList<Icon>(icons.subList(iconsAssigned,
+							iconsAssigned += f)));
 		}
 	}
 
@@ -436,9 +423,25 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}.run();
 			// startTDI clicked
-			if (e.getActionCommand().equals("Start/Connect"));//TODO Choose name
-				//TODO Start server				
-			if(e.getActionCommand().equals("Tutorial")); //TODO STart Tutorial
+			if (e.getActionCommand().equals("Start/Connect"))//TODO Choose name
+				{
+					server = new Server("");
+					tdis = server.fullPose();
+					splitIcons();
+					//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
+					Timer mo = new Timer();
+					mo.scheduleAtFixedRate(new TimerTask() {
+	
+						@Override
+						public void run() {
+							ArrayList<TDI> tdis = server.fullPose();
+							for (TDI t : tdis) {
+								commands.add(t);
+							}
+						}
+					}, 0, 500);
+				}				
+			if(e.getActionCommand().equals("Tutorial")); //TODO Start Tutorial
 		}
 	}
 	
