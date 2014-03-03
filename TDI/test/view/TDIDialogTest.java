@@ -10,7 +10,7 @@ public class TDIDialogTest {
 	@Test
 	public void test() {
 		Object rowData[][] = { { "Music", true }, { "Anilator", true },
-				{ "PlugMeIn!", false }, { "B�stewogibtplugin", true },
+				{ "PlugMeIn!", false }, { "Baestewogibtplugin", true },
 				{ "Plugin Nr.5", false }, };
 		PluginTableModel pluginTableModel = new PluginTableModel(rowData);
 		new TDIDialog(new BigLogic(), pluginTableModel);

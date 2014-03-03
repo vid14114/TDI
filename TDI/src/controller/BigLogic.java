@@ -387,15 +387,15 @@ public class BigLogic implements Runnable, ActionListener {
 	}
 
 	public BigLogic() {
-		ConfigLoader cl = new ConfigLoader();
-		icons = cl.loadIcons();
-		Collections.sort(icons);
+//		ConfigLoader cl = new ConfigLoader();
+//		icons = cl.loadIcons();
+//		Collections.sort(icons);
 //		wallpaper.setBackground(cl.loadWallpaper());
 //		wallpaper.setResolution(cl.loadScreensize());
-		server = new Server("");
-		tdis = server.fullPose();
-		System.out.println(tdis.get(0).toString());
-		splitIcons();
+//		server = new Server("");
+//		tdis = server.fullPose();
+//		System.out.println(tdis.get(0).toString());
+//		splitIcons();
 		Timer mo = new Timer();
 		mo.scheduleAtFixedRate(new TimerTask() {
 
