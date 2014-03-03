@@ -403,12 +403,12 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}
 		}, 0, 500);
-		configLoader = new ConfigLoader();
-		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
-		tdiDialog=new TDIDialog(this, ptm); //TODO Connect tab...
-		icons = configLoader.loadIcons();
-		Collections.sort(icons);
-		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
+//		configLoader = new ConfigLoader();
+//		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
+//		tdiDialog=new TDIDialog(this, ptm); //TODO Connect tab...
+//		icons = configLoader.loadIcons();
+//		Collections.sort(icons);
+//		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
 	}
 	
 	public void splitIcons() {
