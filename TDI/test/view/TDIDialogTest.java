@@ -14,7 +14,7 @@ public class TDIDialogTest {
 				{ "Plugin Nr.5", false }, };
 		PluginTableModel pluginTableModel = new PluginTableModel(rowData);
 		new TDIDialog(new BigLogic(), pluginTableModel);
-		//TDIDialog t = new TDIDialog();
+		//TDIDialog t = new TDIDialog(); 
 		while (true) {
 
 		}
