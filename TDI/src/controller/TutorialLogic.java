@@ -56,7 +56,7 @@ public class TutorialLogic implements Runnable{
 		tv.setText("10/11 In-App Mode\nVery good! To switch between indivdual programs, all you have to do is turn the Taskbar-TDI right or left "
 				+ "and to minimize all programs you tilt the Taskbar-TDI down. Let us try to resize the currently focused window, this is quite complicate so read well."
 				+ "To do that, move the Taskbar TDI close the In-App Mode TDI and wait for a second. The TDIs will enter into scale mode.");
-		while(!tdi.getIsScale());
+		while(!tdi.isScale());
 		tv.setText("11/11 Scale Mode\nTo resize the program, all you have to do is move the TDIs. Play around with resize mode a bit");
 		try {
 			Thread.sleep(3000);

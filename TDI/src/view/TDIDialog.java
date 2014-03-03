@@ -40,7 +40,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 	private JButton helpButton = new JButton("!S.O.S!");
 	private JButton connectButton = new JButton("Start");// button to open ip input field
 	private JButton startTDI = new JButton("start TDI");// button to start actual program
-	private JButton startTutorialButton = new JButton("start tutorial");
+	private JButton startTutorialButton = new JButton("Tutorial starten");
 
 	// creating textbox for ip-insert
 	private JTextField ip1 = new JTextField();

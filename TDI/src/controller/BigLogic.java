@@ -11,6 +11,7 @@ import model.PluginTableModel;
 import model.Server;
 import view.Icon;
 import view.TDI;
+import view.TDI.TDIState;
 import view.TDIDialog;
 import view.Wallpaper;
 
@@ -76,7 +77,7 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BigLogic bl = new BigLogic();
+		new Thread(new BigLogic()).start();
 	}
 
 	/**
@@ -88,6 +89,7 @@ public class BigLogic implements Runnable, ActionListener {
 			if (commands.size() > 0) {
 				if (tdis.contains(commands.get(0))) {
 					TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
+					System.out.println(tdi.toString());
 					TDI command = commands.get(0);
 					float[] movParam = new float[3];
 					TDI windFocused=null;
@@ -107,7 +109,7 @@ public class BigLogic implements Runnable, ActionListener {
 									}
 									else // neue pos in taskbar => setzen des Tdi in taskbar mode öffen von program
 									{
-										tdi.setState("taskbar");
+										tdi.setState(TDIState.taskbar);
 										ProgramHandler.openProgram(tdi.getIcons().get(0)); //open active icon
 										//Vibrate(); //500ms TODO
 										//setLedRed(); TODO
@@ -116,11 +118,11 @@ public class BigLogic implements Runnable, ActionListener {
 										{
 											// TODO set position
 											tdis.get(tdis.indexOf(commands.get(x))).setPosition(0, 0, 0+y); // irgendwo am Rand des Tisches (+y damit sie nicht aufeinander fahren)
-											tdis.get(tdis.indexOf(commands.get(x))).setState("default"); //
+											tdis.get(tdis.indexOf(commands.get(x))).setState(TDIState.sleep); //
 											//setLedGreen(); TODO
 
 											//set one tdi in window mode - position = middle of the desk 
-											tdis.get(tdis.indexOf(commands.get(1))).setState("window");
+											tdis.get(tdis.indexOf(commands.get(1))).setState(TDIState.window);
 											tdis.get(tdis.indexOf(commands.get(1))).setPosition(0, 0, 0); // TODO set position
 										}
 									}
@@ -174,7 +176,7 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									for(int x=0; x < tdis.size() ;x++) // set evry tdi in desktop mode cause no programs are open
 									{
-										tdis.get(tdis.indexOf(commands.get(x))).setState("desktop"); //?
+										tdis.get(tdis.indexOf(commands.get(x))).setState(TDIState.desktop); //?
 										tdis.get(tdis.indexOf(commands.get(x))).setPosition(1, 1, 1);// TODO set position
 									}
 								}
@@ -239,7 +241,7 @@ public class BigLogic implements Runnable, ActionListener {
 								ProgramHandler.toggleMaximization();
 								if(ProgramHandler.getNonMinimized()==0)
 								{
-									tdi.setState("desktop");
+									tdi.setState(TDIState.desktop);
 									tdi.setPosition(1, 1, 1);
 									splitIcons();
 								}
@@ -255,7 +257,7 @@ public class BigLogic implements Runnable, ActionListener {
 								ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons
 								if(ProgramHandler.isDesktopMode())
 								{
-									tdi.setState("desktop");
+									tdi.setState(TDIState.desktop);
 									tdi.setPosition(1, 1, 1); // TODO set pos
 									splitIcons();
 								}
@@ -279,12 +281,12 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									if(!(tdis.get(1).getState().equals("taskbar")))
 									{
-										tdis.get(1).setState("window");
+										tdis.get(1).setState(TDIState.window);
 										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
 									}
 									else
 									{
-										tdis.get(2).setState("window");
+										tdis.get(2).setState(TDIState.window);
 										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
 									}
 								}
@@ -306,7 +308,7 @@ public class BigLogic implements Runnable, ActionListener {
 								ProgramHandler.closeAllPrograms();
 								for(TDI t:tdis)
 								{
-									t.setState("desktop");
+									t.setState(TDIState.desktop);
 								}
 							}
 							// TDI nach unten neigen
@@ -316,7 +318,7 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									if(t.getState().equals("window"))
 									{
-										t.setState("desktop");
+										t.setState(TDIState.desktop);
 										tdi.setPosition(1, 1, 1);// TODO set pos
 										splitIcons();
 									}
@@ -329,7 +331,7 @@ public class BigLogic implements Runnable, ActionListener {
 							//nach rechts neigen
 							if(tdi.getRotation()[1] > command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot)
 							{
-								tdi.setState("window");
+								tdi.setState(TDIState.window);
 								// TODO server var
 							}
 						}
@@ -342,7 +344,7 @@ public class BigLogic implements Runnable, ActionListener {
 						if(tdi.getState().equals("taskbar"))
 						{
 							//nicht im Skaliermodus
-							if(tdi.getIsScale()==false)
+							if(tdi.isScale()==false)
 							{
 								//nach links Das vorherige Fenster in der Taskleiste wird fokussiert
 								if(tdi.getRotation()[0] < command.getRotation()[0]+compRot || tdi.getRotation()[0] < command.getRotation()[0]-compRot)
@@ -375,8 +377,11 @@ public class BigLogic implements Runnable, ActionListener {
 						}
 					}
 				}
+				Executor.saveBackground(wallpaper.markArea(tdis));
 			}
+			
 		}
+		
 	}
 
 	/**
@@ -405,8 +410,8 @@ public class BigLogic implements Runnable, ActionListener {
 
 	public BigLogic() {
 		configLoader = new ConfigLoader();
-		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
-		tdiDialog=new TDIDialog(this, ptm);
+		pluginTableModel=new PluginTableModel(configLoader.getPlugins());
+		tdiDialog=new TDIDialog(this, pluginTableModel);
 		
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
@@ -431,8 +436,9 @@ public class BigLogic implements Runnable, ActionListener {
 		if(e.getActionCommand().equals("Restore"));
 			//TODO Restore;
 		else
-		{			
-			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) == null) return;			
+		{		
+			String ip;
+			if( (ip = checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText())) == null) return;			
 			//IP address is correct
 			new Runnable() {
 				public void run() {
@@ -444,7 +450,7 @@ public class BigLogic implements Runnable, ActionListener {
 					configLoader.savePlugins(plugins);						
 				}
 			}.run();
-			server = new Server("");
+			server = new Server("192.168.43.12");
 			tdis = server.fullPose();
 			splitIcons();
 			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
@@ -454,17 +460,15 @@ public class BigLogic implements Runnable, ActionListener {
 				@Override
 				public void run() {
 					ArrayList<TDI> tdis = server.fullPose();
-					for (TDI t : tdis) {
-						commands.add(t);
-					}
+					if(tdis!=null)
+						for (TDI t : tdis)
+							commands.add(t);
 				}
 			}, 0, 500);
 			// startTDI clicked
-			if (e.getActionCommand().equals("Start/Connect"))//TODO Choose name
-				{
-					
-				}				
-			if(e.getActionCommand().equals("Tutorial")); //TODO Start Tutorial
+			if (e.getActionCommand().equals("Start/Connect"));//TODO Choose name			
+			if(e.getActionCommand().equals("Tutorial starten"))
+				new Thread(new TutorialLogic(tdis)).start();
 		}
 	}
 	

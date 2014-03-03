@@ -18,7 +18,7 @@ public class TDI {
 	private ArrayList<Icon> icons;	
 	private float[] position = new float[3];
 	private float[] rotation = new float[3];
-	private TDIState state;
+	private TDIState state=TDIState.desktop;
 	private boolean locked;
 	private boolean isScale;
 
@@ -32,15 +32,16 @@ public class TDI {
 		
 	}
 	
-	public void setState(String state)
+	public void setState(TDIState state)
 	{
-		//this.state = state;
+		this.state = state;
 	}
+	
 	public boolean getLocked()
 	{
 		return locked;
 	}
-	public boolean getIsScale()
+	public boolean isScale()
 	{
 		return isScale;
 	}
@@ -115,7 +116,22 @@ public class TDI {
 		String s="TDI [id=" + id + ", icons=" + icons;
 		s+=", position="+ Arrays.toString(position);
 		s+=", rotation="+ Arrays.toString(rotation);
-		s+=", locked="+ locked + "]";
+		s+=", locked="+ locked;
+		s+=", state="+ state + "]";
 		return s;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TDI other = (TDI) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 }

@@ -21,8 +21,6 @@ public class Server {
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
-	public boolean forwarding = false; // if the inputs are forwarded to a
-										// plugin
 
 	public Server(String ip) {
 		try {
@@ -64,8 +62,9 @@ public class Server {
 				rot[0]=(float) ((float) angles[0]*180/Math.PI);
 				rot[1]=(float) ((float) angles[1]*180/Math.PI);
 				rot[2]=(float) ((float) angles[2]*180/Math.PI);
+				if(rot[0]==-180)
+					return null;
 				TDI t = new TDI(id, x, y, z, rot);
-				System.out.println(t.toString());
 				tdis.add(t);
 				read.mark(9);
 			}
