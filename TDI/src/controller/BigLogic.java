@@ -383,32 +383,13 @@ public class BigLogic implements Runnable, ActionListener {
 	}
 
 	public BigLogic() {
-//		ConfigLoader cl = new ConfigLoader();
-//		icons = cl.loadIcons();
-//		Collections.sort(icons);
-//		wallpaper.setBackground(cl.loadWallpaper());
-//		wallpaper.setResolution(cl.loadScreensize());
-//		server = new Server("");
-//		tdis = server.fullPose();
-//		System.out.println(tdis.get(0).toString());
-//		splitIcons();
-		Timer mo = new Timer();
-		mo.scheduleAtFixedRate(new TimerTask() {
-
-			@Override
-			public void run() {
-				ArrayList<TDI> tdis = server.fullPose();
-				for (TDI t : tdis) {
-					commands.add(t);
-				}
-			}
-		}, 0, 500);
-//		configLoader = new ConfigLoader();
-//		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
-//		tdiDialog=new TDIDialog(this, ptm); //TODO Connect tab...
-//		icons = configLoader.loadIcons();
-//		Collections.sort(icons);
-//		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
+		configLoader = new ConfigLoader();
+		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
+		tdiDialog=new TDIDialog(this, ptm);
+		
+		icons = configLoader.loadIcons();
+		Collections.sort(icons);
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
 	}
 	
 	public void splitIcons() {
@@ -442,24 +423,25 @@ public class BigLogic implements Runnable, ActionListener {
 					configLoader.savePlugins(plugins);						
 				}
 			}.run();
+			server = new Server("");
+			tdis = server.fullPose();
+			splitIcons();
+			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
+			Timer mo = new Timer();
+			mo.scheduleAtFixedRate(new TimerTask() {
+
+				@Override
+				public void run() {
+					ArrayList<TDI> tdis = server.fullPose();
+					for (TDI t : tdis) {
+						commands.add(t);
+					}
+				}
+			}, 0, 500);
 			// startTDI clicked
 			if (e.getActionCommand().equals("Start/Connect"))//TODO Choose name
 				{
-					server = new Server("");
-					tdis = server.fullPose();
-					splitIcons();
-					//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
-					Timer mo = new Timer();
-					mo.scheduleAtFixedRate(new TimerTask() {
-	
-						@Override
-						public void run() {
-							ArrayList<TDI> tdis = server.fullPose();
-							for (TDI t : tdis) {
-								commands.add(t);
-							}
-						}
-					}, 0, 500);
+					
 				}				
 			if(e.getActionCommand().equals("Tutorial")); //TODO Start Tutorial
 		}
