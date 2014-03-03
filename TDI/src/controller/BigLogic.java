@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import model.ConfigLoader;
+import model.PluginTableModel;
 import model.Server;
 import view.Icon;
 import view.TDI;
@@ -19,6 +20,8 @@ import view.Wallpaper;
 public class BigLogic implements Runnable, ActionListener {
 
 	private TDIDialog tdiDialog;
+	private PluginTableModel pluginTableModel;
+	ConfigLoader configLoader;
 	private ArrayList<Icon> icons;
 	private ArrayList<TDI> tdis;
 	private Server server;
@@ -33,7 +36,7 @@ public class BigLogic implements Runnable, ActionListener {
 	int compVal = 5;
 	float compVal2[]={5,5,5};
 	/**
-	 * times(1 = 100ms) to wait for scaling
+	 * times(1s = 100ms) to wait for scaling
 	 */
 	private int waitTime=5; 
 
@@ -356,13 +359,6 @@ public class BigLogic implements Runnable, ActionListener {
 	}
 
 	/**
-	 *
-	 * @param command
-	 */
-	public void addCommand(TDI command) {
-		commands.add(command);
-	}
-	/**
 	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
@@ -407,26 +403,65 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}
 		}, 0, 500);
+		configLoader = new ConfigLoader();
+		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
+		tdiDialog=new TDIDialog(this, ptm); //TODO Connect tab...
+		icons = configLoader.loadIcons();
+		Collections.sort(icons);
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
 	}
 	
 	public void splitIcons() {
-		float f = icons.size() / tdis.size();
-		if (icons.size() % tdis.size() == 0) {
-			for (TDI t : tdis) {
-				int f1 = (int) f;
-				int fromIndex = 0;
-				t.setIcons(new ArrayList<Icon>(icons.subList(fromIndex, fromIndex += f1)));
-			}
+		int iconsAssigned = 0;
+		for (int i = 0; i < tdis.size(); i++) {
+			int f = (icons.size() - iconsAssigned) / (tdis.size() - i);
+			if ((icons.size() - iconsAssigned) % (tdis.size() - i) > 0)
+				f++;
+			tdis.get(i).setIcons(
+					new ArrayList<Icon>(icons.subList(iconsAssigned,
+							iconsAssigned += f)));
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// startTDI clicked
-		if (e.getActionCommand().equals("Start/Connect")){//TODO Choose name
-			tdiDialog.setErrorMessage("");
-			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) != null)
-				;
+		tdiDialog.setErrorMessage("");
+		if(e.getActionCommand().equals("Restore"));
+			//TODO Restore;
+		else
+		{			
+			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) == null) return;			
+			//IP address is correct
+			new Runnable() {
+				public void run() {
+					String[] plugins = new String[pluginTableModel.getRowCount()];
+					for(int i = 0, i2 = 0; i < plugins.length; i++)
+						if((boolean)pluginTableModel.getValueAt(i, 1) == true) 
+							plugins[i2++] = (String) pluginTableModel.getValueAt(i, 0);
+					Executor.startPlugins(plugins);
+					configLoader.savePlugins(plugins);						
+				}
+			}.run();
+			// startTDI clicked
+			if (e.getActionCommand().equals("Start/Connect"))//TODO Choose name
+				{
+					server = new Server("");
+					tdis = server.fullPose();
+					splitIcons();
+					//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
+					Timer mo = new Timer();
+					mo.scheduleAtFixedRate(new TimerTask() {
+	
+						@Override
+						public void run() {
+							ArrayList<TDI> tdis = server.fullPose();
+							for (TDI t : tdis) {
+								commands.add(t);
+							}
+						}
+					}, 0, 500);
+				}				
+			if(e.getActionCommand().equals("Tutorial")); //TODO Start Tutorial
 		}
 	}
 	
