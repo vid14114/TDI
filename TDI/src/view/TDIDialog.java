@@ -92,7 +92,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 
 		BufferedImage logo = null;
 		try {
-			logo = ImageIO.read(new File("images/TDI.png"));
+			logo = ImageIO.read(new File("images/tdi.jpg"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			System.out.print("Image not found");
@@ -121,8 +121,8 @@ public class TDIDialog extends JDialog implements ActionListener {
 		options.add(connectButton);
 
 		// Panels added to main panel
-	//	main.add(content);
-	//	main.add(options);
+		main.add(content);
+		main.add(options);
 		main.add(header);
 		return main;
 	}
