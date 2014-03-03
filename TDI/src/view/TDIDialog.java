@@ -56,6 +56,7 @@ public class TDIDialog extends JDialog implements ActionListener {
 	// Panel used for onConnect ip insertion
 	private JPanel ipPanel = new JPanel(new FlowLayout());
 
+	//test
 	// background colors
 	Color colorContent = new Color(240,248,255);
 	Color colorHeader = new Color(240,248,255);
