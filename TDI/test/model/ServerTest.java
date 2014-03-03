@@ -60,7 +60,7 @@ public class ServerTest implements Runnable {
 				}
 			}
 		}).start();
-		Server s = new Server();
+		Server s = new Server("192.168.1.2"); //TODO test case
 			ArrayList<TDI> t = s.fullPose();
 			System.out.println(t1.toString());
 			System.out.println(t.get(0).toString());

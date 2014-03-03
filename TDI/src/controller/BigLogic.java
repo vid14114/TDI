@@ -1,11 +1,13 @@
 package controller;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import model.ConfigLoader;
+import model.PluginTableModel;
 import model.Server;
 import view.Icon;
 import view.TDI;
@@ -15,8 +17,11 @@ import view.Wallpaper;
 /**
  * Implements Runnable interface. Is Master, is big.
  */
-public class BigLogic implements Runnable {
+public class BigLogic implements Runnable, ActionListener {
 
+	private TDIDialog tdiDialog;
+	private PluginTableModel pluginTableModel;
+	ConfigLoader configLoader;
 	private ArrayList<Icon> icons;
 	private ArrayList<TDI> tdis;
 	private Server server;
@@ -31,7 +36,7 @@ public class BigLogic implements Runnable {
 	int compVal = 5;
 	float compVal2[]={5,5,5};
 	/**
-	 * times(1 = 100ms) to wait for scaling
+	 * times(1s = 100ms) to wait for scaling
 	 */
 	private int waitTime=5; 
 
@@ -354,14 +359,7 @@ public class BigLogic implements Runnable {
 	}
 
 	/**
-	 *
-	 * @param command
-	 */
-	public void addCommand(TDI command) {
-		commands.add(command);
-	}
-	/**
-	 * checks if givenPos is in taskbar
+	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
 	private boolean PosInTaskbar(float x, float y)
@@ -385,38 +383,110 @@ public class BigLogic implements Runnable {
 	}
 
 	public BigLogic() {
-		ConfigLoader cl = new ConfigLoader();
-//		TDIDialog td = new TDIDialog(cl.getPlugins());
-		icons = cl.loadIcons();
+		configLoader = new ConfigLoader();
+		PluginTableModel ptm=new PluginTableModel(configLoader.getPlugins());
+		tdiDialog=new TDIDialog(this, ptm);
+		
+		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-//		wallpaper.setBackground(cl.loadWallpaper());
-//		wallpaper.setResolution(cl.loadScreensize());
-		server = new Server();
-		tdis = server.fullPose();
-		System.out.println(tdis.get(0).toString());
-		splitIcons();
-		Timer mo = new Timer();
-		mo.scheduleAtFixedRate(new TimerTask() {
-
-			@Override
-			public void run() {
-				ArrayList<TDI> tdis = server.fullPose();
-				for (TDI t : tdis) {
-					commands.add(t);
-				}
-			}
-		}, 0, 500);
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
 	}
 	
 	public void splitIcons() {
-		float f = icons.size() / tdis.size();
-		if (icons.size() % tdis.size() == 0) {
-			for (TDI t : tdis) {
-				int f1 = (int) f;
-				int fromIndex = 0;
-				t.setIcons(new ArrayList<Icon>(icons.subList(fromIndex, fromIndex += f1)));
-			}
+		int iconsAssigned = 0;
+		for (int i = 0; i < tdis.size(); i++) {
+			int f = (icons.size() - iconsAssigned) / (tdis.size() - i);
+			if ((icons.size() - iconsAssigned) % (tdis.size() - i) > 0)
+				f++;
+			tdis.get(i).setIcons(
+					new ArrayList<Icon>(icons.subList(iconsAssigned,
+							iconsAssigned += f)));
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		tdiDialog.setErrorMessage("");
+		if(e.getActionCommand().equals("Restore"));
+			//TODO Restore;
+		else
+		{			
+			if(checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText()) == null) return;			
+			//IP address is correct
+			new Runnable() {
+				public void run() {
+					String[] plugins = new String[pluginTableModel.getRowCount()];
+					for(int i = 0, i2 = 0; i < plugins.length; i++)
+						if((boolean)pluginTableModel.getValueAt(i, 1) == true) 
+							plugins[i2++] = (String) pluginTableModel.getValueAt(i, 0);
+					Executor.startPlugins(plugins);
+					configLoader.savePlugins(plugins);						
+				}
+			}.run();
+			server = new Server("");
+			tdis = server.fullPose();
+			splitIcons();
+			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
+			Timer mo = new Timer();
+			mo.scheduleAtFixedRate(new TimerTask() {
+
+				@Override
+				public void run() {
+					ArrayList<TDI> tdis = server.fullPose();
+					for (TDI t : tdis) {
+						commands.add(t);
+					}
+				}
+			}, 0, 500);
+			// startTDI clicked
+			if (e.getActionCommand().equals("Start/Connect"))//TODO Choose name
+				{
+					
+				}				
+			if(e.getActionCommand().equals("Tutorial")); //TODO Start Tutorial
+		}
+	}
+	
+	/**
+	 * Checks if the entered IP has a valid format and converts it to an integer
+	 * 
+	 * @return int ip
+	 * @throws NumberFormatException
+	 * */
+	private String checkIp(String ip1, String ip2, String ip3, String ip4) {
+		int fullIP[] = new int[4];
+		String ip = null;
+		// Checks if appropriate length
+		if ((ip1.length() <= 3) && (ip2.length() <= 3)
+				&& (ip3.length() <= 3)
+				&& (ip4.length() <= 3)) {
+			// not null check
+			if ((ip1.length() > 0) && (ip2.length() > 0)
+					&& (ip3.length() > 0)
+					&& (ip4.length() > 0)) {
+				try {
+					// checks format
+					fullIP[0] = Integer.parseInt(ip1);
+					fullIP[1] = Integer.parseInt(ip2);
+					fullIP[2] = Integer.parseInt(ip3);
+					fullIP[3] = Integer.parseInt(ip4);
+
+					// checks ip<255
+					if ((fullIP[0] < 255) && (fullIP[1] < 255)
+							&& (fullIP[2] < 255) && (fullIP[3] < 255)) {
+						ip = fullIP[0] + "." + fullIP[1] + "." + fullIP[2]
+								+ "." + fullIP[3];
+						return ip;
+					} else
+						tdiDialog.setErrorMessage("Number must be <255");
+				} catch (NumberFormatException e) {
+					tdiDialog.setErrorMessage("Please enter only numbers");
+				}
+			} else
+				tdiDialog.setErrorMessage("Input must not be empty");
+		} else
+			tdiDialog.setErrorMessage("Input only in the following format: 000.000.000.000");
+		return ip;
 	}
 }
 

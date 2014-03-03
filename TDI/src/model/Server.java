@@ -18,14 +18,13 @@ import view.TDI;
  * Implements the runnable interface
  */
 public class Server {
-	protected static String ip = "192.168.1.36";
 	private Socket client;
 	private static DataOutputStream send;
 	private static DataInputStream read;
 	public boolean forwarding = false; // if the inputs are forwarded to a
 										// plugin
 
-	public Server() {
+	public Server(String ip) {
 		try {
 			// Created a new socket which is bound to the port 12345
 			client = new Socket(ip, 12435);
