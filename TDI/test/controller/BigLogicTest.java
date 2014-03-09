@@ -2,12 +2,19 @@ package controller;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import model.ConfigLoader;
+import model.PluginTableModel;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import view.Icon;
 import view.TDI;
+import view.TDI.TDIState;
+import view.TDIDialog;
+import view.Wallpaper;
 
 public class BigLogicTest {
 
@@ -15,7 +22,10 @@ public class BigLogicTest {
 	ArrayList<Icon> icons;
 	ArrayList<TDI> tdis;
 	ArrayList<TDI> commands;
-	
+	ConfigLoader configLoader;
+	TDIDialog tdiDialog;
+	PluginTableModel pluginTableModel;
+	Wallpaper wallpaper;
 	/**
 	 * Test method for
 	 * {@link controller.BigLogic#run()}.
@@ -23,6 +33,7 @@ public class BigLogicTest {
 	@Test
 	public void testLinksDrehenD()
 	{
+		
 		float[] rot1 = {1,1,1};
 		float[] rot2 = {1,2,1}; //TODO: find right rot 
 		byte id= 0;
@@ -38,10 +49,6 @@ public class BigLogicTest {
 		icons.add(i2);
 		tdis.add(t1);
 		commands.add(t2);
-		
-		bl.icons=icons;
-		bl.tdis=tdis;
-		bl.commands=commands;
 		
 		bl.run();
 		Assert.assertEquals(t1.getIcons().get(0).getName(),"gimp");
@@ -70,10 +77,10 @@ public class BigLogicTest {
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.icons=icons;
+	/*	bl.icons=icons;
 		bl.tdis=tdis;
 		bl.commands=commands;
-		
+		*/
 		bl.run();
 		Assert.assertEquals(t1.getIcons().get(0).getName(),"mozilla");
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
@@ -95,19 +102,19 @@ public class BigLogicTest {
 		
 		ProgramHandler.closeAllPrograms();
 		ProgramHandler.openProgram(i1);
-		t1.setState("window");
+		t1.setState(TDIState.window);
 		tdis.add(t1);
 		commands.add(t2);
 		icons.add(i1);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
 		bl.icons=icons;
-		
+		*/
 		bl.run();
 		Assert.assertEquals(ProgramHandler.getRunningPrograms(),0);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
-		Assert.assertEquals(tdis.get(0).getState(),"desktop");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
 	}
 	/**
 	 * Test method for
@@ -133,14 +140,14 @@ public class BigLogicTest {
 		icons.add(i1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		Assert.assertTrue(tdis.get(0).getLocked());
 		//TODO check if green led is on
-		Assert.assertEquals(tdis.get(0).getState(),"desktop");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
 	}
 	/**
@@ -167,14 +174,14 @@ public class BigLogicTest {
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+/*		bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		Assert.assertTrue(!tdis.get(0).getLocked());
 		//TODO check if green led is not on
-		Assert.assertEquals(tdis.get(0).getState(),"desktop");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
 	}
 	/**
@@ -194,14 +201,14 @@ public class BigLogicTest {
 		
 		ProgramHandler.closeAllPrograms();
 		ProgramHandler.openProgram(i1);
-		t1.setState("window");
+		t1.setState(TDIState.window);
 		icons.add(i1);
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		//Assert.assertEquals(ProgramHandler.); TODO get Maximised Programs
@@ -226,20 +233,20 @@ public class BigLogicTest {
 		ProgramHandler.closeAllPrograms();
 		ProgramHandler.openProgram(i1);
 		ProgramHandler.toggleMaximization();//must maximise it!
-		t1.setState("window");
+		t1.setState(TDIState.window);
 		tdis.add(t1);
 		icons.add(i1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		
 		//Assert.assertEquals(ProgramHandler.); TODO get "wiederhergestellte" Programs(?)
 		Assert.assertEquals(ProgramHandler.getNonMinimized(),1);
-		Assert.assertEquals(tdis.get(0).getState(), "window");
+		Assert.assertEquals(tdis.get(0).getState(), TDIState.window);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
 	}
 	/**
@@ -264,19 +271,19 @@ public class BigLogicTest {
 		ProgramHandler.openProgram(i2);
 		icons.add(i1);
 		icons.add(i2);
-		t1.setState("window");
+		t1.setState(TDIState.window);
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		
 		Assert.assertEquals(ProgramHandler.getNonMinimized(),1);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
-		Assert.assertEquals(tdis.get(0).getState(),"desktop");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
 	}
 	/**
 	 * Test method for
@@ -296,13 +303,13 @@ public class BigLogicTest {
 		ProgramHandler.closeAllPrograms();
 		ProgramHandler.openProgram(i1);
 		icons.add(i1);
-		t1.setState("window");
+		t1.setState(TDIState.window);
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		
@@ -310,7 +317,7 @@ public class BigLogicTest {
 		Assert.assertEquals(ProgramHandler.getNonMinimized(),0);
 		Assert.assertEquals(tdis.get(0).getPosition(), newPos);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
-		Assert.assertEquals(tdis.get(0).getState(),"window");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.window);
 	}
 	/**
 	 * Test method for
@@ -330,13 +337,13 @@ public class BigLogicTest {
 		ProgramHandler.closeAllPrograms();
 		ProgramHandler.openProgram(i1);
 		icons.add(i1);
-		t1.setState("desktop");
+		t1.setState(TDIState.desktop);
 		tdis.add(t1);
 		commands.add(t2);
 		
-		bl.tdis=tdis;
+	/*	bl.tdis=tdis;
 		bl.commands=commands;
-		bl.icons=icons;
+		bl.icons=icons;*/
 		
 		bl.run();
 		
@@ -344,7 +351,7 @@ public class BigLogicTest {
 		Assert.assertEquals(ProgramHandler.getNonMinimized(),0);
 		Assert.assertEquals(tdis.get(0).getPosition(), newPos);
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());
-		Assert.assertEquals(tdis.get(0).getState(),"window");
+		Assert.assertEquals(tdis.get(0).getState(),TDIState.window);
 	}
 
 }
