@@ -9,7 +9,7 @@ import javax.swing.SwingWorker.StateValue;
 public class TDI {
 
 	public enum TDIState{
-		inapp,desktop,taskbar,window,sleep;
+		inapp,desktop,taskbar,window,sleep,restore;
 	}
 	/**
 	 * The id defines which TDI this is.
