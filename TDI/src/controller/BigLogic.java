@@ -384,6 +384,30 @@ public class BigLogic implements Runnable, ActionListener {
 		
 	}
 
+	public ArrayList<Icon> getIcons() {
+		return icons;
+	}
+
+	public void setIcons(ArrayList<Icon> icons) {
+		this.icons = icons;
+	}
+
+	public ArrayList<TDI> getTdis() {
+		return tdis;
+	}
+
+	public void setTdis(ArrayList<TDI> tdis) {
+		this.tdis = tdis;
+	}
+
+	public ArrayList<TDI> getCommands() {
+		return commands;
+	}
+
+	public void setCommands(ArrayList<TDI> commands) {
+		this.commands = commands;
+	}
+
 	/**
 	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
