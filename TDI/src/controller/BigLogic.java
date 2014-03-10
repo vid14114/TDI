@@ -506,7 +506,7 @@ public class BigLogic implements Runnable, ActionListener {
 					configLoader.savePlugins(plugins);						
 				}
 			}.run();
-			server = new Server("192.168.43.12");
+			server = new Server("192.168.2.65");
 			tdis = server.fullPose();
 			splitIcons();
 			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
@@ -522,7 +522,6 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}, 0, 500);
 			// startTDI clicked
-			if (e.getActionCommand().equals("Start/Connect"));//TODO Choose name			
 			if(e.getActionCommand().equals("Tutorial starten"))
 				new Thread(new TutorialLogic(tdis)).start();
 		}

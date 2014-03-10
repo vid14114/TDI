@@ -18,7 +18,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
+
 import view.Icon;
 import controller.Executor;
 
@@ -147,22 +150,21 @@ public class ConfigLoader {
 	 * @return The Wallpaper of the user
 	 */
 	public BufferedImage loadWallpaper() {
-		// xfconf-query -c xfce4-desktop -p
-		// /backdrop/screen0/monitor0/image-path -s
-		// ~/Desktop/McDonalds-Monopoly-Gewinnspiel.png
 		BufferedImage wallpaper = null;
 		File wallpaperFile = new File(Executor.getBackground());
-		File restore;
 		try {
 			ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
 					wallpaperFile.getName().split("\\.")[1],
-					restore = new File(TDIDirectories.TDI_RESTORE + "/"
+					new File(TDIDirectories.TDI_RESTORE + "/"
 							+ wallpaperFile.getName()));
-			restore.deleteOnExit();
-		} catch (IOException e) {
+		}catch (IIOException e){
+			TDILogger.
+					logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
+		}
+		catch (IOException e) {
 			TDILogger
 					.logError("An error occured while trying to load the wallpaper");
-		}
+		} 
 		return wallpaper;
 	}
 
