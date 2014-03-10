@@ -55,9 +55,9 @@ public final class Executor {
 	 */
 	public static final String getBackground(){	
 		String background = null;
-		try {			
+		try {						
 			BufferedReader b = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path"}).getInputStream()));
-			background = b.readLine();
+			background = System.getProperty("user.home")+"/"+b.readLine();
 			b.close();
 		} catch (IOException e) {
 			TDILogger.logError(e.getMessage());

@@ -47,7 +47,7 @@ public class ConfigLoaderTest {
 	// TDIDirectories.TDI_HOME+"/Desktop/*"});
 	// }
 
-	// @Test
+	 @Test
 	public void testLoadWallpaper() throws IOException {
 		BufferedImage shouldWallpaper = ImageIO.read(new File(Executor
 				.getBackground())); // Insert your wallpaper path here --> xfce
@@ -143,7 +143,7 @@ public class ConfigLoaderTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testPluginMethods() throws IOException {
 		new BufferedWriter(new FileWriter(TDIDirectories.TDI_PREFERENCE, false))
 				.close(); // Here I make sure the preference file is empty

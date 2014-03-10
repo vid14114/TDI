@@ -19,51 +19,49 @@ public class TutorialLogic implements Runnable{
 		//First Step
 		Icon temp = tdis.get(0).getIcons().get((tdis.get(0).getIcons().size()-1));
 		//First step
-		tv.setText("1/11 - Desktop Mode\nPlease select Icon "+temp.getName()+ " at position "+temp.getPosition().x+","
-				+temp.getPosition().y+" by turning assigned TDI until the icon is marked. ");
+		tv.setText("1/11 - Desktop Modus\nBitte wählen Sie den Icon "+temp.getName()+ " an der Position "+temp.getPosition().x+","
+				+temp.getPosition().y+" durch Drehen des zugeordneten TDIs, bis das Symbol markiert ist. ");
 		while(!tdis.get(0).getIcons().get(0).equals(temp)); //Wait period
 		//Second Step
-		tv.setText("2/11 - Desktop Mode\nSelect the Icon by tilting the TDI to the right");
+		tv.setText("2/11 - Desktop Modus\nWählen Sie das Icon durch Kippen des TDIs auf die rechte Seite");
 		while(!tdis.get(0).getIcons().get(0).equals(temp) && !tdis.get(0).getLocked()); //Wait period
 		//Third
-		tv.setText("3/11 - Desktop Mode, Locked\nMove the Icon to another position");
+		tv.setText("3/11 - Desktop Modus, gesperrt\nBewegen Sie den Icon an eine andere Position");
 		while(tdis.get(0).getIcons().get(0).getPosition() == temp.getPosition());
 		//Fourth
-		tv.setText("4/11 Desktop Mode, Locked\nVery Good, you have successfully moved the TDI. TDIs can take on many different modes. As you might habe noticed on the "
-				+ "progress that we are currently teaching you Desktop Mode. When you tilt the TDI to the right it becomes locked. When the TDI becomes locked "
-				+ "you are able to move icons to other positions and if a program is open, you are able to close, minimize and maximize it. Now unlock the TDI by tilting it to the right again");
+		tv.setText("4/11 Desktop Modus, gesperrt\nSehr gut, Sie haben den TDI erfolgreich bewegt. TDIs können viele verschiedene Modie annehmen. Wie Sie vielleicht im Fortschrittbalken bemerkt haben, lehren wir Sie gerade die Befehle im Desktop-Modus."
+				+ " Wenn Sie den TDI rechts kippen wird es gesperrt. Wenn der TDI gesperrt ist, sind Sie in der Lage, Symbole zu anderen Positionen zu bewegen und wenn ein Programm geöffnet ist, können sie dieses schließen, minimieren und maximieren. Entsperren Sie den TDI durch Kippen nach rechts.");
 		while(tdis.get(0).getLocked());
 		int i = ProgramHandler.getRunningPrograms().size();
-		tv.setText("5/11 Desktop Mode\nWell done! The greed LED turns on when the TDI is locked and turn back off when the TDI is not locked. Now move the TDI to the bottom/top of your working platform to start a program");
+		tv.setText("5/11 Desktop Modus\nGut gemacht! Die grüne LED leuchtet auf, wenn der TDI gesperrt ist und dreht sich wieder ab, wenn der TDI nicht verschlossen ist. Bewegen Sie nun den TDI nach unten/oben auf Ihrer Arbeitsplattform, um ein Programm zu starten");
 		while(i == ProgramHandler.getRunningPrograms().size());
-		tv.setText("6/11 In-App Mode\nAs you started the program you might have noticed that a one TDI stayed on the bottom/top of the table, this TDI is now in Taskbar Mode. The TDI which moved to the middle of your working platform"
-				+ "is in In-App Mode. In-App mode is a featured mode where developers can write \"plugins\" to support TDI funtionalities in various programs. Note that this program only manipulates windows but to be able to manipulate the "
-				+ "programs themselves, you will need a so called plugin. To exit In-App Mode tilt the TDI to the right");//TODO check correctness
+		tv.setText("6/11 In-App Modus\nAls Sie das Program gestartet haben, haben Sie vielleicht bemerkt, dass ein TDI unten/oben auf dem Tisch blieb, der TDI ist jetzt in Taskleiste Modus. Der TDI, der sich in die Mitte "
+				+ "des Arbeitsplatzes bewegt hat, befindet sich in In-App-Modus. In-App-Modus ist eine Sondermodus, wo Entwickler sogenannte \"plugins\" entwickeln können, um TDI Funktionalität in verschiedenen Programmen unterstützen zu können. Beachten Sie, dass dieses Programm nur Fenstern "
+				+ "manipuliert und nicht in der ist Programme selbst zu manipulieren. Um dies zu können, "
+				+ "benötigen Sie die so genannten Plug-Ins. Um In-App-Modus verlassen zu können, neigen Sie den TDI nach rechts") ;//TODO check correctness
 		for(i = 0; i < tdis.size() && !tdis.get(i).getState().equals(TDIState.inapp); i++);
 		while(tdis.get(i).getState().equals(TDIState.inapp));
-		tv.setText("7/11 Window Mode\nThe TDI is now in Window Mode. In Window Mode you can manipulate the window itself: move, minimize --> tilt down, maximize --> tilt up and close --> tilt down. "
-				+ "Let us try a few functionalities. Move the window by moving the TDI");
+		tv.setText("7/11 Fenster Modus\nDer TDI ist nun im Fenster Modus. Im Fenster Modus können Sie die Fenster selbst manipulieren: verschieben, minimieren: nach unten neigen, maximieren: nach oben neigen, schließen: nach unten neigen. Lassen Sie uns versuchen, ein paar Funktionalitäten zu testen. Bewegen Sie den Fenster durch Bewegen des TDIs");
 		TDI tdi = tdis.get(i);
 		while(tdi.getPosition().equals(tdis.get(i).getPosition()));
-		tv.setText("8/11 Window Mode\nNice move! Tilt the TDI to the bottom to minimize the program");
+		tv.setText("8/11 Fenster Modus\nSchöner Move! Neigen Sie den TDI nach unten, um das Programm zu minimieren");
 		if(ProgramHandler.isDesktopMode())
-			tv.setText("9/11 Desktop Mode\nThe TDI is now back in Desktop Mode. If all opened programs are minimized then the TDI goes back to Desktop Mode. Now it is responsible for the icons again."
-					+ "Titl the TDI which is in Taskbar Mode(Red LED on) up to restore all minimized programs");
+			tv.setText("9/11 Desktop Modus\nDer TDI ist nun wieder im Desktop-Modus. Wenn alle geöffneten Programme minimiert werden, dann geht der TDI zurück in den Desktop-Modus. Jetzt ist es wieder für die Icons verantwortlich. "
+					+ "Neigen Sie den TDI, der im Taskleiste Modus ist (Rote LED an) nach oben, um alle Programme, die minimiert sind, wiederherzustellen");
 		else
-			tv.setText("9/11 In-App Mode\nThe TDI is now back in In-App Mode. If you minimize a program and the next opened program at the background is automatically focused, your TDI enters In-App Mode."
-					+ "Titl the TDI which is in Taskbar Mode(Red LED on) up to restore all minimized programs");
+			tv.setText("9/11 In-App Modus\nDer TDI ist nun wieder im In-App-Modus. Wenn Sie ein Programm minimieren und das nächste geöffnete Programm im Hintergrund wird automatisch fokussiert, geht ihr TDI zurück in In-App-Modus. "
+					+ "Neigen Sie den TDI, der im Taskleiste Modus ist (Rote LED an) nach oben, um alle Programme, die minimiert sind, wiederherzustellen");
 		while(ProgramHandler.getNonMinimized() > 0);
-		tv.setText("10/11 In-App Mode\nVery good! To switch between indivdual programs, all you have to do is turn the Taskbar-TDI right or left "
-				+ "and to minimize all programs you tilt the Taskbar-TDI down. Let us try to resize the currently focused window, this is quite complicate so read well."
-				+ "To do that, move the Taskbar TDI close the In-App Mode TDI and wait for a second. The TDIs will enter into scale mode.");
+		tv.setText("10/11 In-App Modus\nSehr gut! Um zwischen indivdualle Programmen wechseln zu können, müssen sie den Taskleiste-TDI nach rechts oder links drehen, um diese zu minimieren, neigen Sie nach unten. "
+				+ "Lassen Sie uns versuchen, die Größe des aktuellen fokussierten Fensters zu ändern, welches nicht so kompliziert ist. Um das zu tun, bewegen Sie den Taskleiste TDI dicht an den In-App-Modus TDI und warten Sie ein Sekunde. Die TDIs sind in Skala Modus.");
 		while(!tdi.isScale());
-		tv.setText("11/11 Scale Mode\nTo resize the program, all you have to do is move the TDIs. Play around with resize mode a bit");
+		tv.setText("11/11 Skala Modus\nUm die Größe des Programms ändern zu können, müssen sie den TDI bewegen. Spielen Sie sich mit dem Skala Modus");
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		tv.setText("Well done! You have finished the tutorial. Now you know all you need to be able to use the TDIs. Plugins can be downloaded, if available to manipulate more programs in In-App Mode. Read the manual for more info");
+		tv.setText("Gut gemacht! Sie haben das Tutorial beendet. Jetzt wissen Sie alles, was Sie benötigen, um die TDIs nutzen zu können. Plugins können heruntergeladen werden, sofern vorhanden, um weitere Programme in In-App-Modus manipulieren zu können. Lesen Sie sich die Bedienungsanleitung an für weitere Informationen");
 	}
 
 }

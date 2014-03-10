@@ -466,7 +466,6 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}, 0, 500);
 			// startTDI clicked
-			if (e.getActionCommand().equals("Start/Connect"));//TODO Choose name			
 			if(e.getActionCommand().equals("Tutorial starten"))
 				new Thread(new TutorialLogic(tdis)).start();
 		}

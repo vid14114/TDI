@@ -142,9 +142,6 @@ public class ConfigLoader {
 	 * @return The Wallpaper of the user
 	 */
 	public BufferedImage loadWallpaper() {
-		// xfconf-query -c xfce4-desktop -p
-		// /backdrop/screen0/monitor0/image-path -s
-		// ~/Desktop/McDonalds-Monopoly-Gewinnspiel.png
 		BufferedImage wallpaper = null;
 		File wallpaperFile = new File(Executor.getBackground());
 		File restore;
