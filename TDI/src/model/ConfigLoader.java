@@ -152,6 +152,7 @@ public class ConfigLoader {
 							+ wallpaperFile.getName()));
 			restore.deleteOnExit();
 		} catch (IOException e) {
+			e.printStackTrace();
 			TDILogger
 					.logError("An error occured while trying to load the wallpaper");
 		}
