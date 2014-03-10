@@ -40,11 +40,40 @@ public class Server {
 		try {
 			//send.writeByte(ACTOConst.WI_FULL_POSE);
 			send.writeByte(ACTOConst.WI_GET_POSE);
-			//send.writeByte(49); //TUIO 1
-			send.writeByte(50); //TUIO 2
+			send.writeByte(49); //TUIO 1
 			byte ack=read.readByte();
 			read.mark(9);
 			byte wi_msg = read.readByte();
+			read.reset();
+			while (read.available()>0 && read.readByte() == wi_msg)
+			{
+				byte id=read.readByte();
+				float x = read.readFloat();
+				float y = read.readFloat();
+				float z = read.readFloat();
+				float q1 = read.readFloat();
+				float q2 = read.readFloat();
+				float q3 = read.readFloat();
+				float q4 = read.readFloat();
+				Rotation r = new Rotation(q4,q1,q2,q3, true);
+				double angles[] = r.getAngles(RotationOrder.XYZ);
+				float[] rot=new float[3];
+				rot[0]=(float) ((float) angles[0]*180/Math.PI);
+				rot[1]=(float) ((float) angles[1]*180/Math.PI);
+				rot[2]=(float) ((float) angles[2]*180/Math.PI);
+				if(rot[0]==-180)
+					return null;
+				TDI t = new TDI(id, x, y, z, rot);
+				tdis.add(t);
+				read.mark(9);
+			}
+			read.reset();
+			
+			send.writeByte(ACTOConst.WI_GET_POSE);
+			send.writeByte(50); //TUIO 2
+			ack=read.readByte();
+			read.mark(9);
+			wi_msg = read.readByte();
 			read.reset();
 			while (read.available()>0 && read.readByte() == wi_msg)
 			{
