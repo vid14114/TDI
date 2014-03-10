@@ -2,18 +2,11 @@
  * 
  */
 package controller;
-
-import static org.junit.Assert.*;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
 import model.TDIDirectories;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +34,7 @@ public class ExecutorTest {
 	@Test
 	public void testSaveBackground() {
 		Executor.saveBackground(image);
-		image.getGraphics().drawString("Okokok", 2, 120);
+		image.getGraphics().drawString("IHPIHOIUHIOUH", 2, 120);
 		Executor.saveBackground(image);
 	}
 
