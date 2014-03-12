@@ -77,7 +77,8 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Thread(new BigLogic()).start();
+		//new Thread(new BigLogic()).start();
+		new BigLogic();
 	}
 
 	/**
@@ -366,7 +367,7 @@ public class BigLogic implements Runnable, ActionListener {
 							if(tdi.getRotation()[0] < command.getRotation()[0]+compRot || tdi.getRotation()[0] < command.getRotation()[0]-compRot)
 							{
 								tdi.setRotation(command.getRotation());
-								tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+								tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()-1));
 							}
 							//nach rechts Das nächste Icon, wofür das TDI zuständig ist wird ausgewählt
 							if(tdi.getRotation()[0] > command.getRotation()[0]+compRot || tdi.getRotation()[0] > command.getRotation()[0]-compRot)
@@ -415,7 +416,7 @@ public class BigLogic implements Runnable, ActionListener {
 		
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio());
 	}
 	
 	public void splitIcons() {
@@ -447,12 +448,13 @@ public class BigLogic implements Runnable, ActionListener {
 						if((boolean)pluginTableModel.getValueAt(i, 1) == true) 
 							plugins[i2++] = (String) pluginTableModel.getValueAt(i, 0);
 					Executor.startPlugins(plugins);
-					configLoader.savePlugins(plugins);						
+					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.2.65");
+			server = new Server("192.168.1.36");
 			tdis = server.fullPose();
 			splitIcons();
+			Executor.saveBackground(wallpaper.markArea(tdis));
 			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
 			Timer mo = new Timer();
 			mo.scheduleAtFixedRate(new TimerTask() {

@@ -315,14 +315,13 @@ public class ConfigLoader {
 		return iconSize+(2*margin);
 	}
 	
-	/**
-	 * This method is implemented for testing purposes TODO Delete
-	 * 
-	 * @param iconsRc
-	 *            the iconsRc to set
-	 */
-	public static void setIconsRc(File iconsRc) {
-		ConfigLoader.iconsRc = iconsRc;
+	public int getPanelSize() {
+		return Integer.parseInt(Executor.getPanelSize());
+	}
+	
+	public int getPlacementRatio()
+	{
+		return Integer.parseInt(Executor.getPlacementRatio());
 	}
 
 }
