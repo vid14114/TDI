@@ -19,13 +19,10 @@ import view.Wallpaper;
 public class BigLogicTest {
 
 	BigLogic bl= new BigLogic();
-	ArrayList<Icon> icons;
-	ArrayList<TDI> tdis;
-	ArrayList<TDI> commands;
-	ConfigLoader configLoader;
-	TDIDialog tdiDialog;
-	PluginTableModel pluginTableModel;
-	Wallpaper wallpaper;
+	ArrayList<Icon> icons=new ArrayList <Icon>();
+	ArrayList<TDI> tdis = new ArrayList <TDI>();
+	ArrayList<TDI> commands= new ArrayList <TDI>();
+	ConfigLoader cl = new ConfigLoader();
 	/**
 	 * Test method for
 	 * {@link controller.BigLogic#run()}.
@@ -33,10 +30,9 @@ public class BigLogicTest {
 	@Test
 	public void testLinksDrehenD()
 	{
-		
 		float[] rot1 = {1,1,1};
 		float[] rot2 = {1,2,1}; //TODO: find right rot 
-		byte id= 0;
+		byte id= 49;
 		TDI t1 = new TDI(id, 1, 1, 0, rot1);	
 		TDI t2 = new TDI(id, 1, 1, 0, rot2);	
 		Point p1 = new Point (5,3);
@@ -45,11 +41,16 @@ public class BigLogicTest {
 		Icon i2 = new Icon("gimp",p2);
 		
 		ProgramHandler.closeAllPrograms();
-		icons.add(i1);
-		icons.add(i2);
+	//	icons.add(i1);
+	//	icons.add(i2);
 		tdis.add(t1);
 		commands.add(t2);
 		
+		icons = cl.loadIcons();
+		bl.setCommands(commands);
+		bl.setIcons(icons);
+		bl.setTdis(tdis);
+		bl.splitIcons();
 		bl.run();
 		Assert.assertEquals(t1.getIcons().get(0).getName(),"gimp");
 		Assert.assertEquals(tdis.get(0).getRotation(),t2.getRotation());

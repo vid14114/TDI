@@ -77,8 +77,7 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//new Thread(new BigLogic()).start();
-		new BigLogic();
+		new Thread(new BigLogic()).start();
 	}
 
 	/**
@@ -107,6 +106,7 @@ public class BigLogic implements Runnable, ActionListener {
 									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1]) == false)//ist die neue Position in Taskbar?
 									{	
 										splitIcons();
+										commands.remove(0);
 									}
 									else // neue pos in taskbar => setzen des Tdi in taskbar mode öffen von program
 									{
@@ -126,6 +126,7 @@ public class BigLogic implements Runnable, ActionListener {
 											tdis.get(tdis.indexOf(commands.get(1))).setState(TDIState.window);
 											tdis.get(tdis.indexOf(commands.get(1))).setPosition(0, 0, 0); // TODO set position
 										}
+										commands.remove(0);
 									}
 								}
 							}
@@ -136,6 +137,7 @@ public class BigLogic implements Runnable, ActionListener {
 									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1])) // neue pos immer noch in taskbar
 									{
 										tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
+										commands.remove(0);
 									}
 									else // neue pos außerhalb der taskbar
 									{
@@ -159,16 +161,20 @@ public class BigLogic implements Runnable, ActionListener {
 												    int width=(int) (windFocused.getPosition()[0]-tdi.getPosition()[0]);
 												    int height=(int) (windFocused.getPosition()[1]-tdi.getPosition()[1]);
 													ProgramHandler.resizeProgram(width, height);
+													commands.remove(0);
 												}
 												else 
 												{
 													tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
+													commands.remove(0);
 												}
 											}
+											commands.remove(0);
 										}
 										else
 										{
 											tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
+											commands.remove(0);
 										}
 									}
 
@@ -180,6 +186,7 @@ public class BigLogic implements Runnable, ActionListener {
 										tdis.get(tdis.indexOf(commands.get(x))).setState(TDIState.desktop); //?
 										tdis.get(tdis.indexOf(commands.get(x))).setPosition(1, 1, 1);// TODO set position
 									}
+									commands.remove(0);
 								}
 							}
 							if(tdi.getState().equals(TDIState.window))
@@ -187,8 +194,7 @@ public class BigLogic implements Runnable, ActionListener {
 								for(TDI t: tdis) // find out taskbar tdi
 								{
 									if(t.getState().equals(TDIState.taskbar))
-										taskFocused=t;
-									
+										taskFocused=t;									
 								}
 								// taskbar TDI in nähe des aktuellen
 								if(StartScaleMode(taskFocused, tdi))
@@ -206,21 +212,26 @@ public class BigLogic implements Runnable, ActionListener {
 										    int width=(int) (taskFocused.getPosition()[0]-tdi.getPosition()[0]);
 										    int height=(int) (taskFocused.getPosition()[1]-tdi.getPosition()[1]);
 											ProgramHandler.resizeProgram(width, height);
+											commands.remove(0);
 										}
 										else 
 										{
 											tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
+											commands.remove(0);
 										}
+										commands.remove(0);
 								}
 								else
 								{
 									tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
 									//tdi.getIcons().get(0).setPosition(); new position of program window
+									commands.remove(0);
 								}
 							}
 							if(tdi.getState().equals(TDIState.inapp))
 							{
 								//TODO in app 
+								commands.remove(0);
 							}
 						}
 					}	
@@ -232,6 +243,7 @@ public class BigLogic implements Runnable, ActionListener {
 							//nach rechts neigen (x)
 							if (tdi.getRotation()[1] > command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot)
 								tdi.toggleLock();
+							commands.remove(0);
 							//tdi.toggleGreenLED();//TODO
 						}
 						if(tdi.getState().equals("window"))
@@ -245,13 +257,16 @@ public class BigLogic implements Runnable, ActionListener {
 									tdi.setState(TDIState.desktop);
 									tdi.setPosition(1, 1, 1);
 									splitIcons();
+									commands.remove(0);
 								}
+								commands.remove(0);
 							}
 							//nach links neigen
 							if(tdi.getRotation()[1] < command.getRotation()[1]+compRot || tdi.getRotation()[1] < command.getRotation()[1]-compRot)
 							{
 								ProgramHandler.closeProgram();
 								tdi.getIcons().remove(0);
+								commands.remove(0);
 							}
 							// TDI nach unten neigen
 							if (tdi.getRotation()[2] < command.getRotation()[2]+compRot || tdi.getRotation()[2] < command.getRotation()[2]-compRot) {
@@ -261,13 +276,16 @@ public class BigLogic implements Runnable, ActionListener {
 									tdi.setState(TDIState.desktop);
 									tdi.setPosition(1, 1, 1); // TODO set pos
 									splitIcons();
+									commands.remove(0);
 								}
 								else
 								{
 									tdi.setPosition(1, 1, 1);// TODO set pos
 									//TODO GO to location of window
-								};	
+									commands.remove(0);
+								}
 							}
+							commands.remove(0);
 						}
 						if(tdi.getState().equals(TDIState.taskbar))
 						{
@@ -284,11 +302,13 @@ public class BigLogic implements Runnable, ActionListener {
 									{
 										tdis.get(1).setState(TDIState.window);
 										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
+										commands.remove(0);
 									}
 									else
 									{
 										tdis.get(2).setState(TDIState.window);
 										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
+										commands.remove(0);
 									}
 								}
 								else
@@ -300,7 +320,9 @@ public class BigLogic implements Runnable, ActionListener {
 											t.setPosition(1, 1, 1); //TODO to maximised window
 										}
 									}
+									commands.remove(0);
 								}
+								commands.remove(0);
 							}
 							//nach links/rechts neigen
 							if(tdi.getRotation()[1] < command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot || 
@@ -311,6 +333,7 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									t.setState(TDIState.desktop);
 								}
+								commands.remove(0);
 							}
 							// TDI nach unten neigen
 							if (tdi.getRotation()[2] < command.getRotation()[2]+compRot || tdi.getRotation()[2] < command.getRotation()[2]-compRot) {
@@ -323,8 +346,8 @@ public class BigLogic implements Runnable, ActionListener {
 										tdi.setPosition(1, 1, 1);// TODO set pos
 										splitIcons();
 									}
-
 								}
+								commands.remove(0);
 							}
 						}
 						if(tdi.getState().equals(TDIState.inapp))
@@ -334,7 +357,9 @@ public class BigLogic implements Runnable, ActionListener {
 							{
 								tdi.setState(TDIState.window);
 								// TODO server var
+								commands.remove(0);
 							}
+							commands.remove(0);
 						}
 
 					}
@@ -352,14 +377,17 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									tdi.setRotation(command.getRotation());
 									tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
+									commands.remove(0);
 								}
 								//nach rechts Das nächste Fenster in der Taskleiste wird fokussiert
 								if(tdi.getRotation()[0] > command.getRotation()[0]+compRot || tdi.getRotation()[0] > command.getRotation()[0]-compRot)
 								{
 									tdi.setRotation(command.getRotation());
 									tdi.getIcons().set(0, tdi.getIcons().get(1));
+									commands.remove(0);
 								}
 							}
+							commands.remove(0);
 						}
 						if(tdi.getState().equals(TDIState.desktop))
 						{
@@ -368,21 +396,48 @@ public class BigLogic implements Runnable, ActionListener {
 							{
 								tdi.setRotation(command.getRotation());
 								tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()-1));
+								commands.remove(0);
 							}
 							//nach rechts Das nächste Icon, wofür das TDI zuständig ist wird ausgewählt
 							if(tdi.getRotation()[0] > command.getRotation()[0]+compRot || tdi.getRotation()[0] > command.getRotation()[0]-compRot)
 							{
 								tdi.setRotation(command.getRotation());
 								tdi.getIcons().set(0, tdi.getIcons().get(1));
+								commands.remove(0);
 							}
 						}
 					}
 				}
+				commands.remove(0);
 				Executor.saveBackground(wallpaper.markArea(tdis));
 			}
 			
 		}
 		
+	}
+
+	public ArrayList<Icon> getIcons() {
+		return icons;
+	}
+
+	public void setIcons(ArrayList<Icon> icons) {
+		this.icons = icons;
+	}
+
+	public ArrayList<TDI> getTdis() {
+		return tdis;
+	}
+
+	public void setTdis(ArrayList<TDI> tdis) {
+		this.tdis = tdis;
+	}
+
+	public ArrayList<TDI> getCommands() {
+		return commands;
+	}
+
+	public void setCommands(ArrayList<TDI> commands) {
+		this.commands = commands;
 	}
 
 	/**
