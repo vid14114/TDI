@@ -34,21 +34,13 @@ public class BigLogicTest {
 		float[] rot2 = {1,2,1}; //TODO: find right rot 
 		byte id= 49;
 		TDI t1 = new TDI(id, 1, 1, 0, rot1);	
-		TDI t2 = new TDI(id, 1, 1, 0, rot2);	
-		Point p1 = new Point (5,3);
-		Icon i1 = new Icon("mozilla",p1);
-		Point p2 = new Point (6,1);
-		Icon i2 = new Icon("gimp",p2);
-		
+		TDI t2 = new TDI(id, 1, 1, 0, rot2);
 		ProgramHandler.closeAllPrograms();
-	//	icons.add(i1);
-	//	icons.add(i2);
-		tdis.add(t1);
 		commands.add(t2);
+		tdis.add(t1);
 		
 		icons = cl.loadIcons();
 		bl.setCommands(commands);
-		bl.setIcons(icons);
 		bl.setTdis(tdis);
 		bl.splitIcons();
 		bl.run();
@@ -65,16 +57,15 @@ public class BigLogicTest {
 		float[] rot1 = {1,1,1};
 		float[] rot2 = {1,-1,1}; //TODO: find right rot 
 		byte id= 0;
-		TDI t1 = new TDI(id, 1, 1, 0, rot1);	
-		TDI t2 = new TDI(id, 1, 1, 0, rot2);	
+		TDI t1 = bl.getTdis().get(0);	
+		TDI t2 = bl.getTdis().get(1);	
+		t1.setRotation(rot1);
+		t2.setRotation(rot2);
 		Point p1 = new Point (5,3);
 		Icon i1 = new Icon("mozilla",p1);
 		Point p2 = new Point (6,1);
 		Icon i2 = new Icon("gimp",p2);
-		
 		ProgramHandler.closeAllPrograms();
-		icons.add(i1);
-		icons.add(i2);
 		tdis.add(t1);
 		commands.add(t2);
 		

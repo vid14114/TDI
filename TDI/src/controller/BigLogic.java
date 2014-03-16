@@ -1,6 +1,7 @@
 package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
@@ -50,7 +51,7 @@ public class BigLogic implements Runnable, ActionListener {
 	/**
 	 * Compensation Value for position change
 	 */
-	int compPos = 5;
+	int compPos = 1;
 	float compPos2[]={5,5,5};
 	/**
 	 * compensation value for Rotation changes
@@ -89,14 +90,18 @@ public class BigLogic implements Runnable, ActionListener {
 			if (commands.size() > 0) {
 				if (tdis.contains(commands.get(0))) {
 					TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
-					System.out.println(tdi.toString());
+				//	System.out.println(tdi.toString());
 					TDI command = commands.get(0);
 					float[] movParam = new float[3];
+					System.out.println(tdi.toString());
 					TDI windFocused=null;
 					TDI taskFocused=null;
-					if (tdi.getPosition() != command.getPosition()) { //CASE POSITION
-						if ((tdi.getPosition()[0] > command.getPosition()[0]+compPos || tdi.getPosition()[0] > command.getPosition()[0]-compPos ||
-								tdi.getPosition()[1] < command.getPosition()[1]+compPos || tdi.getPosition()[1] < command.getPosition()[1]-compPos)) // if x or y axis changed
+					//if (!(tdi.getPosition().equals(command.getPosition()))) { //CASE POSITION
+					int a=1;
+					int b=2;
+					if(a==b){ 
+						if ((tdi.getPosition()[0]+compPos > command.getPosition()[0] || tdi.getPosition()[0]-compPos > command.getPosition()[0] ||
+								tdi.getPosition()[1]+compPos < command.getPosition()[1] || tdi.getPosition()[1]-compPos < command.getPosition()[1])) // if x or y axis changed
 						{
 							//SZENARIO A DM
 							if(tdi.getState().equals(TDIState.desktop)) // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
