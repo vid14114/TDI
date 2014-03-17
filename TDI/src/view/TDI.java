@@ -77,15 +77,19 @@ public class TDI {
 	/**
 	 * Selects next icon
 	 */
-	public void rotateClockwise() { // TODO after startup routine
-		throw new UnsupportedOperationException();
+	public void rotateIconsClockwise() {
+		Icon temp = icons.get(0);
+		icons.remove(0);
+		icons.add(temp);
 	}
 
 	/**
 	 * Selects previous icon
 	 */
-	public void rotateCounter() { // TODO after startup routine
-		throw new UnsupportedOperationException();
+	public void rotateIconsCounterClockwise() {
+		Icon temp = icons.get(icons.size()-1);
+		icons.remove(icons.size()-1);
+		icons.add(0, temp);
 	}
 
 	/**
