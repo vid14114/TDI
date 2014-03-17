@@ -25,13 +25,18 @@ public class Wallpaper {
 	private int realWidth;
 	private int realHeight;
 	
-	public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio){
+	private int scalingX;
+	private int scalingY;
+	
+	public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio, Point screensize){
 		this.background = background;
 		this.blockSize = blockSize;
 		this.panelSize = panelSize;
 		this.ratio = ratio;
 		realWidth=blockSize+(4*ratio);
 		realHeight=blockSize+(3*ratio);
+		scalingX=background.getWidth()/screensize.x;
+		scalingY=background.getHeight()/screensize.y;
 	}
 
 	/**
@@ -74,7 +79,7 @@ public class Wallpaper {
 			int lastY=(lastPosY+1)*realHeight-firstY;
 			if(firstPosY!=0)
 				lastY-=panelSize;
-			g2.fill(new Rectangle2D.Float(firstX, firstY, lastX, lastY));
+			g2.fill(new Rectangle2D.Float(firstX*scalingX, firstY*scalingY, lastX*scalingX, lastY*scalingY));
 			g2.drawImage(b, 0, 0, null);
 		}
 		return b;

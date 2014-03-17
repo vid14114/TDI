@@ -472,7 +472,7 @@ public class BigLogic implements Runnable, ActionListener {
 		
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio());
+		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio(), configLoader.loadScreensize());
 	}
 	
 	public void splitIcons() {
