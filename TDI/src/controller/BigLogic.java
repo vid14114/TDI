@@ -111,12 +111,16 @@ public class BigLogic implements Runnable, ActionListener {
 						{
 							if(tdi.getPosition()[0] >= command.getPosition()[0]+compPos || tdi.getPosition()[0] >= command.getPosition()[0]-compPos)
 							{
-								Move(tdi, commands.get(0));
+								move(tdi, commands.get(0));
+								commands.remove(0);
+								continue;
 							}
 							else
 								if(tdi.getPosition()[0] <= command.getPosition()[0]+compPos || tdi.getPosition()[0] <= command.getPosition()[0]-compPos)
 								{
-									Move(tdi, commands.get(0));
+									move(tdi, commands.get(0));
+									commands.remove(0);
+									continue;
 								}
 						}
 						else
@@ -124,12 +128,12 @@ public class BigLogic implements Runnable, ActionListener {
 							{
 								if(tdi.getPosition()[1] <= command.getPosition()[1]+compPos || tdi.getPosition()[1] <= command.getPosition()[1]-compPos)
 								{
-									Move(tdi, commands.get(0));
+									move(tdi, commands.get(0));
 								}
 								else
 									if(tdi.getPosition()[1]+compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1]-compPos)
 									{
-										Move(tdi, commands.get(0));
+										move(tdi, commands.get(0));
 									}
 							}
 							else
@@ -137,12 +141,12 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									if((tdi.getPosition()[2]-compHeight) <= command.getPosition()[2]+compPos || (tdi.getPosition()[2]-compHeight) <= command.getPosition()[2]-compPos)
 									{
-										LiftUp(tdi, commands.get(0));
+										liftUp(tdi, commands.get(0));
 									}
 									else
 										if((tdi.getPosition()[2]-compHeight) >= command.getPosition()[2]+compPos || (tdi.getPosition()[2]-compHeight) >= command.getPosition()[2]-compPos)
 										{
-											PutDown(tdi, commands.get(0));
+											putDown(tdi, commands.get(0));
 										}
 								}
 						forward=0;
@@ -154,12 +158,12 @@ public class BigLogic implements Runnable, ActionListener {
 						{
 							if(tdi.getRotation()[0] >= command.getRotation()[0]+compPos || tdi.getRotation()[0] >= command.getRotation()[0]-compPos)
 							{
-								RotateRight(tdi, commands.get(0));
+								rotateRight(tdi, commands.get(0));
 							}
 							else
 								if(tdi.getPosition()[0] <= command.getPosition()[0]+compPos || tdi.getRotation()[0] <= command.getRotation()[0]-compPos)
 								{
-									RotateLeft(tdi, commands.get(0));
+									rotateLeft(tdi, commands.get(0));
 								}
 						}
 						else
@@ -167,12 +171,12 @@ public class BigLogic implements Runnable, ActionListener {
 							{
 								if(tdi.getRotation()[1] <= command.getRotation()[1]+compPos || tdi.getRotation()[1] <= command.getRotation()[1]-compPos)
 								{
-									TiltLeft(tdi, commands.get(0));
+									tiltLeft(tdi, commands.get(0));
 								}
 								else
 									if(tdi.getRotation()[1]+compPos > command.getRotation()[1] || tdi.getRotation()[1] >= command.getRotation()[1]-compPos)
 									{
-										TiltRight(tdi, commands.get(0));
+										tiltRight(tdi, commands.get(0));
 									}
 							}
 							else
@@ -180,12 +184,12 @@ public class BigLogic implements Runnable, ActionListener {
 								{
 									if((tdi.getRotation()[2]-compHeight) <= command.getRotation()[2]+compPos || (tdi.getRotation()[2]-compHeight) <= command.getRotation()[2]-compPos)
 									{
-										TiltDown(tdi, commands.get(0));
+										tiltDown(tdi, commands.get(0));
 									}
 									else
 										if((tdi.getRotation()[2]-compHeight) >= command.getRotation()[2]+compPos || (tdi.getRotation()[2]-compHeight) >= command.getRotation()[2]-compPos)
 										{
-											TiltUp(tdi, commands.get(0));
+											tiltUp(tdi, commands.get(0));
 										}
 								}
 						}
@@ -193,7 +197,7 @@ public class BigLogic implements Runnable, ActionListener {
 				}
 			}
 	}
-	private void Move(TDI tdi, TDI commands)
+	private void move(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -203,9 +207,9 @@ public class BigLogic implements Runnable, ActionListener {
 			{
 				if(ProgramHandler.getRunningPrograms().size()==0)
 				{
-					if(PosInTaskbar(commands.getPosition()))
+					if(posInTaskbar(commands.getPosition()))
 					{
-						if(EmptyTaskbar()==false)
+						if(emptyTaskbar()==false)
 						{//B1
 							ProgramHandler.openProgram(tdi.getIcons().get(0));
 							tdi.setState(TDIState.window);
@@ -232,12 +236,12 @@ public class BigLogic implements Runnable, ActionListener {
 			{
 				if(ProgramHandler.getRunningPrograms().size()==0)
 				{
-					if(PosInTaskbar(commands.getPosition()))
+					if(posInTaskbar(commands.getPosition()))
 					{
-						if(EmptyTaskbar())
+						if(emptyTaskbar())
 						{//B2
 							tdi.setState(TDIState.taskbar);
-							SetOtherTDI(TDIState.window,tdi);
+							setOtherTDI(TDIState.window,tdi);
 							tdi.toggleLock();
 							tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
 						}
@@ -259,7 +263,7 @@ public class BigLogic implements Runnable, ActionListener {
 			//scale
 			if(tdi.isScale()==false)
 			{
-				if(StartScaleMode(commands,TDIState.window))
+				if(startScaleMode(commands,TDIState.window))
 				{
 					scaleCount+=1;
 					if(scaleCount==waitTime)
@@ -307,7 +311,7 @@ public class BigLogic implements Runnable, ActionListener {
 			{
 				if(tdi.isScale()==false)
 				{
-					if(StartScaleMode(commands,TDIState.taskbar))
+					if(startScaleMode(commands,TDIState.taskbar))
 					{
 						scaleCount+=1;
 						if(scaleCount==waitTime)
@@ -355,7 +359,7 @@ public class BigLogic implements Runnable, ActionListener {
 			;break;
 		}
 	}
-	private void LiftUp(TDI tdi, TDI commands)//heben
+	private void liftUp(TDI tdi, TDI commands)//heben
 	{
 		switch(tdi.getState().toString())
 		{
@@ -377,7 +381,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void PutDown(TDI tdi, TDI commands)//senken
+	private void putDown(TDI tdi, TDI commands)//senken
 	{
 		switch(tdi.getState().toString())
 		{
@@ -399,7 +403,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void RotateRight(TDI tdi, TDI commands)
+	private void rotateRight(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -431,7 +435,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void RotateLeft(TDI tdi, TDI commands)
+	private void rotateLeft(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -463,7 +467,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void TiltRight(TDI tdi, TDI commands)
+	private void tiltRight(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -495,7 +499,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void TiltLeft(TDI tdi, TDI commands)
+	private void tiltLeft(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -526,7 +530,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void TiltUp(TDI tdi, TDI commands)
+	private void tiltUp(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -570,7 +574,7 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-	private void TiltDown(TDI tdi, TDI commands)
+	private void tiltDown(TDI tdi, TDI commands)
 	{
 		switch(tdi.getState().toString())
 		{
@@ -607,8 +611,10 @@ public class BigLogic implements Runnable, ActionListener {
 			break;
 		}
 	}
-
-	private boolean EmptyTaskbar()
+	/**
+	 * @return true if any (other) TDI is in taskbar state
+	 * */
+	private boolean emptyTaskbar()
 	{
 		for(TDI t:tdis)
 		{
@@ -619,7 +625,10 @@ public class BigLogic implements Runnable, ActionListener {
 		}
 		return true;
 	}
-	public void SetOtherTDI(TDIState state, TDI tdi)
+	/**
+	 * Method to find any other TDI with the given matching TDIstate
+	 * */
+	public void setOtherTDI(TDIState state, TDI tdi)
 	{
 		if(!(tdis.get(0).equals(tdi)))
 		{
@@ -662,14 +671,14 @@ public class BigLogic implements Runnable, ActionListener {
 	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
-	private boolean PosInTaskbar(float[] pos)
+	private boolean posInTaskbar(float[] pos)
 	{
 		return true;
 	}
 	/**
 	 * checks if a taskbar TDI and a window TDI are near enough to start the scale mode
 	 */
-	private boolean StartScaleMode(TDI t1, TDIState state)
+	private boolean startScaleMode(TDI t1, TDIState state)
 	{
 		int range = 5;
 		for(TDI t2: tdis)
