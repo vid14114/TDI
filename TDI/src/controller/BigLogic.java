@@ -77,7 +77,8 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new Thread(new BigLogic()).start();
+		//new Thread(new BigLogic()).start();
+		new BigLogic();
 	}
 
 	/**
@@ -506,7 +507,7 @@ public class BigLogic implements Runnable, ActionListener {
 					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.1.36");
+			server = new Server("192.168.2.65");
 			tdis = server.fullPose();
 			splitIcons();
 			Executor.saveBackground(wallpaper.markArea(tdis));
