@@ -162,16 +162,13 @@ public class ConfigLoader {
 			}catch (IOException e1){
 				TDILogger.
 						logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
-				ImageIO.write((wallpaper = ImageIO.read(new File("images/image-blank.jpg"))), "jpg", 
-						new File(TDIDirectories.TDI_RESTORE + "/image-blank.jpg"));
+				wallpaper = ImageIO.read(new File("images/image-blank.jpg"));
 			}
 		}
 		catch (IOException e) {
 			TDILogger
 					.logError("An error occured while trying to load the wallpaper");
-		}finally{
-			wallpaperFile.deleteOnExit();
-		}
+		}finally{ wallpaperFile.deleteOnExit(); }
 		return wallpaper;
 	}
 
@@ -331,8 +328,7 @@ public class ConfigLoader {
 		return Integer.parseInt(Executor.getPanelSize());
 	}
 	
-	public int getPlacementRatio()
-	{
+	public int getPlacementRatio(){
 		return Integer.parseInt(Executor.getPlacementRatio());
 	}
 

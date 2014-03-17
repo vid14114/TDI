@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import model.ConfigLoader;
 import model.PluginTableModel;
 import model.Server;
+import model.TDIDirectories;
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
@@ -77,6 +78,7 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		TDIDirectories.createDirectories();
 		new Thread(new BigLogic()).start();
 	}
 
