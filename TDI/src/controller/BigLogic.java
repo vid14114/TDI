@@ -12,6 +12,7 @@ import model.ConfigLoader;
 import model.PluginServer;
 import model.PluginTableModel;
 import model.Server;
+import model.TDIDirectories;
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
@@ -85,6 +86,7 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		TDIDirectories.createDirectories();
 		new Thread(new BigLogic()).start();
 	}
 
@@ -695,7 +697,7 @@ public class BigLogic implements Runnable, ActionListener {
 		
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize());
+//		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio());
 	}
 	
 	public void splitIcons() {
@@ -727,12 +729,13 @@ public class BigLogic implements Runnable, ActionListener {
 						if((boolean)pluginTableModel.getValueAt(i, 1) == true) 
 							plugins[i2++] = (String) pluginTableModel.getValueAt(i, 0);
 					Executor.startPlugins(plugins);
-					configLoader.savePlugins(plugins);						
+					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.2.65");
+			server = new Server("192.168.1.36");
 			tdis = server.fullPose();
 			splitIcons();
+			Executor.saveBackground(wallpaper.markArea(tdis));
 			//TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
 			Timer mo = new Timer();
 			mo.scheduleAtFixedRate(new TimerTask() {

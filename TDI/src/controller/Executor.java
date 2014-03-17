@@ -39,8 +39,8 @@ public final class Executor {
 
 	public static final void saveBackground(BufferedImage image){
 		try {
-			File restore=new File(TDIDirectories.TDI_TEMP +"/"+"temp.png");
-			ImageIO.write(image, "png", restore);	
+			File restore=new File(TDIDirectories.TDI_TEMP +"/"+"temp");
+			ImageIO.write(image, "jpg", restore);	
 			Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", restore.getAbsolutePath()});
 			restore.deleteOnExit();
 		} catch (IOException e) {
@@ -114,5 +114,29 @@ public final class Executor {
 			TDILogger.logError(e.getMessage());
 		}
 		return null;
+	}
+	
+	public static final String getPanelSize() {
+		String panelSize=null;
+		try {
+			BufferedReader bf= new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"xfconf-query", "-c", "xfce4-panel", "-p", "/panels/panel-1/size"}).getInputStream()));
+			panelSize=bf.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return panelSize;
+	}
+	
+	public static final String getPlacementRatio() {
+		String ratio=null;
+		try {
+			BufferedReader bf=new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[] {"xfconf-query", "-c", "xfwm4", "-p", "/general/placement_ratio"}).getInputStream()));
+			ratio=bf.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ratio;
 	}
 }

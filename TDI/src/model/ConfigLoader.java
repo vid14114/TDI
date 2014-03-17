@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -152,19 +153,22 @@ public class ConfigLoader {
 	public BufferedImage loadWallpaper() {
 		BufferedImage wallpaper = null;
 		File wallpaperFile = new File(Executor.getBackground());
-		try {
-			ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
-					wallpaperFile.getName().split("\\.")[1],
-					new File(TDIDirectories.TDI_RESTORE + "/"
-							+ wallpaperFile.getName()));
-		}catch (IIOException e){
-			TDILogger.
-					logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
+		try{
+			try {
+				ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
+						wallpaperFile.getName().split("\\.")[1],
+						new File(TDIDirectories.TDI_RESTORE + "/"
+								+ wallpaperFile.getName()));
+			}catch (IOException e1){
+				TDILogger.
+						logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
+				wallpaper = ImageIO.read(new File("images/image-blank.jpg"));
+			}
 		}
 		catch (IOException e) {
 			TDILogger
 					.logError("An error occured while trying to load the wallpaper");
-		} 
+		}finally{ wallpaperFile.deleteOnExit(); }
 		return wallpaper;
 	}
 
@@ -320,14 +324,12 @@ public class ConfigLoader {
 		return iconSize+(2*margin);
 	}
 	
-	/**
-	 * This method is implemented for testing purposes TODO Delete
-	 * 
-	 * @param iconsRc
-	 *            the iconsRc to set
-	 */
-	public static void setIconsRc(File iconsRc) {
-		ConfigLoader.iconsRc = iconsRc;
+	public int getPanelSize() {
+		return Integer.parseInt(Executor.getPanelSize());
+	}
+	
+	public int getPlacementRatio(){
+		return Integer.parseInt(Executor.getPlacementRatio());
 	}
 
 }
