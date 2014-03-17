@@ -1,14 +1,18 @@
 package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import model.ConfigLoader;
+import model.PluginServer;
 import model.PluginTableModel;
 import model.Server;
+import model.TDIDirectories;
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
@@ -42,25 +46,30 @@ public class BigLogic implements Runnable, ActionListener {
 	private ArrayList<Icon> icons;
 	private ArrayList<TDI> tdis;
 	private Server server;
+	private PluginServer plugserv = new PluginServer();
+	/**
+	 * var used to prevent overwriting of tdis
+	 * 1 = forward
+	 * 0 = don't forward
+	 */
+	int forward = 1;
 	/**
 	 * counter for scaling
 	 */
 	private int scaleCount=0;
-	private int scaleCount2=0;
 	/**
 	 * Compensation Value for position change
 	 */
-	int compPos = 5;
+	int compPos = 1;
 	float compPos2[]={5,5,5};
-	/**
-	 * compensation value for Rotation changes
-	 */
-	private int compRot = 200;
 	/**
 	 * times(1s = 100ms) to wait for scaling
 	 */
 	private int waitTime=5; 
 
+	private int compHeight=200;
+	
+	private TDI otherFocused;
 	
 	/**
 	 * The wallpaper
@@ -77,6 +86,7 @@ public class BigLogic implements Runnable, ActionListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		TDIDirectories.createDirectories();
 		new Thread(new BigLogic()).start();
 		//new BigLogic();
 	}
@@ -86,337 +96,545 @@ public class BigLogic implements Runnable, ActionListener {
 	 */
 	public void run() {
 
-		while (true) {
+		while(true)
+		{
 			if (commands.size() > 0) {
 				if (tdis.contains(commands.get(0))) {
 					TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
-					System.out.println(tdi.toString());
+				//	System.out.println(tdi.toString());
 					TDI command = commands.get(0);
-					float[] movParam = new float[3];
-					TDI windFocused=null;
-					TDI taskFocused=null;
-					if (tdi.getPosition() != command.getPosition()) { //CASE POSITION
-						if ((tdi.getPosition()[0] > command.getPosition()[0]+compPos || tdi.getPosition()[0] > command.getPosition()[0]-compPos ||
-								tdi.getPosition()[1] < command.getPosition()[1]+compPos || tdi.getPosition()[1] < command.getPosition()[1]-compPos)) // if x or y axis changed
+					System.out.println(tdi.getPosition()[0]);
+					forward=1;
+					//Position
+					if(Arrays.equals(tdi.getPosition(), command.getPosition())==false)
+					{
+						if(tdi.getPosition()[0] != command.getPosition()[0])
 						{
-							//SZENARIO A DM
-							if(tdi.getState().equals(TDIState.desktop)) // is in Desktop Mode == kein TDI in Taskbar == kein Fenster offen
+							if(tdi.getPosition()[0] >= command.getPosition()[0]+compPos || tdi.getPosition()[0] >= command.getPosition()[0]-compPos)
 							{
-								if(tdi.getLocked() == false)
-								{
-									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1]) == false)//ist die neue Position in Taskbar?
-									{	
-										splitIcons();
-										commands.remove(0);
-									}
-									else // neue pos in taskbar => setzen des Tdi in taskbar mode öffen von program
-									{
-										tdi.setState(TDIState.taskbar);
-										ProgramHandler.openProgram(tdi.getIcons().get(0)); //open active icon
-										//Vibrate(); //500ms TODO
-										//setLedRed(); TODO
-										tdi.setPosition(0, 0, 0); // linke Ecke der Taskbar
-										for(int x=2,y=10; x < tdis.size() ;x++) // set evry other tdi in the middle of the desk
-										{
-											// TODO set position
-											tdis.get(tdis.indexOf(commands.get(x))).setPosition(0, 0, 0+y); // irgendwo am Rand des Tisches (+y damit sie nicht aufeinander fahren)
-											tdis.get(tdis.indexOf(commands.get(x))).setState(TDIState.sleep); //
-											//setLedGreen(); TODO
-
-											//set one tdi in window mode - position = middle of the desk 
-											tdis.get(tdis.indexOf(commands.get(1))).setState(TDIState.window);
-											tdis.get(tdis.indexOf(commands.get(1))).setPosition(0, 0, 0); // TODO set position
-										}
-										commands.remove(0);
-									}
-								}
+								Move(tdi, commands.get(0));
 							}
-							if(tdi.getState().equals(TDIState.taskbar))
-							{
-								if(ProgramHandler.getRunningPrograms().size()>0) //if programs are open (at least 1)
+							else
+								if(tdi.getPosition()[0] <= command.getPosition()[0]+compPos || tdi.getPosition()[0] <= command.getPosition()[0]-compPos)
 								{
-									if(PosInTaskbar(command.getPosition()[0],command.getPosition()[1])) // neue pos immer noch in taskbar
-									{
-										tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
-										commands.remove(0);
-									}
-									else // neue pos außerhalb der taskbar
-									{
-										for(TDI t: tdis) // find out if any other TDI has focused a window
-										{
-											if(t.getState().equals(TDIState.window))
-												windFocused=t;
-										}
-										if(windFocused != null)
-										{
-											if(StartScaleMode(tdi,windFocused))
-											{
-												scaleCount2=scaleCount2+1;
-												if(scaleCount2==waitTime)
-												{
-													scaleCount2=0;
-													// skaliermodus TDI repräsentiert untere linke Ecke des Fensters
-													taskFocused.setPosition(0, 0, 0);// TODO set position
-													tdi.setIsScale(true);
-													windFocused.setIsScale(true);
-												    int width=(int) (windFocused.getPosition()[0]-tdi.getPosition()[0]);
-												    int height=(int) (windFocused.getPosition()[1]-tdi.getPosition()[1]);
-													ProgramHandler.resizeProgram(width, height);
-													commands.remove(0);
-												}
-												else 
-												{
-													tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
-													commands.remove(0);
-												}
-											}
-											commands.remove(0);
-										}
-										else
-										{
-											tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
-											commands.remove(0);
-										}
-									}
-
+									Move(tdi, commands.get(0));
+								}
+						}
+						else
+							if(tdi.getPosition()[1] != command.getPosition()[1])
+							{
+								if(tdi.getPosition()[1] <= command.getPosition()[1]+compPos || tdi.getPosition()[1] <= command.getPosition()[1]-compPos)
+								{
+									Move(tdi, commands.get(0));
 								}
 								else
-								{
-									for(int x=0; x < tdis.size() ;x++) // set evry tdi in desktop mode cause no programs are open
+									if(tdi.getPosition()[1]+compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1]-compPos)
 									{
-										tdis.get(tdis.indexOf(commands.get(x))).setState(TDIState.desktop); //?
-										tdis.get(tdis.indexOf(commands.get(x))).setPosition(1, 1, 1);// TODO set position
+										Move(tdi, commands.get(0));
 									}
-									commands.remove(0);
-								}
 							}
-							if(tdi.getState().equals(TDIState.window))
-							{
-								for(TDI t: tdis) // find out taskbar tdi
+							else
+								if(tdi.getPosition()[2] != command.getPosition()[2])
 								{
-									if(t.getState().equals(TDIState.taskbar))
-										taskFocused=t;									
-								}
-								// taskbar TDI in nähe des aktuellen
-								if(StartScaleMode(taskFocused, tdi))
-								{
-									scaleCount=scaleCount+1;
-										if(scaleCount==waitTime)
-										{
-											scaleCount=0;
-											// skaliermodus TDI repräsentiert obere linke Ecke des Fensters
-											tdi.setPosition(0, 0, 0);// TODO set position
-											// TODO window TDI repräsentiert obere rechte Ecke des Fensters
-											taskFocused.setPosition(0, 0, 0);// TODO set position
-											tdi.setIsScale(true);
-											taskFocused.setIsScale(true);
-										    int width=(int) (taskFocused.getPosition()[0]-tdi.getPosition()[0]);
-										    int height=(int) (taskFocused.getPosition()[1]-tdi.getPosition()[1]);
-											ProgramHandler.resizeProgram(width, height);
-											commands.remove(0);
-										}
-										else 
-										{
-											tdi.setPosition(tdis.indexOf(commands.get(0).getPosition()[0]), tdis.indexOf(commands.get(0).getPosition()[1]), tdis.indexOf(commands.get(0).getPosition()[2]));
-											commands.remove(0);
-										}
-										commands.remove(0);
-								}
-								else
-								{
-									tdi.setPosition(command.getPosition()[0], command.getPosition()[1], tdi.getPosition()[2]);
-									//tdi.getIcons().get(0).setPosition(); new position of program window
-									commands.remove(0);
-								}
-							}
-							if(tdi.getState().equals(TDIState.inapp))
-							{
-								//TODO in app 
-								commands.remove(0);
-							}
-						}
-					}	
-					//neigen 
-					if (tdi.getRotation()[1] != command.getRotation()[1] || tdi.getRotation()[2] != command.getRotation()[2]) {
-						
-						if(tdi.getState().equals(TDIState.desktop))
-						{
-							//nach rechts neigen (x)
-							if (tdi.getRotation()[1] > command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot)
-								tdi.toggleLock();
-							commands.remove(0);
-							//tdi.toggleGreenLED();//TODO
-						}
-						if(tdi.getState().equals("window"))
-						{
-							//nach oben
-							if (tdi.getRotation()[2] > command.getRotation()[2]+compRot || tdi.getRotation()[2] > command.getRotation()[2]-compRot)
-							{
-								ProgramHandler.toggleMaximization();
-								if(ProgramHandler.getNonMinimized()==0)
-								{
-									tdi.setState(TDIState.desktop);
-									tdi.setPosition(1, 1, 1);
-									splitIcons();
-									commands.remove(0);
-								}
-								commands.remove(0);
-							}
-							//nach links neigen
-							if(tdi.getRotation()[1] < command.getRotation()[1]+compRot || tdi.getRotation()[1] < command.getRotation()[1]-compRot)
-							{
-								ProgramHandler.closeProgram();
-								tdi.getIcons().remove(0);
-								commands.remove(0);
-							}
-							// TDI nach unten neigen
-							if (tdi.getRotation()[2] < command.getRotation()[2]+compRot || tdi.getRotation()[2] < command.getRotation()[2]-compRot) {
-								ProgramHandler.minimize(); //TODO When still focused, move TDI when not for icons
-								if(ProgramHandler.isDesktopMode())
-								{
-									tdi.setState(TDIState.desktop);
-									tdi.setPosition(1, 1, 1); // TODO set pos
-									splitIcons();
-									commands.remove(0);
-								}
-								else
-								{
-									tdi.setPosition(1, 1, 1);// TODO set pos
-									//TODO GO to location of window
-									commands.remove(0);
-								}
-							}
-							commands.remove(0);
-						}
-						if(tdi.getState().equals(TDIState.taskbar))
-						{
-
-							/* TDI nach oben neigen
-							Alle Fenster werden wiederhergestellt */
-							//nach oben
-							if (tdi.getRotation()[2] > command.getRotation()[2]+compRot || tdi.getRotation()[2] > command.getRotation()[2]-compRot)
-							{
-								ProgramHandler.restoreAllPrograms();
-								if(ProgramHandler.isDesktopMode())
-								{
-									if(!(tdis.get(1).getState().equals(TDIState.taskbar)))
+									if((tdi.getPosition()[2]-compHeight) <= command.getPosition()[2]+compPos || (tdi.getPosition()[2]-compHeight) <= command.getPosition()[2]-compPos)
 									{
-										tdis.get(1).setState(TDIState.window);
-										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
-										commands.remove(0);
+										LiftUp(tdi, commands.get(0));
 									}
 									else
-									{
-										tdis.get(2).setState(TDIState.window);
-										tdis.get(1).setPosition(1, 1, 1); //TODO to maximised window
-										commands.remove(0);
-									}
+										if((tdi.getPosition()[2]-compHeight) >= command.getPosition()[2]+compPos || (tdi.getPosition()[2]-compHeight) >= command.getPosition()[2]-compPos)
+										{
+											PutDown(tdi, commands.get(0));
+										}
+								}
+						forward=0;
+					}						
+					//Rotation
+					if(Arrays.equals(tdi.getRotation(), command.getRotation())==false && forward==1)
+					{
+						if(tdi.getRotation()[0] != command.getRotation()[0])
+						{
+							if(tdi.getRotation()[0] >= command.getRotation()[0]+compPos || tdi.getRotation()[0] >= command.getRotation()[0]-compPos)
+							{
+								RotateRight(tdi, commands.get(0));
+							}
+							else
+								if(tdi.getPosition()[0] <= command.getPosition()[0]+compPos || tdi.getRotation()[0] <= command.getRotation()[0]-compPos)
+								{
+									RotateLeft(tdi, commands.get(0));
+								}
+						}
+						else
+							if(tdi.getRotation()[1] != command.getRotation()[1])
+							{
+								if(tdi.getRotation()[1] <= command.getRotation()[1]+compPos || tdi.getRotation()[1] <= command.getRotation()[1]-compPos)
+								{
+									TiltLeft(tdi, commands.get(0));
 								}
 								else
-								{
-									for(TDI t:tdis)
+									if(tdi.getRotation()[1]+compPos > command.getRotation()[1] || tdi.getRotation()[1] >= command.getRotation()[1]-compPos)
 									{
-										if(t.getState().equals(TDIState.window))
+										TiltRight(tdi, commands.get(0));
+									}
+							}
+							else
+								if(tdi.getRotation()[2] != command.getRotation()[2])
+								{
+									if((tdi.getRotation()[2]-compHeight) <= command.getRotation()[2]+compPos || (tdi.getRotation()[2]-compHeight) <= command.getRotation()[2]-compPos)
+									{
+										TiltDown(tdi, commands.get(0));
+									}
+									else
+										if((tdi.getRotation()[2]-compHeight) >= command.getRotation()[2]+compPos || (tdi.getRotation()[2]-compHeight) >= command.getRotation()[2]-compPos)
 										{
-											t.setPosition(1, 1, 1); //TODO to maximised window
+											TiltUp(tdi, commands.get(0));
 										}
-									}
-									commands.remove(0);
 								}
-								commands.remove(0);
-							}
-							//nach links/rechts neigen
-							if(tdi.getRotation()[1] < command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot || 
-								tdi.getRotation()[2] < command.getRotation()[2]+compRot || tdi.getRotation()[2] > command.getRotation()[2]-compRot)
-							{
-								ProgramHandler.closeAllPrograms();
-								for(TDI t:tdis)
-								{
-									t.setState(TDIState.desktop);
-								}
-								commands.remove(0);
-							}
-							// TDI nach unten neigen
-							if (tdi.getRotation()[2] < command.getRotation()[2]+compRot || tdi.getRotation()[2] < command.getRotation()[2]-compRot) {
-								ProgramHandler.minimizeAllPrograms();
-								for(TDI t:tdis)
-								{
-									if(t.getState().equals(TDIState.window))
-									{
-										t.setState(TDIState.desktop);
-										tdi.setPosition(1, 1, 1);// TODO set pos
-										splitIcons();
-									}
-								}
-								commands.remove(0);
-							}
-						}
-						if(tdi.getState().equals(TDIState.inapp))
-						{
-							//nach rechts neigen
-							if(tdi.getRotation()[1] > command.getRotation()[1]+compRot || tdi.getRotation()[1] > command.getRotation()[1]-compRot)
-							{
-								tdi.setState(TDIState.window);
-								// TODO server var
-								commands.remove(0);
-							}
-							commands.remove(0);
-						}
-
-					}
-
-					// drehen
-					if(tdi.getRotation()[0] != command.getRotation()[0])
-					{
-						if(tdi.getState().equals(TDIState.taskbar))
-						{
-							//nicht im Skaliermodus
-							if(tdi.isScale()==false)
-							{
-								//nach links Das vorherige Fenster in der Taskleiste wird fokussiert
-								if(tdi.getRotation()[0] < command.getRotation()[0]+compRot || tdi.getRotation()[0] < command.getRotation()[0]-compRot)
-								{
-									tdi.setRotation(command.getRotation());
-									tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()));
-									commands.remove(0);
-								}
-								//nach rechts Das nächste Fenster in der Taskleiste wird fokussiert
-								if(tdi.getRotation()[0] > command.getRotation()[0]+compRot || tdi.getRotation()[0] > command.getRotation()[0]-compRot)
-								{
-									tdi.setRotation(command.getRotation());
-									tdi.getIcons().set(0, tdi.getIcons().get(1));
-									commands.remove(0);
-								}
-							}
-							commands.remove(0);
-						}
-						if(tdi.getState().equals(TDIState.desktop))
-						{
-							//nach links Das vorherige Icon, wofür das TDI zuständig ist wird ausgewählt
-							if(tdi.getRotation()[0] < command.getRotation()[0]+compRot || tdi.getRotation()[0] < command.getRotation()[0]-compRot)
-							{
-								tdi.setRotation(command.getRotation());
-								tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()-1));
-								commands.remove(0);
-							}
-							//nach rechts Das nächste Icon, wofür das TDI zuständig ist wird ausgewählt
-							if(tdi.getRotation()[0] > command.getRotation()[0]+compRot || tdi.getRotation()[0] > command.getRotation()[0]-compRot)
-							{
-								tdi.setRotation(command.getRotation());
-								tdi.getIcons().set(0, tdi.getIcons().get(1));
-								commands.remove(0);
-							}
 						}
 					}
 				}
-				commands.remove(0);
-				Executor.saveBackground(wallpaper.markArea(tdis));
 			}
-			
+	}
+	private void Move(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop":
+			//scale
+			if(tdi.getLocked())
+			{
+				if(ProgramHandler.getRunningPrograms().size()==0)
+				{
+					if(PosInTaskbar(commands.getPosition()))
+					{
+						if(EmptyTaskbar()==false)
+						{//B1
+							ProgramHandler.openProgram(tdi.getIcons().get(0));
+							tdi.setState(TDIState.window);
+							tdi.toggleLock();
+							tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+						}
+						else
+						{//B
+							//TDI.vibrate()
+							ProgramHandler.openProgram(tdi.getIcons().get(0));
+							tdi.setState(TDIState.taskbar);
+							tdi.toggleLock();
+							tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+						}
+					}
+				}
+				else
+				{
+					tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+					ProgramHandler.moveProgram((int)tdi.getPosition()[0], (int)tdi.getPosition()[1]);
+				}
+			}
+			else
+			{
+				if(ProgramHandler.getRunningPrograms().size()==0)
+				{
+					if(PosInTaskbar(commands.getPosition()))
+					{
+						if(EmptyTaskbar())
+						{//B2
+							tdi.setState(TDIState.taskbar);
+							SetOtherTDI(TDIState.window,tdi);
+							tdi.toggleLock();
+							tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+						}
+					}
+					else
+					{//A
+						tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+						splitIcons();
+					}
+				}
+				else
+				{//D
+					tdi.setState(TDIState.inapp);
+					//server var.
+				}
+			}
+			;break;
+		case "taskbar":
+			//scale
+			if(tdi.isScale()==false)
+			{
+				if(StartScaleMode(commands,TDIState.window))
+				{
+					scaleCount+=1;
+					if(scaleCount==waitTime)
+					{//A
+						scaleCount=0;
+						tdi.setIsScale(true);
+						otherFocused.setIsScale(true);
+					    int width=(int) (otherFocused.getPosition()[0]-tdi.getPosition()[0]);
+					    int height=(int) (otherFocused.getPosition()[1]-tdi.getPosition()[1]);
+						ProgramHandler.resizeProgram(width, height);
+						tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
+						otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
+						//vibrate? LED? some notification?
+					}
+				}
+				else
+				{
+					if(ProgramHandler.getRunningPrograms().size()>0)
+					{
+						if(ProgramHandler.getNonMinimized()==0)
+						{//B
+							tdi.setState(TDIState.desktop);
+							tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+							for(TDI t:tdis)
+							{
+								t.setState(TDIState.desktop);
+							}
+							splitIcons();
+						}
+					}
+				}
+			}
+			else
+			{
+				//wenn bereits im scale
+			    int width=(int) (otherFocused.getPosition()[0]-tdi.getPosition()[0]);
+			    int height=(int) (otherFocused.getPosition()[1]-tdi.getPosition()[1]);
+				ProgramHandler.resizeProgram(width, height);
+				tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
+				otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
+			}
+			break;
+		case "window":
+			if(tdi.getLocked()==false)
+			{
+				if(tdi.isScale()==false)
+				{
+					if(StartScaleMode(commands,TDIState.taskbar))
+					{
+						scaleCount+=1;
+						if(scaleCount==waitTime)
+						{
+							scaleCount=0;
+							tdi.setIsScale(true);
+							otherFocused.setIsScale(true);
+						    int width=(int) (otherFocused.getPosition()[0]-tdi.getPosition()[0]);
+						    int height=(int) (otherFocused.getPosition()[1]-tdi.getPosition()[1]);
+							ProgramHandler.resizeProgram(width, height);
+							tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
+							otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
+							//vibrate? LED? some notification?
+						}
+					}
+				}
+				else
+				{
+					//wenn bereits im scale
+				    int width=(int) (otherFocused.getPosition()[0]-tdi.getPosition()[0]);
+				    int height=(int) (otherFocused.getPosition()[1]-tdi.getPosition()[1]);
+					ProgramHandler.resizeProgram(width, height);
+					tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
+					otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
+				}
+			}
+			else
+			{
+				tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+				ProgramHandler.moveProgram((int)tdi.getPosition()[0], (int)tdi.getPosition()[1]);
+			}
+			;break;
+		case "inapp":
+			tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			;break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			;break;
 		}
-		
+	}
+	private void LiftUp(TDI tdi, TDI commands)//heben
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop": break;
+		case "taskbar": break;
+		case "window": break;
+		case "inapp": 
+			tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void PutDown(TDI tdi, TDI commands)//senken
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop": break;
+		case "taskbar": break;
+		case "window": break;
+		case "inapp": 
+			tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void RotateRight(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.getIcons().set(0, tdi.getIcons().get(1));
+				tdi.setRotation(commands.getRotation());
+			}
+			break;
+		case "taskbar":
+			if(ProgramHandler.getRunningPrograms().size()>1)
+			{
+				ProgramHandler.restoreRight();
+			}
+			break;
+		case "inapp": 
+			tdi.setRotation(commands.getRotation());
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void RotateLeft(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop":
+				if(ProgramHandler.getNonMinimized()==0)
+				{
+					tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size()-1));
+					tdi.setRotation(commands.getRotation());
+				}
+			break;
+		case "taskbar":
+				if(ProgramHandler.getRunningPrograms().size()>1)
+				{
+					ProgramHandler.restoreLeft();
+				}
+			break;
+		case "inapp": 
+			tdi.setRotation(commands.getRotation());
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void TiltRight(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "desktop": 
+			tdi.toggleLock();
+			//toggle green LED
+			break;
+		case "taskbar":
+			ProgramHandler.closeAllPrograms();
+			tdi.setRotation(commands.getRotation());
+			for(TDI t: tdis)
+			{
+				t.setState(TDIState.desktop);
+			}
+			splitIcons();
+			break;
+		case "inapp":
+			tdi.setRotation(commands.getRotation());
+			tdi.setState(TDIState.window);
+			break;
+		case "sleep": 
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void TiltLeft(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "taskbar": 
+			ProgramHandler.closeAllPrograms();
+			tdi.setRotation(commands.getRotation());
+			for(TDI t: tdis)
+			{
+				t.setState(TDIState.desktop);
+			}
+			splitIcons();
+			break;
+		case "window":
+			ProgramHandler.closeProgram();
+			break;
+		case "inapp":
+			tdi.setRotation(commands.getRotation());
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void TiltUp(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "taskbar":
+			ProgramHandler.restoreAllPrograms();
+			int count=0;
+			for(TDI t:tdis)
+			{
+				if(t.getState().equals(TDIState.window))
+				count++;
+			}
+			if(count==0)
+			{
+				if(tdis.get(0).getState().equals(TDIState.window))
+				tdis.get(1).setState(TDIState.window);
+				else
+				tdis.get(0).setState(TDIState.window);
+			}
+				break;
+		case "window": 
+			ProgramHandler.toggleMaximization();//
+			tdi.setRotation(commands.getRotation());
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			break;
+		case "inapp": 
+			tdi.setRotation(commands.getRotation());
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
+	}
+	private void TiltDown(TDI tdi, TDI commands)
+	{
+		switch(tdi.getState().toString())
+		{
+		case "taskbar": 
+			ProgramHandler.minimizeAllPrograms();
+			tdi.setRotation(commands.getRotation());
+			for(TDI t: tdis)
+			{
+				t.setState(TDIState.desktop);
+			}
+			splitIcons();
+			break;
+		case "window": 
+			ProgramHandler.minimize();
+			tdi.setRotation(commands.getRotation());
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			break;
+		case "inapp":
+			tdi.setRotation(commands.getRotation());
+			plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+			break;
+		case "sleep":
+			if(ProgramHandler.getNonMinimized()==0)
+			{
+				tdi.setState(TDIState.desktop);
+				splitIcons();
+			}
+			else
+				tdi.setState(TDIState.desktop);
+			break;
+		}
 	}
 
+	private boolean EmptyTaskbar()
+	{
+		for(TDI t:tdis)
+		{
+			if(t.getState().equals(TDIState.taskbar))
+				return false;
+			else
+				return true;
+		}
+		return true;
+	}
+	public void SetOtherTDI(TDIState state, TDI tdi)
+	{
+		if(!(tdis.get(0).equals(tdi)))
+		{
+			tdis.get(0).setState(state);
+			tdis.get(0).getIcons().add(0,tdi.getIcons().get(0));
+			tdi.getIcons().remove(0);
+		}
+		else
+		{
+			tdis.get(1).setState(state);
+			tdis.get(1).getIcons().add(0,tdi.getIcons().get(0));
+			tdi.getIcons().remove(0);
+		}
+	}
 	public ArrayList<Icon> getIcons() {
 		return icons;
 	}
@@ -445,24 +663,32 @@ public class BigLogic implements Runnable, ActionListener {
 	 * checks if givenPos is in taskbar //TODO Methode
 	 * @return
 	 */
-	private boolean PosInTaskbar(float x, float y)
+	private boolean PosInTaskbar(float[] pos)
 	{
 		return true;
 	}
 	/**
 	 * checks if a taskbar TDI and a window TDI are near enough to start the scale mode
 	 */
-	private boolean StartScaleMode(TDI t1, TDI t2)
+	private boolean StartScaleMode(TDI t1, TDIState state)
 	{
 		int range = 5;
-		if(t1.getPosition()[0] <= t2.getPosition()[0]+range && t1.getPosition()[0] >= t2.getPosition()[0]-range ||
-				t1.getPosition()[1] <= t2.getPosition()[1]+range && t1.getPosition()[1] >= t2.getPosition()[1]-range)
-			return true;
-		if(t2.getPosition()[0] <= t1.getPosition()[0]+range && t2.getPosition()[0] >= t1.getPosition()[0]-range ||
-				t2.getPosition()[1] <= t1.getPosition()[1]+range && t2.getPosition()[1] >= t1.getPosition()[1]-range)
-			return true;
-		else
-			return false;
+		for(TDI t2: tdis)
+		{
+			if(t2.getState().equals(state))
+			{
+				otherFocused=t2;
+				if(t1.getPosition()[0] <= t2.getPosition()[0]+range && t1.getPosition()[0] >= t2.getPosition()[0]-range ||
+						t1.getPosition()[1] <= t2.getPosition()[1]+range && t1.getPosition()[1] >= t2.getPosition()[1]-range)
+					return true;
+				if(t2.getPosition()[0] <= t1.getPosition()[0]+range && t2.getPosition()[0] >= t1.getPosition()[0]-range ||
+						t2.getPosition()[1] <= t1.getPosition()[1]+range && t2.getPosition()[1] >= t1.getPosition()[1]-range)
+					return true;
+				else
+					return false;
+			}
+		}
+		return false;
 	}
 
 	public BigLogic() {
@@ -472,7 +698,7 @@ public class BigLogic implements Runnable, ActionListener {
 		
 		icons = configLoader.loadIcons();
 		Collections.sort(icons);
-		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio(), configLoader.loadScreensize());
+//		wallpaper=new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio());
 	}
 	
 	public void splitIcons() {
@@ -490,9 +716,9 @@ public class BigLogic implements Runnable, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		tdiDialog.setErrorMessage("");
-		if(e.getActionCommand().equals(TDIState.restore));
+	//	if(e.getActionCommand().equals(TDIState.restore));
 			//TODO Restore;
-		else
+	//	else
 		{		
 			String ip;
 			if( (ip = checkIp(tdiDialog.getIp1().getText(),tdiDialog.getIp2().getText(),tdiDialog.getIp3().getText(),tdiDialog.getIp4().getText())) == null) return;			
