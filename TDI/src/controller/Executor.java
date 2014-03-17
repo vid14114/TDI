@@ -39,9 +39,8 @@ public final class Executor {
 
 	public static final void saveBackground(BufferedImage image){
 		try {
-			File restore=new File(TDIDirectories.TDI_TEMP +"/"+"temp.jpg");
-			ImageIO.write(image, "jpg", restore);	
-			//Wenn der Pfad gleich ist wie der vorherige, wird das Bild nicht neu geladen
+			File restore=new File(TDIDirectories.TDI_TEMP +"/"+"temp");
+			ImageIO.write(image, "", restore);	
 			Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", restore.getAbsolutePath()});
 			restore.deleteOnExit();
 		} catch (IOException e) {
