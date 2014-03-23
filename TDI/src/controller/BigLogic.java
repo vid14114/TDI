@@ -202,6 +202,7 @@ public class BigLogic implements Runnable, ActionListener {
                                 tdi.setState(TDIState.taskbar);
                                 tdi.toggleLock();
                                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+                                //TODO
                             }
                         }
                     } else {
@@ -213,7 +214,8 @@ public class BigLogic implements Runnable, ActionListener {
                         if (posInTaskbar(commands.getPosition())) {
                             if (emptyTaskbar()) {//B2
                                 tdi.setState(TDIState.taskbar);
-                                setOtherTDI(TDIState.window, tdi);
+                                setOtherTDI(TDIState.inapp, tdi);
+                                
                                 tdi.toggleLock();
                                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
                             }
@@ -555,16 +557,21 @@ public class BigLogic implements Runnable, ActionListener {
 
     /**
      * Method to find any other TDI with the given matching TDIstate
+     * sends plugin server a message if state == window
      */
-    void setOtherTDI(TDIState state, TDI tdi) {
+   private void setOtherTDI(TDIState state, TDI tdi) {
         if (!(tdis.get(0).equals(tdi))) {
             tdis.get(0).setState(state);
             tdis.get(0).getIcons().add(0, tdi.getIcons().get(0));
             tdi.getIcons().remove(0);
+            if(state.equals(TDIState.window))
+            plugserv.sendMessage(tdis.get(0).getId(), tdis.get(0).getPosition()[0], tdis.get(0).getPosition()[1], tdis.get(0).getPosition()[2], tdis.get(0).getRotation());
         } else {
             tdis.get(1).setState(state);
             tdis.get(1).getIcons().add(0, tdi.getIcons().get(0));
             tdi.getIcons().remove(0);
+            if(state.equals(TDIState.window))
+            plugserv.sendMessage(tdis.get(1).getId(), tdis.get(1).getPosition()[0], tdis.get(1).getPosition()[1], tdis.get(1).getPosition()[2], tdis.get(1).getRotation());
         }
     }
 
