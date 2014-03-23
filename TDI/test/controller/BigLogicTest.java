@@ -80,7 +80,8 @@ public class BigLogicTest {
 		Assert.assertTrue(Arrays.equals(tdis.get(0).getRotation(),t2.getRotation()));
 	}
 	/**
-	 * Test method for
+	 * Test Links neigen im Window mode, es wird angenommen 
+	 * dass nur das aktuell fokusierte Fenster offen ist (State => desktop)
 	 * {@link controller.BigLogic#run()}.
 	 */
 	@Test
@@ -94,17 +95,18 @@ public class BigLogicTest {
 		TDI t2 = new TDI(id, 100, 100, 50, rot2);
 		ProgramHandler.closeAllPrograms();
 		commands.add(t2);
-		tdis.add(t1);
-		
+		tdis.add(t1);		
 		icons = cl.loadIcons();
 		bl.setCommands(commands);
 		bl.setTdis(tdis);
 		bl.splitIcons();
 		bl.run();
-
+		System.out.println("tdis(0): "+tdis.get(0).getRotation()[1]);
+		System.out.println("t2: "+t2.getRotation()[1]);
+		System.out.println(ProgramHandler.getRunningPrograms().size());
 		Assert.assertTrue(Arrays.equals(tdis.get(0).getRotation(),t2.getRotation()));
 		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
-		Assert.assertEquals(ProgramHandler.getRunningPrograms(),1);
+		Assert.assertEquals(ProgramHandler.getRunningPrograms().size(),0);
 	}
 	/**
 	 * Test method for
