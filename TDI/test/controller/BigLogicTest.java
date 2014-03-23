@@ -137,7 +137,6 @@ public class BigLogicTest {
 		Assert.assertTrue(tdis.get(0).getLocked());
 		//TODO check if green led is on
 		Assert.assertEquals(tdis.get(0).getState(),TDIState.desktop);
-		Assert.assertTrue(Arrays.equals(tdis.get(0).getRotation(),t2.getRotation()));
 	}
 	/**
 	 * Test method for
