@@ -17,8 +17,10 @@ public class PluginServer implements Runnable{
 	private static DataOutputStream send;
 	private static DataInputStream read;
 	String ip ="127.0.0.1";
+	MusicDialog m;
 
-	public PluginServer(){
+	public PluginServer(MusicDialog m){
+		this.m = m;
 		try {
 			// Created a new socket which is bound to the port 12345
 			client = new Socket(ip, 34000);
@@ -42,8 +44,8 @@ public class PluginServer implements Runnable{
 				float x = read.readFloat();
 				float y = read.readFloat();
 				float z = read.readFloat();
-				//float[] q1 = read.readFloat();
-				read.mark(9);
+				m.TDIMoved(id,x,y,z);
+				read.mark(4);
 			}
 			read.reset();
 		}catch(Exception e){
