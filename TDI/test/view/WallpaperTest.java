@@ -1,14 +1,10 @@
 package view;
 
-import static org.junit.Assert.fail;
+class WallpaperTest {
 
-import org.junit.Test;
-
-public class WallpaperTest {
-
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
+    @Test
+    public void test() {
+        fail("Not yet implemented");
+    }
 
 }
