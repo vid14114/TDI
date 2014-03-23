@@ -53,6 +53,11 @@ public class BigLogic implements Runnable, ActionListener {
      * The commands that have to be executed.
      */
     private ArrayList<TDI> commands = new ArrayList<TDI>();
+    /**
+     *	Compensation Value for position change
+     */
+    private int compHeight = 200;
+    private int compPos = 1;
 
     public BigLogic() {
         configLoader = new ConfigLoader();
@@ -80,19 +85,18 @@ public class BigLogic implements Runnable, ActionListener {
      */
     public void run() {
 
-        //	while(true)
-        if (1 == 1) {
+        while(true)
+    	{
             if (commands.size() > 0) {
                 if (tdis.contains(commands.get(0))) {
                     TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
                     //	System.out.println(tdi.toString());
                     TDI command = commands.get(0);
                     System.out.println(tdi.getPosition()[0]);
-                    /*
-      var used to prevent overwriting of tdis
-      1 = forward
-      0 = don't forward
-     */
+                    /* var used to prevent overwriting of tdis
+				      1 = forward
+				      0 = don't forward
+				     */
                     int forward = 1;
                     //Position
                     if (!Arrays.equals(tdi.getPosition(), command.getPosition())) {
@@ -101,11 +105,11 @@ public class BigLogic implements Runnable, ActionListener {
                             if (tdi.getPosition()[0] >= command.getPosition()[0] + compPos || tdi.getPosition()[0] >= command.getPosition()[0] - compPos) {
                                 move(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getPosition()[0] <= command.getPosition()[0] - compPos) {
                                 move(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             }
                         } else if (tdi.getPosition()[1] != command.getPosition()[1]) {
                             int compPos = 1;
@@ -114,7 +118,7 @@ public class BigLogic implements Runnable, ActionListener {
                             } else if (tdi.getPosition()[1] + compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1] - compPos) {
                                 move(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             }
                         } else if (tdi.getPosition()[2] != command.getPosition()[2]) {
                             int compHeight = 200;
@@ -122,11 +126,11 @@ public class BigLogic implements Runnable, ActionListener {
                             if ((tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] - compPos) {
                                 liftUp(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             } else if ((tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] - compPos) {
                                 putDown(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             }
                         }
                         forward = 0;
@@ -138,37 +142,32 @@ public class BigLogic implements Runnable, ActionListener {
                             if (tdi.getRotation()[0] >= command.getRotation()[0] + compPos || tdi.getRotation()[0] >= command.getRotation()[0] - compPos) {
                                 rotateRight(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getRotation()[0] <= command.getRotation()[0] - compPos) {
                                 rotateLeft(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             }
                         } else if (tdi.getRotation()[1] != command.getRotation()[1]) {
                             int compPos = 1;
                             if (tdi.getRotation()[1] <= command.getRotation()[1] + compPos || tdi.getRotation()[1] <= command.getRotation()[1] - compPos) {
                                 tiltLeft(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             } else if (tdi.getRotation()[1] + compPos > command.getRotation()[1] || tdi.getRotation()[1] >= command.getRotation()[1] - compPos) {
                                 tiltRight(tdi, commands.get(0));
                                 commands.remove(0);
-                                //continue;
+                                continue;
                             }
                         } else if (tdi.getRotation()[2] != command.getRotation()[2]) {
-                            int compHeight = 200;
-                            /*
-      Compensation Value for position change
-     */
-                            int compPos = 1;
                             if ((tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] - compPos) {
                                 tiltDown(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             } else if ((tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] - compPos) {
                                 tiltUp(tdi, commands.get(0));
                                 commands.remove(0);
-                                //	continue;
+                                continue;
                             }
                         }
                     }
@@ -216,7 +215,7 @@ public class BigLogic implements Runnable, ActionListener {
                         }
                     } else {//D
                         tdi.setState(TDIState.inapp);
-                        //server var.
+                        //start of plugin
                     }
                 }
                 break;
@@ -423,6 +422,7 @@ public class BigLogic implements Runnable, ActionListener {
             case "inapp":
                 tdi.setRotation(commands.getRotation());
                 tdi.setState(TDIState.window);
+                //end of plugin
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
