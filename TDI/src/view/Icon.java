@@ -1,6 +1,6 @@
 package view;
 
-import java.awt.*;
+import java.awt.Point;
 
 public class Icon implements Comparable<Icon>{
 	/**

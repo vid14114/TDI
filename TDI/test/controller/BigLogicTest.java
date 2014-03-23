@@ -1,18 +1,18 @@
 package controller;
 
-import model.ConfigLoader;
-import view.Icon;
-import view.TDI;
-import view.TDI.TDIState;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import model.ConfigLoader;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-class BigLogicTest {
+import view.Icon;
+import view.TDI;
+import view.TDI.TDIState;
+
+public class BigLogicTest {
 
     private BigLogic bl = new BigLogic();
     private ArrayList<Icon> icons = new ArrayList<Icon>();

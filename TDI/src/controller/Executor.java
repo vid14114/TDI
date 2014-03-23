@@ -3,15 +3,16 @@
  */
 package controller;
 
-import model.TDIDirectories;
-import model.TDILogger;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import javax.imageio.ImageIO;
+
+import model.TDIDirectories;
+import model.TDILogger;
 
 /**
  * @author abideen

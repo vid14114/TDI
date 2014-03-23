@@ -1,9 +1,5 @@
 package model;
 
-import org.apache.commons.math3.complex.Quaternion;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import view.TDI;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,7 +7,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-class ServerTest implements Runnable {
+import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.junit.Assert;
+import org.junit.Test;
+
+import view.TDI;
+
+public class ServerTest implements Runnable {
 
     private final byte id = 0;
     private final float[] rot = {1, 2, 4};

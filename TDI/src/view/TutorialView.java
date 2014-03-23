@@ -1,7 +1,11 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+
+import javax.swing.JTextArea;
+import javax.swing.JWindow;
 
 /**
  * @author abideen

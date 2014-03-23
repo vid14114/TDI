@@ -1,15 +1,23 @@
 package controller;
 
-import model.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import model.ConfigLoader;
+import model.PluginServer;
+import model.PluginTableModel;
+import model.Server;
+import model.TDIDirectories;
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
 import view.TDIDialog;
 import view.Wallpaper;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
 
 /**
  * Implements Runnable interface. Is Master, is big.

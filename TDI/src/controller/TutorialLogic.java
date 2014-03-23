@@ -1,12 +1,12 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
 import view.TutorialView;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 class TutorialLogic implements Runnable {
     private final TutorialView tv = new TutorialView();
