@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-//Funktioniert nur, wenn das Hintergrundbild gleich der Monitorauflösung ist
 public class Wallpaper {
 
 	/**
@@ -18,7 +17,6 @@ public class Wallpaper {
 	/**
 	 * The block size of each icon
 	 */	
-	private int blockSize;
 	private int panelSize;
 	private int ratio;
 	
@@ -30,7 +28,6 @@ public class Wallpaper {
 	
 	public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio, Point screensize){
 		this.background = background;
-		this.blockSize = blockSize;
 		this.panelSize = panelSize;
 		this.ratio = ratio;
 		realWidth=blockSize+(4*ratio);
@@ -80,6 +77,18 @@ public class Wallpaper {
 			if(firstPosY!=0)
 				lastY-=panelSize;
 			g2.fill(new Rectangle2D.Float(firstX*scalingX, firstY*scalingY, lastX*scalingX, lastY*scalingY));
+			
+			//mark the selected Icon
+			int selectedPosX=colorAreas.get(i).getIcons().get(0).getPosition().y;
+			int selectedPosY=colorAreas.get(i).getIcons().get(0).getPosition().x;
+			
+			int posX=selectedPosX*realWidth;
+			int posY=selectedPosY*realHeight+ratio;
+			if(i==0)
+				g2.setColor(Color.cyan);
+			if(i==1)
+				g2.setColor(Color.magenta);
+			g2.fill(new Rectangle2D.Float(posX*scalingX, posY*scalingY, realWidth*scalingX, realHeight*scalingY));
 			g2.drawImage(b, 0, 0, null);
 		}
 		return b;

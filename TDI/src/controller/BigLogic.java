@@ -88,6 +88,7 @@ public class BigLogic implements Runnable, ActionListener {
 	public static void main(String[] args) {
 		TDIDirectories.createDirectories();
 		new Thread(new BigLogic()).start();
+		//new BigLogic();
 	}
 
 	/**
@@ -763,7 +764,7 @@ public class BigLogic implements Runnable, ActionListener {
 					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.1.36");
+			server = new Server("192.168.2.59");
 			tdis = server.fullPose();
 			splitIcons();
 			Executor.saveBackground(wallpaper.markArea(tdis));
