@@ -1,10 +1,10 @@
 package controller;
 
-import view.Icon;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import view.Icon;
 
 class ProgramHandler {
 

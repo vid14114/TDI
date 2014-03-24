@@ -3,10 +3,14 @@
  */
 package controller;
 
-import model.ConfigLoader;
-import view.Icon;
-
 import java.util.ArrayList;
+
+import model.ConfigLoader;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import view.Icon;
 
 /**
  * @author abideen

@@ -1,15 +1,18 @@
 package model;
 
-import org.apache.commons.math3.complex.Quaternion;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import view.TDI;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import org.apache.commons.math3.complex.Quaternion;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.junit.Assert;
+import org.junit.Test;
+
+import view.TDI;
 
 class ServerTest implements Runnable {
 

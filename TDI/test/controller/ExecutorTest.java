@@ -3,12 +3,16 @@
  */
 package controller;
 
-import model.TDIDirectories;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import model.TDIDirectories;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author abideen

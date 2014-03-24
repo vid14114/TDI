@@ -1,14 +1,18 @@
 package model;
 
-import controller.Executor;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import controller.Executor;
 
 class ConfigLoaderTest {
 

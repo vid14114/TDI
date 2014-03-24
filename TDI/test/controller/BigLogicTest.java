@@ -1,16 +1,16 @@
 package controller;
 
-import model.ConfigLoader;
-import view.Icon;
-import view.TDI;
-import view.TDI.TDIState;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import model.ConfigLoader;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import view.Icon;
+import view.TDI;
+import view.TDI.TDIState;
 
 class BigLogicTest {
 

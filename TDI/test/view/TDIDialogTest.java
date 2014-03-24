@@ -1,7 +1,10 @@
 package view;
 
-import controller.BigLogic;
 import model.PluginTableModel;
+
+import org.junit.Test;
+
+import controller.BigLogic;
 
 class TDIDialogTest {
 

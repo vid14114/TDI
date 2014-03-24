@@ -1,5 +1,7 @@
 package view;
 
+import org.junit.Test;
+
 class TutorialViewTest {
 
     @Test
