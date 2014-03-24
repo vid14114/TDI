@@ -66,8 +66,12 @@ public class MusicDialog extends JDialog implements ActionListener{
 	}
 	
 	public void TDIMoved(float id,float x,float y,float z){
-		if(id==-1){
+		if(this.id==-1){
 			this.id=id;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			return; 
 		}
 		try {
 		if(this.id==id){
@@ -88,7 +92,6 @@ public class MusicDialog extends JDialog implements ActionListener{
 			}
 		}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

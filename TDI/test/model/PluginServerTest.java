@@ -42,9 +42,6 @@ public class PluginServerTest {
                     while (s.getInputStream().available() > 1) {                        
                     	s.getInputStream().read(b);
                         System.out.println(ByteBuffer.wrap(b).getFloat());
-                        float a = ByteBuffer.wrap(b).getFloat();
-                        if(312313 == a)
-                        	s.getInputStream().skip(b.length*3);
                     }
                     while (s1.getInputStream().available() > 1) {
                         s1.getInputStream().read(b);
@@ -63,9 +60,8 @@ public class PluginServerTest {
                 }
             }
         }).start();
-        System.out.println("waiting");
         ps.sendMessage(123, 1231, 213131, 312313, new float[]{132123, 12342, 123412});
-        ps.sendMessage(223f, 234f, 243f, 242f, new float[]{13234.78f, 123.25f, 234.3f});
+        ps.sendMessage(123, 234f, 243f, 242f, new float[]{13234.78f, 123.25f, 234.3f});
         System.in.read();
 
     }

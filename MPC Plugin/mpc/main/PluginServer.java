@@ -31,10 +31,8 @@ public class PluginServer implements Runnable{
 			send = new DataOutputStream(client.getOutputStream());
 			read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 		} catch (IOException e) {
-			System.out.print("Error, could not connect to port 12435 ");
 			e.printStackTrace();
 		}
-
 	}
 
 
