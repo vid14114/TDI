@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 public class PluginServer implements Runnable{
 
@@ -18,6 +19,7 @@ public class PluginServer implements Runnable{
 	private static DataInputStream read;
 	String ip ="127.0.0.1";
 	MusicDialog m;
+	byte[] by = new byte[4];
 
 	public PluginServer(MusicDialog m){
 		this.m = m;
@@ -25,6 +27,7 @@ public class PluginServer implements Runnable{
 			// Created a new socket which is bound to the port 12345
 			client = new Socket(ip, 34000);
 			client.setKeepAlive(true);
+			client.setSoTimeout(0);
 			send = new DataOutputStream(client.getOutputStream());
 			read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 		} catch (IOException e) {
@@ -38,18 +41,31 @@ public class PluginServer implements Runnable{
 	@Override
 	public void run() {
 		try{
-			while (read.available()>0)
+			while (true)
 			{
-				float id=read.readByte();
-				float x = read.readFloat();
-				float y = read.readFloat();
-				float z = read.readFloat();
-				m.TDIMoved(id,x,y,z);
-				read.mark(4);
+				//Receiving Data
+				while(read.available() > 0){
+					read.read(by);
+					float id = ByteBuffer.wrap(by).getFloat();
+					
+					read.read(by);
+					float x = ByteBuffer.wrap(by).getFloat();
+					
+					read.read(by);
+					float y = ByteBuffer.wrap(by).getFloat();
+					
+					read.read(by);
+					float z = ByteBuffer.wrap(by).getFloat();
+					
+					read.skip(by.length*3);
+					
+					//Finished receiving
+					m.TDIMoved(id,x,y,z);
+				}
+				
 			}
-			read.reset();
 		}catch(Exception e){
-			
+			return;
 		}
 	}
 }
