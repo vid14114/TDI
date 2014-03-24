@@ -13,9 +13,9 @@ import org.junit.Test;
 /**
  * @author abideen
  */
-class PluginServerTest {
+public class PluginServerTest {
     private final PluginServer ps = new PluginServer();
-
+   
     /**
      * @throws java.lang.Exception
      */
@@ -39,9 +39,12 @@ class PluginServerTest {
                     Socket s1 = new Socket("127.0.0.1", 34000);
                     Socket s2 = new Socket("127.0.0.1", 34000);
                     byte[] b = new byte[4];
-                    while (s.getInputStream().available() > 1) {
-                        s.getInputStream().read(b);
+                    while (s.getInputStream().available() > 1) {                        
+                    	s.getInputStream().read(b);
                         System.out.println(ByteBuffer.wrap(b).getFloat());
+                        float a = ByteBuffer.wrap(b).getFloat();
+                        if(312313 == a)
+                        	s.getInputStream().skip(b.length*3);
                     }
                     while (s1.getInputStream().available() > 1) {
                         s1.getInputStream().read(b);

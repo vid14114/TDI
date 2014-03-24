@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import controller.Executor;
 
-class ConfigLoaderTest {
+public class ConfigLoaderTest {
 
     // @Before
     // public void prepareEnvironment() throws IOException{

@@ -15,7 +15,7 @@ import view.Icon;
 /**
  * @author abideen
  */
-class ProgramHandlerTest {
+public class ProgramHandlerTest {
 
     @Test
     public void testAll() {

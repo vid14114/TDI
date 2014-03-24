@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import view.TDI;
 
-class ServerTest implements Runnable {
+public class ServerTest implements Runnable {
 
     private final byte id = 0;
     private final float[] rot = {1, 2, 4};

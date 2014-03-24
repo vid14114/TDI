@@ -17,7 +17,7 @@ import org.junit.Test;
 /**
  * @author abideen
  */
-class ExecutorTest {
+public class ExecutorTest {
     BufferedImage image;
 
     /**

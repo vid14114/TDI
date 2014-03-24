@@ -12,7 +12,7 @@ import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
 
-class BigLogicTest {
+public class BigLogicTest {
 
     private BigLogic bl = new BigLogic();
     private ArrayList<Icon> icons = new ArrayList<Icon>();
