@@ -1,6 +1,6 @@
 package view;
 
-import java.awt.Point;
+import java.awt.*;
 
 public class Icon implements Comparable<Icon>{
 	/**
@@ -25,7 +25,6 @@ public class Icon implements Comparable<Icon>{
 	 * Constructor of icon
 	 * 
 	 * @param name
-	 * @param execPath
 	 * @param position
 	 */
 	public Icon(String name, Point position) {
@@ -37,9 +36,9 @@ public class Icon implements Comparable<Icon>{
 		return name;
 	}
 
-	public void setName(String name) {
-		if (name == null)
-			return;
+    void setName(String name) {
+        if (name == null)
+            return;
 		this.name = name;
 	}
 
@@ -62,9 +61,9 @@ public class Icon implements Comparable<Icon>{
 	 * @param position
 	 *            the position to set
 	 */
-	public void setPosition(Point position) {
-		if (position == null)
-			return;
+    void setPosition(Point position) {
+        if (position == null)
+            return;
 		this.position = position;
 	}
 
@@ -89,15 +88,11 @@ public class Icon implements Comparable<Icon>{
 		if (name == null || obj == null || getClass() != obj.getClass())
 			return false;
 		Icon other = (Icon) obj;
-		if (!name.equals(other.name))
-			return false;
-		return true;
-	}
+        return name.equals(other.name);
+    }
 
 	@Override
 	public int compareTo(Icon i) {
-		int diff=((position.x-i.position.x)*1000)+position.y-i.position.y;
-		return diff;
-	}
-
+        return ((position.x - i.position.x) * 1000) + position.y - i.position.y;
+    }
 }

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class PluginServer implements Runnable {
 
-	private ServerSocket server;
-	private ArrayList<Socket> clients = new ArrayList<>();
+    private final ArrayList<Socket> clients = new ArrayList<>();
+    private ServerSocket server;
 
 	public PluginServer() {
 		try {
