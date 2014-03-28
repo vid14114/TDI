@@ -61,6 +61,7 @@ public class Server {
                 rot[2] = (float) ((float) angles[2] * 180 / Math.PI);
                 if (x != 0) {
                     TDI t = new TDI(id, x, y, z, rot);
+                    System.out.println(t.toString());
                     tdis.add(t);
                 }
                 read.mark(9);
@@ -90,6 +91,7 @@ public class Server {
                 rot[2] = (float) ((float) angles[2] * 180 / Math.PI);
                 if (x != 0) {
                     TDI t = new TDI(id, x, y, z, rot);
+                    System.out.println(t.toString());
                     tdis.add(t);
                 }
                 read.mark(9);

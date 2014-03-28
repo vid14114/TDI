@@ -69,14 +69,14 @@ public class Wallpaper {
             int firstY = firstPosY * realHeight + ratio;
             if (firstPosY == 0)
                 firstY += panelSize;
-            int lastX = lastPosX * realWidth - firstX;
+            int lastX = (lastPosX) * realWidth - firstX;
             int lastY = (lastPosY + 1) * realHeight - firstY;
             if (firstPosY != 0)
                 lastY -= panelSize;
             g2.fill(new Rectangle2D.Float(firstX * scalingX, firstY * scalingY, lastX * scalingX, lastY * scalingY));
 
             //mark the selected Icon
-            int selectedPosX = colorAreas.get(i).getIcons().get(0).getPosition().y;
+            /*int selectedPosX = colorAreas.get(i).getIcons().get(0).getPosition().y;
             int selectedPosY = colorAreas.get(i).getIcons().get(0).getPosition().x;
 
             int posX = selectedPosX * realWidth;
@@ -85,7 +85,7 @@ public class Wallpaper {
                 g2.setColor(Color.cyan);
             if (i == 1)
                 g2.setColor(Color.magenta);
-            g2.fill(new Rectangle2D.Float(posX * scalingX, posY * scalingY, realWidth * scalingX, realHeight * scalingY));
+            g2.fill(new Rectangle2D.Float(posX * scalingX, posY * scalingY, realWidth * scalingX, realHeight * scalingY));*/
             g2.drawImage(b, 0, 0, null);
         }
         return b;
