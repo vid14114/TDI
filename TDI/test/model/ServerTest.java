@@ -52,7 +52,7 @@ public class ServerTest implements Runnable {
                         break;
                     }
                     switch (input) {
-                        case ACTOConst.WI_FULL_POSE:
+                        case ACTOConst.WI_GET_POSE:
                             sendFullPose();
                             break;
                     }
@@ -60,7 +60,7 @@ public class ServerTest implements Runnable {
                 }
             }
         }).start();
-        Server s = new Server("192.168.1.2"); //TODO test case
+        Server s = new Server("127.0.0.1"); //TODO test case
         ArrayList<TDI> t = s.fullPose();
         System.out.println(t1.toString());
         System.out.println(t.get(0).toString());

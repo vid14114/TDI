@@ -57,7 +57,11 @@ public class BigLogic implements Runnable, ActionListener {
      * The wallpaper
      */
     private Wallpaper wallpaper;
-    /**
+    public Wallpaper getWallpaper() {
+		return wallpaper;
+	}
+
+	/**
      * The commands that have to be executed.
      */
     private ArrayList<TDI> commands = new ArrayList<TDI>();
@@ -84,8 +88,8 @@ public class BigLogic implements Runnable, ActionListener {
      */
     public static void main(String[] args) {
         TDIDirectories.createDirectories();
-        new Thread(new BigLogic()).start();
-        //new BigLogic();
+        //new Thread(new BigLogic()).start();
+        new BigLogic();
     }
 
     /**
@@ -656,7 +660,7 @@ public class BigLogic implements Runnable, ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server("192.168.1.36");
+            server = new Server("127.0.0.1");
             tdis = server.fullPose();
             splitIcons();
             Executor.saveBackground(wallpaper.markArea(tdis));

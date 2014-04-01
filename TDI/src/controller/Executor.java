@@ -18,6 +18,7 @@ import model.TDILogger;
  * @author abideen
  */
 public final class Executor {
+	private static int counter=0;
     /*
      * Environment checking: TODO check enviroment at startup
      * command -v wmctrl xdg-open xfconf-query xprop
@@ -41,6 +42,7 @@ public final class Executor {
             File restore = new File(TDIDirectories.TDI_TEMP + "/" + "temp");
             ImageIO.write(image, "jpg", restore);
             Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", restore.getAbsolutePath()});
+            Runtime.getRuntime().exec(new String[]{"xfdesktop","--reload"});
             restore.deleteOnExit();
         } catch (IOException e) {
             // TODO Auto-generated catch block

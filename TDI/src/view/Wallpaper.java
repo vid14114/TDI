@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
 public class Wallpaper {
@@ -16,23 +18,26 @@ public class Wallpaper {
     /**
      * The block size of each icon
      */
-    private final int panelSize;
-    private final int ratio;
+    private float panelSize;
+    private int ratio;
 
-    private final int realWidth;
-    private final int realHeight;
+    private int realWidth;
+    private int realHeight;
 
-    private final int scalingX;
-    private final int scalingY;
+    private float scalingX;
+    private float scalingY;
+    
+    private int blockSize;
 
     public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio, Point screensize) {
         this.background = background;
-        this.panelSize = panelSize;
         this.ratio = ratio;
-        realWidth = blockSize + (4 * ratio);
+        realWidth = blockSize + (2 * ratio);
         realHeight = blockSize + (3 * ratio);
-        scalingX = background.getWidth() / screensize.x;
-        scalingY = background.getHeight() / screensize.y;
+        scalingX = (float)background.getWidth() / (float)screensize.x;
+        scalingY = (float)background.getHeight() / (float)screensize.y;
+        this.panelSize = panelSize*scalingY;
+        this.blockSize=blockSize;
     }
 
     /**
@@ -44,7 +49,7 @@ public class Wallpaper {
      * @param colorAreas The TDIs with their icons, and we will generate the markedArea
      */
     public BufferedImage markArea(ArrayList<TDI> colorAreas) {
-        BufferedImage b = background;
+        BufferedImage b = deepCopy(background);
         Graphics2D g2 = b.createGraphics();
         for (int i = 0; i < colorAreas.size(); i++) {
             int firstPosX = 100;
@@ -73,21 +78,32 @@ public class Wallpaper {
             int lastY = (lastPosY + 1) * realHeight - firstY;
             if (firstPosY != 0)
                 lastY -= panelSize;
-            g2.fill(new Rectangle2D.Float(firstX * scalingX, firstY * scalingY, lastX * scalingX, lastY * scalingY));
+            g2.fill(new Rectangle2D.Float(firstX * scalingX, firstY * scalingY, (lastX+2*ratio) * scalingX, lastY * scalingY));
 
             //mark the selected Icon
-            /*int selectedPosX = colorAreas.get(i).getIcons().get(0).getPosition().y;
+            int selectedPosX = colorAreas.get(i).getIcons().get(0).getPosition().y;
             int selectedPosY = colorAreas.get(i).getIcons().get(0).getPosition().x;
 
             int posX = selectedPosX * realWidth;
             int posY = selectedPosY * realHeight + ratio;
+            if(selectedPosY==0)
+            	posY+=panelSize;
             if (i == 0)
                 g2.setColor(Color.cyan);
             if (i == 1)
                 g2.setColor(Color.magenta);
-            g2.fill(new Rectangle2D.Float(posX * scalingX, posY * scalingY, realWidth * scalingX, realHeight * scalingY));*/
+            if(posX!=firstX)
+            	posX-=ratio;
+            g2.fill(new Rectangle2D.Float(posX * scalingX, posY * scalingY, (realWidth-blockSize+2*ratio) * scalingX, (realHeight-blockSize) * scalingY));
             g2.drawImage(b, 0, 0, null);
         }
         return b;
     }
+    
+    static BufferedImage deepCopy(BufferedImage bi) {
+    	 ColorModel cm = bi.getColorModel();
+    	 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+    	 WritableRaster raster = bi.copyData(null);
+    	 return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    	}
 }
