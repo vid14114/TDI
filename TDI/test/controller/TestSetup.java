@@ -23,7 +23,7 @@ public class TestSetup {
 	}
 	
 	@Test
-	public void rotateRight() throws InterruptedException {
+	public void rotateRightDesktop() throws InterruptedException {
 		new Thread(b).start();
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,100});
 		b.getCommands().add(t2);
@@ -32,7 +32,7 @@ public class TestSetup {
 	}
 	
 	@Test // TODO
-	public void rotateLeft() throws InterruptedException {
+	public void rotateLeftDesktop() throws InterruptedException {
 		new Thread(b).start();
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,-100});
 		b.getCommands().add(t2);
