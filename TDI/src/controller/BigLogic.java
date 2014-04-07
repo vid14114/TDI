@@ -88,8 +88,8 @@ public class BigLogic implements Runnable, ActionListener {
      */
     public static void main(String[] args) {
         TDIDirectories.createDirectories();
-        //new Thread(new BigLogic()).start();
-        new BigLogic();
+        new Thread(new BigLogic()).start();
+        //new BigLogic();
     }
 
     /**
@@ -115,20 +115,21 @@ public class BigLogic implements Runnable, ActionListener {
                         if (tdi.getPosition()[0] != command.getPosition()[0]) {
                             int compPos = 1;
                             if (tdi.getPosition()[0] >= command.getPosition()[0] + compPos || tdi.getPosition()[0] >= command.getPosition()[0] - compPos) {
-                                move(tdi, commands.get(0));
+                                move(tdi, command);
                                 commands.remove(0);
+                                wallpaper.markArea(tdis);
                                 continue;
                             } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getPosition()[0] <= command.getPosition()[0] - compPos) {
-                                move(tdi, commands.get(0));
+                                move(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
                         } else if (tdi.getPosition()[1] != command.getPosition()[1]) {
                             int compPos = 1;
                             if (tdi.getPosition()[1] <= command.getPosition()[1] + compPos || tdi.getPosition()[1] <= command.getPosition()[1] - compPos) {
-                                move(tdi, commands.get(0));
+                                move(tdi, command);
                             } else if (tdi.getPosition()[1] + compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1] - compPos) {
-                                move(tdi, commands.get(0));
+                                move(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
@@ -136,11 +137,11 @@ public class BigLogic implements Runnable, ActionListener {
                             int compHeight = 200;
                             int compPos = 1;
                             if ((tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] - compPos) {
-                                liftUp(tdi, commands.get(0));
+                                liftUp(tdi, command);
                                 commands.remove(0);
                                 continue;
                             } else if ((tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] - compPos) {
-                                putDown(tdi, commands.get(0));
+                                putDown(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
@@ -149,40 +150,41 @@ public class BigLogic implements Runnable, ActionListener {
                     }
                     //Rotation
                     if (!Arrays.equals(tdi.getRotation(), command.getRotation()) && forward == 1) {
-                        if (tdi.getRotation()[0] != command.getRotation()[0]) {
+                        if (tdi.getRotation()[2] != command.getRotation()[2]) {
                             int compPos = 1;
-                            if (tdi.getRotation()[0] >= command.getRotation()[0] + compPos || tdi.getRotation()[0] >= command.getRotation()[0] - compPos) {
-                                rotateRight(tdi, commands.get(0));
+                            if (tdi.getRotation()[2] >= command.getRotation()[2] + compPos || tdi.getRotation()[2] >= command.getRotation()[2] - compPos) {
+                                rotateLeft(tdi, command);
                                 commands.remove(0);
                                 continue;
-                            } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getRotation()[0] <= command.getRotation()[0] - compPos) {
-                                rotateLeft(tdi, commands.get(0));
+                            } else if (tdi.getPosition()[2] <= command.getPosition()[2] + compPos || tdi.getRotation()[2] <= command.getRotation()[2] - compPos) {
+                                rotateRight(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
                         } else if (tdi.getRotation()[1] != command.getRotation()[1]) {
                             int compPos = 1;
                             if (tdi.getRotation()[1] <= command.getRotation()[1] + compPos || tdi.getRotation()[1] <= command.getRotation()[1] - compPos) {
-                                tiltLeft(tdi, commands.get(0));
+                                tiltLeft(tdi, command);
                                 commands.remove(0);
                                 continue;
                             } else if (tdi.getRotation()[1] + compPos > command.getRotation()[1] || tdi.getRotation()[1] >= command.getRotation()[1] - compPos) {
-                                tiltRight(tdi, commands.get(0));
+                                tiltRight(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
                         } else if (tdi.getRotation()[2] != command.getRotation()[2]) {
                             if ((tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] - compPos) {
-                                tiltDown(tdi, commands.get(0));
+                                tiltDown(tdi, command);
                                 commands.remove(0);
                                 continue;
                             } else if ((tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] - compPos) {
-                                tiltUp(tdi, commands.get(0));
+                                tiltUp(tdi, command);
                                 commands.remove(0);
                                 continue;
                             }
                         }
                     }
+                    commands.remove(0);
                 }
             }
         }
@@ -317,6 +319,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void liftUp(TDI tdi, TDI commands)//heben
@@ -340,6 +343,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void putDown(TDI tdi, TDI commands)//senken
@@ -363,13 +367,14 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void rotateRight(TDI tdi, TDI commands) {
         switch (tdi.getState().toString()) {
             case "desktop":
                 if (ProgramHandler.getNonMinimized() == 0) {
-                    tdi.getIcons().set(0, tdi.getIcons().get(1));
+                    tdi.rotateIconsClockwise();
                     tdi.setRotation(commands.getRotation());
                 }
                 break;
@@ -390,13 +395,14 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void rotateLeft(TDI tdi, TDI commands) {
         switch (tdi.getState().toString()) {
             case "desktop":
                 if (ProgramHandler.getNonMinimized() == 0) {
-                    tdi.getIcons().set(0, tdi.getIcons().get(tdi.getIcons().size() - 1));
+                    tdi.rotateIconsCounterClockwise();
                     tdi.setRotation(commands.getRotation());
                 }
                 break;
@@ -417,6 +423,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        wallpaper.markArea(tdis);
     }
 
     private void tiltRight(TDI tdi, TDI commands) {
@@ -446,6 +453,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        wallpaper.markArea(tdis);
     }
 
     private void tiltLeft(TDI tdi, TDI commands) {
@@ -476,6 +484,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        wallpaper.markArea(tdis);
     }
 
     private void tiltUp(TDI tdi, TDI commands) {
@@ -514,6 +523,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void tiltDown(TDI tdi, TDI commands) {
@@ -546,6 +556,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     /**
@@ -660,7 +671,7 @@ public class BigLogic implements Runnable, ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server("127.0.0.1");
+            server = new Server("192.168.43.32");
             tdis = server.fullPose();
             splitIcons();
             Executor.saveBackground(wallpaper.markArea(tdis));

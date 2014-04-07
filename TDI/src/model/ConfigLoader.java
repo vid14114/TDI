@@ -195,7 +195,7 @@ public class ConfigLoader {
                         new File(TDIDirectories.TDI_RESTORE + "/"
                                 + wallpaperFile.getName())
                 );
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 TDILogger.
                         logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
                 wallpaper = ImageIO.read(new File("images/image-blank.jpg"));
