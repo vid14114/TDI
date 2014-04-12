@@ -52,6 +52,8 @@ public class BigLogic implements Runnable, ActionListener {
     private int scaleCount = 0;
 
     private TDI otherFocused;
+    
+    private float defaultRotX=0;
 
     /**
      * The wallpaper
@@ -70,6 +72,8 @@ public class BigLogic implements Runnable, ActionListener {
      */
     private int compHeight = 200;
     private int compPos = 1;
+    
+    private int thresholdRotation=10;
 
     public BigLogic() {
         configLoader = new ConfigLoader();
@@ -160,7 +164,7 @@ public class BigLogic implements Runnable, ActionListener {
                                 commands.remove(0);
                                 continue;
                             }
-                        } else if (tdi.getRotation()[1] != command.getRotation()[1]) {
+                        } else if (tdi.getRotation()[1] != command.getRotation()[1]) { //TODO rewrite, TDI wird geneigt und wieder zurückgestellt auf ebene Position
                             int compPos = 1;
                             if (tdi.getRotation()[1] <= command.getRotation()[1] + compPos || tdi.getRotation()[1] <= command.getRotation()[1] - compPos) {
                                 tiltLeft(tdi, command);
@@ -171,16 +175,15 @@ public class BigLogic implements Runnable, ActionListener {
                                 commands.remove(0);
                                 continue;
                             }
-                        } else if (tdi.getRotation()[2] != command.getRotation()[2]) {
-                            if ((tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) <= command.getRotation()[2] - compPos) {
-                                tiltDown(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            } else if ((tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] + compPos || (tdi.getRotation()[2] - compHeight) >= command.getRotation()[2] - compPos) {
+                        } else if (command.getRotation()[0] > defaultRotX+thresholdRotation) {
                                 tiltUp(tdi, command);
                                 commands.remove(0);
                                 continue;
-                            }
+                        }
+                        else if (command.getRotation()[0] < defaultRotX-thresholdRotation) {
+                                tiltDown(tdi, command);
+                                commands.remove(0);
+                                continue;
                         }
                     }
                     commands.remove(0);
@@ -672,6 +675,7 @@ public class BigLogic implements Runnable, ActionListener {
             }.run();
             server = new Server("192.168.43.32");
             tdis = server.fullPose();
+            defaultRotX=tdis.get(0).getRotation()[0];
             splitIcons();
             Executor.saveBackground(wallpaper.markArea(tdis));
             //TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
