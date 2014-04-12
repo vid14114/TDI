@@ -117,7 +117,6 @@ public class BigLogic implements Runnable, ActionListener {
                             if (tdi.getPosition()[0] >= command.getPosition()[0] + compPos || tdi.getPosition()[0] >= command.getPosition()[0] - compPos) {
                                 move(tdi, command);
                                 commands.remove(0);
-                                wallpaper.markArea(tdis);
                                 continue;
                             } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getPosition()[0] <= command.getPosition()[0] - compPos) {
                                 move(tdi, command);
@@ -423,7 +422,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        wallpaper.markArea(tdis);
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void tiltRight(TDI tdi, TDI commands) {
@@ -453,7 +452,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        wallpaper.markArea(tdis);
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void tiltLeft(TDI tdi, TDI commands) {
@@ -484,7 +483,7 @@ public class BigLogic implements Runnable, ActionListener {
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        wallpaper.markArea(tdis);
+        Executor.saveBackground(wallpaper.markArea(tdis));
     }
 
     private void tiltUp(TDI tdi, TDI commands) {
