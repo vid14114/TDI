@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import model.TDILogger;
 import view.Icon;
 
 class ProgramHandler {
@@ -41,14 +42,13 @@ class ProgramHandler {
                     // rubbish bin or trash by wmctrl
                     if (((icon.getExecPath()[1].equals("trash:///") && (line
                             .contains("Rubbish Bin") || line.contains("Trash"))) || line
-                            .contains(icon.getName()))
-                            && !runningPrograms.contains(new ProgramInfo(line
-                            .split(" ")[0], false)))
+                            .contains(icon.getName()) || line.split(" ")[(line.split(" ").length-1)].equals(icon.getExecPath()[1]))
+                            && !runningPrograms.contains(new ProgramInfo(line.split(" ")[0], false)))
                         wmctrlID = line.split(" ")[0];
                     else if (line.split(" ")[1].equals("-1") &&
                             line.contains(icon.getName()) &&
                             runningPrograms.contains(new ProgramInfo(line.split(" ")[0], false)))
-                        wmctrlID = line.split(" ")[0];
+                        wmctrlID = line.split(" ")[0];                
             }
             runningPrograms.add(0, new ProgramInfo(wmctrlID, icon.getName(), false));
         } catch (IOException e) {
@@ -149,10 +149,9 @@ class ProgramHandler {
                         .setMinimized(true);
             }
         } catch (IOException e) {
-            System.err
-                    .println("An error happened while trying to minimize a program");
+            TDILogger.logError("An error happened while trying to minimize a program");
         } catch (IndexOutOfBoundsException e) {
-
+        	TDILogger.logError("Impossible argument. ERROR");
         }
     }
 

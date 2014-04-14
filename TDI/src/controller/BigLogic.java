@@ -51,7 +51,7 @@ public class BigLogic implements Runnable, ActionListener {
      */
     private int scaleCount = 0;
 
-    private TDI otherFocused;
+    private TDI otherFocused; // TODO Null
     
     private float defaultRotX=0;
 
@@ -130,7 +130,9 @@ public class BigLogic implements Runnable, ActionListener {
                         } else if (tdi.getPosition()[1] != command.getPosition()[1]) {
                             int compPos = 1;
                             if (tdi.getPosition()[1] <= command.getPosition()[1] + compPos || tdi.getPosition()[1] <= command.getPosition()[1] - compPos) {
-                                move(tdi, command);
+                                move(tdi, command);                                
+                                commands.remove(0);
+                                continue;
                             } else if (tdi.getPosition()[1] + compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1] - compPos) {
                                 move(tdi, command);
                                 commands.remove(0);
@@ -170,7 +172,7 @@ public class BigLogic implements Runnable, ActionListener {
                                 tiltLeft(tdi, command);
                                 commands.remove(0);
                                 continue;
-                            } else if (tdi.getRotation()[1] + compPos > command.getRotation()[1] || tdi.getRotation()[1] >= command.getRotation()[1] - compPos) {
+                            } else if (tdi.getRotation()[1] > command.getRotation()[1] + compPos || tdi.getRotation()[1] >= command.getRotation()[1] - compPos) {//TODO What the heck!!!!
                                 tiltRight(tdi, command);
                                 commands.remove(0);
                                 continue;
@@ -192,25 +194,26 @@ public class BigLogic implements Runnable, ActionListener {
         }
     }
 
-    private void move(TDI tdi, TDI commands) {
+    private void move(TDI tdi, TDI commands) {//TODO major rewrite
         switch (tdi.getState().toString()) {
             case "desktop":
                 //scale
-                if (tdi.getLocked()) {
-                    if (ProgramHandler.getRunningPrograms().size() == 0) {
+                if (tdi.getLocked()) { //TODO consider reprogramming, what is the difference between locked
+                    if (ProgramHandler.getRunningPrograms().size() == 0) {//TODO, only one program can be open ?????
                         if (posInTaskbar(commands.getPosition())) {
                             if (!emptyTaskbar()) {//B1
                                 ProgramHandler.openProgram(tdi.getIcons().get(0));
-                                tdi.setState(TDIState.window);
+                                tdi.setState(TDIState.inapp); // should be in app
                                 tdi.toggleLock();
-                                tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
+                                tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]); //TODO calculation
                             } else {//B
                                 //TDI.vibrate()
                                 ProgramHandler.openProgram(tdi.getIcons().get(0));
                                 tdi.setState(TDIState.taskbar);
                                 tdi.toggleLock();
                                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
-                                //TODO
+                                //TODO Set other TDI to inapp
+                                tdis.get((tdis.indexOf(tdi)+1)%2).setState(TDIState.inapp);
                             }
                         }
                     } else {
@@ -432,7 +435,7 @@ public class BigLogic implements Runnable, ActionListener {
         switch (tdi.getState().toString()) {
             case "desktop":
                 tdi.toggleLock();
-                //toggle green LED
+                //TODO toggle green LED
                 break;
             case "taskbar":
                 ProgramHandler.closeAllPrograms();
@@ -470,9 +473,15 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "window":
                 ProgramHandler.closeProgram();
-                tdi.setRotation(commands.getRotation());
-                if (ProgramHandler.getRunningPrograms().size() == 0)
-                    tdi.setState(TDIState.desktop);
+                if (ProgramHandler.getRunningPrograms().size() == 0){                
+                	for(int i = 0; i < tdis.size(); tdis.get(i).setState(TDIState.desktop));
+                	splitIcons();
+                }
+                else if(ProgramHandler.getNonMinimized() == 0)
+                	tdi.setState(TDIState.desktop);                	
+                else
+                	tdi.setRotation(commands.getRotation()); //TODO Check logic                
+                	
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());

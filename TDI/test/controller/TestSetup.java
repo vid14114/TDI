@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -46,9 +47,43 @@ public class TestSetup {
 		b.getCommands().add(t2);
 	}
 	
+//	@Test
+	public void dLockUnlock(){
+		System.out.println("lock");
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-50,-100}));
+		Assert.assertEquals(true, b.getTdis().get(0).getLocked());
+		System.out.println("unlock");
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
+		Assert.assertEquals(false, b.getTdis().get(0).getLocked());
+	}
+	
+	@Test
+	public void eCloseProgram(){
+		System.out.println("Open a program and close it");
+		//Prerequisite: I need two TDIs
+		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
+		b.splitIcons();
+		
+		//Start with test
+		int openedPrograms = ProgramHandler.getRunningPrograms().size();
+		//1. Lock TDI
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
+		//2. Move to bottom
+		b.getCommands().add(new TDI((byte)49, 200, 100, 100, new float[]{0,-60,-100}));
+		//3. A program should have opened, TDI should be in inapp mode
+		Assert.assertEquals((openedPrograms+1), ProgramHandler.getRunningPrograms().size());
+		Assert.assertEquals(TDIState.inapp, b.getTdis().get(1).getState());
+		//4. Get the TDI out of in app mode, by tilting right
+		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-70,0}));
+		Assert.assertEquals(TDIState.window, b.getTdis().get(1).getState());
+		//5. Tilt the TDI to the left, thereby closing it.
+		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-50,0}));
+		Assert.assertEquals(openedPrograms, ProgramHandler.getRunningPrograms().size());
+	}
+	
 	@Test
 	public void zTutorial1() throws InterruptedException {
-		aSetup(); //begin the tutorial from scratch
+		aSetup(); //begin the tutorial from scratch, nix gut two threads running
 		System.out.println("doubleRight");
 		TDI t1=new TDI((byte) 49, 100, 100, 100, new float[]{0, 0, 50});
 		TDI t2=new TDI((byte) 49, 100, 100, 100, new float[]{0, 0, 100});

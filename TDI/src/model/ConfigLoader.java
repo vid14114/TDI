@@ -28,6 +28,7 @@ import controller.Executor;
  */
 public class ConfigLoader {
     private static File iconsRc = lastFileModified();
+    public static String imageType;
 
     /**
      * Searches for the last modified file in the xfce4 desktop folder
@@ -190,8 +191,9 @@ public class ConfigLoader {
         File wallpaperFile = new File(Executor.getBackground());
         try {
             try {
+            	imageType = wallpaperFile.getName().split("\\.")[1];
                 ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
-                        wallpaperFile.getName().split("\\.")[1],
+                        imageType,
                         new File(TDIDirectories.TDI_RESTORE + "/"
                                 + wallpaperFile.getName())
                 );
@@ -199,6 +201,7 @@ public class ConfigLoader {
                 TDILogger.
                         logError("Image cannot be saved, following formats are supported: GIF, JPEG, PNG, BMP");
                 wallpaper = ImageIO.read(new File("images/image-blank.jpg"));
+                imageType = "jpg";
             }
         } catch (IOException e) {
             TDILogger

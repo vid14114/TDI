@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
+import model.ConfigLoader;
 import model.TDIDirectories;
 import model.TDILogger;
 
@@ -39,8 +40,8 @@ public final class Executor {
 
     public static void saveBackground(BufferedImage image) {
         try {
-            File restore = new File(TDIDirectories.TDI_TEMP + "/" + "temp");
-            ImageIO.write(image, "jpg", restore);
+            File restore = new File(TDIDirectories.TDI_TEMP + "/" + "temp."+ConfigLoader.imageType);
+            ImageIO.write(image, ConfigLoader.imageType, restore);
             Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", restore.getAbsolutePath()});
             Runtime.getRuntime().exec(new String[]{"xfdesktop","--reload"});
             restore.deleteOnExit();

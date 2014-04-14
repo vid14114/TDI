@@ -32,7 +32,7 @@ public final class TDILogger {
     }
 
     public synchronized static void logInfo(String message) {
-        logger.log(Level.INFO, message);
+    	logger.log(Level.INFO, message);
     }
 
     public synchronized static void logError(String message) {
