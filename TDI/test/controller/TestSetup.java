@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
+//import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
+//import org.junit.runners.MethodSorters;
 
 import view.TDI;
 import view.TDI.TDIState;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestSetup {
 	private static BigLogic b;
 	private static Thread t;
@@ -33,14 +33,14 @@ public class TestSetup {
 		t.start();
 	}
 	
-	@Test
+	//@Test
 	public void bRotateRightDesktop() {
 		System.out.println("right");
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,100});
 		b.getCommands().add(t2);
 	}
 	
-	@Test
+	//@Test
 	public void cRotateLeftDesktop() {
 		System.out.println("left");
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,-100});
@@ -57,7 +57,7 @@ public class TestSetup {
 		Assert.assertEquals(false, b.getTdis().get(0).getLocked());
 	}
 	
-	@Test
+	//@Test
 	public void eCloseProgram(){
 		System.out.println("Open a program and close it");
 		//Prerequisite: I need two TDIs
@@ -82,6 +82,26 @@ public class TestSetup {
 	}
 	
 	@Test
+	public void fMaximizeAndRestore(){
+		System.out.println("Maximize and restore program");
+		//Prerequisite: I need two TDIs
+		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
+		b.splitIcons();		
+		//Start with test
+		int openedPrograms = ProgramHandler.getRunningPrograms().size();
+		//1. Lock TDI
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
+		//2. Move to bottom
+		b.getCommands().add(new TDI((byte)49, 100, 200, 100, new float[]{0,-60,0}));
+		//3. A program should have opened, TDI should be in inapp mode
+
+		//4. Get the TDI out of in app mode, by tilting right
+		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,0}));
+		//5. Tilt the TDI up, thereby toggling maximize and restore
+		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,-20}));	
+	}
+	
+	//@Test
 	public void zTutorial1() throws InterruptedException {
 		aSetup(); //begin the tutorial from scratch, nix gut two threads running
 		System.out.println("doubleRight");
@@ -92,7 +112,7 @@ public class TestSetup {
 	}
 	
 	@Ignore //Need other tests before this one, pls do :)
-	@Test
+	//@Test
 	public void zTutorial8() {
 		System.out.println("minimize");
 		b.getTdis().get(0).setState(TDIState.window);

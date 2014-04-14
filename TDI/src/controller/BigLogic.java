@@ -155,13 +155,13 @@ public class BigLogic implements Runnable, ActionListener {
                     }
                     //Rotation
                     if (!Arrays.equals(tdi.getRotation(), command.getRotation()) && forward == 1) {
-                        if (tdi.getRotation()[2] != command.getRotation()[2]) {
+                        if (tdi.getRotation()[0] != command.getRotation()[0]) {
                             int compPos = 1;
-                            if (tdi.getRotation()[2] >= command.getRotation()[2] + compPos || tdi.getRotation()[2] >= command.getRotation()[2] - compPos) {
+                            if (tdi.getRotation()[0] >= command.getRotation()[0] + compPos || tdi.getRotation()[0] >= command.getRotation()[0] - compPos) {
                                 rotateLeft(tdi, command);
                                 commands.remove(0);
                                 continue;
-                            } else if (tdi.getPosition()[2] <= command.getPosition()[2] + compPos || tdi.getRotation()[2] <= command.getRotation()[2] - compPos) {
+                            } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getRotation()[0] <= command.getRotation()[0] - compPos) {
                                 rotateRight(tdi, command);
                                 commands.remove(0);
                                 continue;
@@ -177,12 +177,12 @@ public class BigLogic implements Runnable, ActionListener {
                                 commands.remove(0);
                                 continue;
                             }
-                        } else if (command.getRotation()[0] > defaultRotX+thresholdRotation) {
+                        } else if (command.getRotation()[2] < defaultRotX-thresholdRotation) {
                                 tiltUp(tdi, command);
                                 commands.remove(0);
                                 continue;
                         }
-                        else if (command.getRotation()[0] < defaultRotX-thresholdRotation) {
+                        else if (command.getRotation()[2] > defaultRotX+thresholdRotation) {
                                 tiltDown(tdi, command);
                                 commands.remove(0);
                                 continue;
