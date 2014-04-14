@@ -27,14 +27,14 @@ class TutorialLogic implements Runnable {
             while (!tdis.get(0).getIcons().get(0).equals(temp)) ; //Wait period
             //Second Step
             tv.setText("2/11 - Desktop Modus\nLocken Sie das Icon durch Kippen des TDIs auf die rechte Seite");
-            while (!tdis.get(0).getIcons().get(0).equals(temp) && !tdis.get(0).getLocked()) ; //Wait period
+            while (!tdis.get(0).getIcons().get(0).equals(temp) && !tdis.get(0).isLocked()) ; //Wait period
             //Third
             tv.setText("3/11 - Desktop Modus, gesperrt\nBewegen Sie den Icon an eine andere Position");
             while (tdis.get(0).getIcons().get(0).getPosition() == temp.getPosition()) ;
             //Fourth
             tv.setText("4/11 Desktop Modus, gesperrt\nSehr gut, Sie haben den TDI erfolgreich bewegt. TDIs können viele verschiedene Modie annehmen. Wie Sie vielleicht im Fortschrittbalken bemerkt haben, lehren wir Sie gerade die Befehle im Desktop-Modus."
                     + " Wenn Sie den TDI rechts kippen wird es gesperrt. Wenn der TDI gesperrt ist, sind Sie in der Lage, Symbole zu anderen Positionen zu bewegen und wenn ein Programm geöffnet ist, können sie dieses schließen, minimieren und maximieren. Entsperren Sie den TDI durch Kippen nach rechts.");
-            while (tdis.get(0).getLocked()) ;
+            while (tdis.get(0).isLocked()) ;
             int i = ProgramHandler.getRunningPrograms().size();
             tv.setText("5/11 Desktop Modus\nGut gemacht! Die grüne LED leuchtet auf, wenn der TDI gesperrt ist und dreht sich wieder ab, wenn der TDI nicht verschlossen ist. Bewegen Sie nun den TDI nach unten/oben auf Ihrer Arbeitsplattform, um ein Programm zu starten");
             while (i == ProgramHandler.getRunningPrograms().size()) ;

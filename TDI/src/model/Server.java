@@ -103,13 +103,13 @@ public class Server {
         }
     }
 
-    public void setPose(byte id, float[] trans, float[] rot) {
+    public void setPose(byte id, float[] pos, float[] rot) {
         try {
             send.writeByte(ACTOConst.WI_SET_POSE);
             send.writeByte(id);
-            send.writeFloat(trans[0]);
-            send.writeFloat(trans[1]);
-            send.writeFloat(trans[2]);
+            send.writeFloat(pos[0]);
+            send.writeFloat(pos[1]);
+            send.writeFloat(pos[2]);
             send.writeFloat(rot[0]);
             send.writeFloat(rot[1]);
             send.writeFloat(rot[2]);

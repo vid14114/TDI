@@ -51,10 +51,10 @@ public class TestSetup {
 	public void dLockUnlock(){
 		System.out.println("lock");
 		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-50,-100}));
-		Assert.assertEquals(true, b.getTdis().get(0).getLocked());
+		Assert.assertEquals(true, b.getTdis().get(0).isLocked());
 		System.out.println("unlock");
 		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
-		Assert.assertEquals(false, b.getTdis().get(0).getLocked());
+		Assert.assertEquals(false, b.getTdis().get(0).isLocked());
 	}
 	
 	//@Test

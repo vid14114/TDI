@@ -44,7 +44,7 @@ public class TDI {
 		this.state = state;
 	}
 	
-	public boolean getLocked()
+	public boolean isLocked()
 	{
 		return locked;
 	}

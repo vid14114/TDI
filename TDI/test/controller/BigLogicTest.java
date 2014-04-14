@@ -118,7 +118,7 @@ public class BigLogicTest {
         ProgramHandler.closeAllPrograms();
         commands.add(t2);
         tdis.add(t1);
-        if (t1.getLocked()) {
+        if (t1.isLocked()) {
             t1.toggleLock();
         }
 
@@ -127,7 +127,7 @@ public class BigLogicTest {
         bl.setTdis(tdis);
         bl.splitIcons();
         bl.run();
-        Assert.assertTrue(tdis.get(0).getLocked());
+        Assert.assertTrue(tdis.get(0).isLocked());
         //TODO check if green led is on
         Assert.assertEquals(tdis.get(0).getState(), TDIState.desktop);
         Assert.assertTrue(Arrays.equals(tdis.get(0).getRotation(), t2.getRotation()));
@@ -148,7 +148,7 @@ public class BigLogicTest {
         ProgramHandler.closeAllPrograms();
         commands.add(t2);
         tdis.add(t1);
-        if (!t1.getLocked()) {
+        if (!t1.isLocked()) {
             t1.toggleLock();
         }
 
@@ -157,7 +157,7 @@ public class BigLogicTest {
         bl.setTdis(tdis);
         bl.splitIcons();
         bl.run();
-        Assert.assertFalse(tdis.get(0).getLocked());
+        Assert.assertFalse(tdis.get(0).isLocked());
         //TODO check if green led is on
         Assert.assertEquals(tdis.get(0).getState(), TDIState.desktop);
         Assert.assertTrue(Arrays.equals(tdis.get(0).getRotation(), t2.getRotation()));
