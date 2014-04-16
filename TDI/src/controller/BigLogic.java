@@ -367,7 +367,7 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "inapp":
                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
@@ -391,7 +391,7 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "inapp":
                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
@@ -415,7 +415,7 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "inapp":
                 tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
@@ -443,7 +443,7 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
@@ -471,7 +471,7 @@ public class BigLogic implements Runnable, ActionListener {
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
@@ -643,5 +643,9 @@ public class BigLogic implements Runnable, ActionListener {
             tdiDialog.setErrorMessage("Input only in the following format: 000.000.000.000");
         return null;
     }
+
+	public PluginServer getPlugserv() {
+		return plugserv;
+	}
 }
 

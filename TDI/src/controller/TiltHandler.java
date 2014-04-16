@@ -62,16 +62,16 @@ public class TiltHandler implements TiltListener {
             case "taskbar":
                 ProgramHandler.closeAllPrograms();
                 tdi.setRotation(commands.getRotation());
-                for (TDI t : tdis) {
+                for (TDI t : big.getTdis()) {
                     t.setState(TDIState.desktop);
                 }
-                splitIcons();
+                big.splitIcons();
                 break;
             case "window":
                 ProgramHandler.closeProgram();
                 if (ProgramHandler.getRunningPrograms().size() == 0){                
-                	for(int i = 0; i < tdis.size(); tdis.get(i).setState(TDIState.desktop));
-                	splitIcons();
+                	for(int i = 0; i < big.getTdis().size(); big.getTdis().get(i).setState(TDIState.desktop));
+                	big.splitIcons();
                 }
                 else if(ProgramHandler.getNonMinimized() == 0)
                 	tdi.setState(TDIState.desktop);                	
@@ -81,17 +81,17 @@ public class TiltHandler implements TiltListener {
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
                     tdi.setState(TDIState.desktop);
-                    splitIcons();
+                    big.splitIcons();
                 } else
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        Executor.saveBackground(wallpaper.markArea(tdis));
+        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 
     private void tiltUp(TDI tdi, TDI commands) {
@@ -99,15 +99,15 @@ public class TiltHandler implements TiltListener {
             case "taskbar":
                 ProgramHandler.restoreAllPrograms();
                 int count = 0;
-                for (TDI t : tdis) {
+                for (TDI t : big.getTdis()) {
                     if (t.getState().equals(TDIState.window))
                         count++;
                 }
                 if (count == 0) {
-                    if (tdis.get(0).getState().equals(TDIState.window))
-                        tdis.get(1).setState(TDIState.window);
+                    if (big.getTdis().get(0).getState().equals(TDIState.window))
+                    	big.getTdis().get(1).setState(TDIState.window);
                     else
-                        tdis.get(0).setState(TDIState.window);
+                    	big.getTdis().get(0).setState(TDIState.window);
                 }
                 break;
             case "window":
@@ -115,22 +115,22 @@ public class TiltHandler implements TiltListener {
                 tdi.setRotation(commands.getRotation());
                 if (ProgramHandler.getNonMinimized() == 0) {
                     tdi.setState(TDIState.desktop);
-                    splitIcons();
+                    big.splitIcons();
                 }
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
                     tdi.setState(TDIState.desktop);
-                    splitIcons();
+                    big.splitIcons();
                 } else
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        Executor.saveBackground(wallpaper.markArea(tdis));
+        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 
     private void tiltDown(TDI tdi, TDI commands) {
@@ -138,31 +138,31 @@ public class TiltHandler implements TiltListener {
             case "taskbar":
                 ProgramHandler.minimizeAllPrograms();
                 tdi.setRotation(commands.getRotation());
-                for (TDI t : tdis) {
+                for (TDI t : big.getTdis()) {
                     t.setState(TDIState.desktop);
                 }
-                splitIcons();
+                big.splitIcons();
                 break;
             case "window":
                 ProgramHandler.minimize();
                 tdi.setRotation(commands.getRotation());
                 if (ProgramHandler.getNonMinimized() == 0) {
                     tdi.setState(TDIState.desktop);
-                    splitIcons();
+                    big.splitIcons();
                 }
                 break;
             case "inapp":
                 tdi.setRotation(commands.getRotation());
-                plugserv.sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
+                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition()[0], tdi.getPosition()[1], tdi.getPosition()[2], tdi.getRotation());
                 break;
             case "sleep":
                 if (ProgramHandler.getNonMinimized() == 0) {
                     tdi.setState(TDIState.desktop);
-                    splitIcons();
+                    big.splitIcons();
                 } else
                     tdi.setState(TDIState.desktop);
                 break;
         }
-        Executor.saveBackground(wallpaper.markArea(tdis));
+        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 }
