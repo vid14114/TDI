@@ -60,8 +60,8 @@ public class PluginServerTest {
                 }
             }
         }).start();
-        ps.sendMessage(123, 1231, 213131, 312313, new float[]{132123, 12342, 123412});
-        ps.sendMessage(123, 234f, 243f, 242f, new float[]{13234.78f, 123.25f, 234.3f});
+        ps.sendMessage(123, new float[]{ 1231, 213131, 312313}, new float[]{132123, 12342, 123412});
+        ps.sendMessage(123, new float[]{234f, 243f, 242f}, new float[]{13234.78f, 123.25f, 234.3f});
         System.in.read();
 
     }

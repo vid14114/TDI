@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 //import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 //import org.junit.runners.MethodSorters;
 
+
+import org.junit.runners.MethodSorters;
+
 import view.TDI;
 import view.TDI.TDIState;
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestSetup {
 	private static BigLogic b;
 	private static Thread t;
@@ -33,21 +37,21 @@ public class TestSetup {
 		t.start();
 	}
 	
-	//@Test
+	@Test
 	public void bRotateRightDesktop() {
 		System.out.println("right");
-		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,100});
+		TDI t2=new TDI((byte) 49,100,100,100, new float[]{100,0,0});
 		b.getCommands().add(t2);
 	}
 	
-	//@Test
+	@Test
 	public void cRotateLeftDesktop() {
 		System.out.println("left");
-		TDI t2=new TDI((byte) 49,100,100,100, new float[]{0,0,-100});
+		TDI t2=new TDI((byte) 49,100,100,100, new float[]{-100,0,0});
 		b.getCommands().add(t2);
 	}
 	
-//	@Test
+	@Test
 	public void dLockUnlock(){
 		System.out.println("lock");
 		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-50,-100}));
@@ -57,17 +61,20 @@ public class TestSetup {
 		Assert.assertEquals(false, b.getTdis().get(0).isLocked());
 	}
 	
-	//@Test
+	@Test
 	public void eCloseProgram(){
 		System.out.println("Open a program and close it");
 		//Prerequisite: I need two TDIs
 		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
 		b.splitIcons();
+		Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
 		
 		//Start with test
 		int openedPrograms = ProgramHandler.getRunningPrograms().size();
 		//1. Lock TDI
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,0,-100}));
+		
 		//2. Move to bottom
 		b.getCommands().add(new TDI((byte)49, 200, 100, 100, new float[]{0,-60,-100}));
 		//3. A program should have opened, TDI should be in inapp mode
@@ -91,6 +98,7 @@ public class TestSetup {
 		int openedPrograms = ProgramHandler.getRunningPrograms().size();
 		//1. Lock TDI
 		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
+		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,0,0}));
 		//2. Move to bottom
 		b.getCommands().add(new TDI((byte)49, 100, 200, 100, new float[]{0,-60,0}));
 		//3. A program should have opened, TDI should be in inapp mode

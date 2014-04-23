@@ -47,11 +47,11 @@ public class PluginServer implements Runnable {
 	 * @param z The z position
 	 * @param rot The rotation, which is a float array of 3 angles
 	 */
-	public void sendMessage(float id, float x, float y, float z, float[] rot) {
+	public void sendMessage(float id, float[] pos, float[] rot) {
 		final byte[][] messages = {ByteBuffer.allocate(4).putFloat(id).array(), 
-				ByteBuffer.allocate(4).putFloat(x).array(),
-				ByteBuffer.allocate(4).putFloat(y).array(),
-				ByteBuffer.allocate(4).putFloat(z).array(),
+				ByteBuffer.allocate(4).putFloat(pos[0]).array(),
+				ByteBuffer.allocate(4).putFloat(pos[1]).array(),
+				ByteBuffer.allocate(4).putFloat(pos[2]).array(),
 				ByteBuffer.allocate(4).putFloat(rot[0]).array(),
 				ByteBuffer.allocate(4).putFloat(rot[1]).array(),
 				ByteBuffer.allocate(4).putFloat(rot[2]).array(),};

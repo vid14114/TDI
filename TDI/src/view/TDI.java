@@ -5,15 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TDI {
-
-    private final float[] position = new float[3];
+    
     /**
      * The id defines which TDI this is.
 	 */
 	private byte id;
     private ArrayList<Icon> icons;
+    private float[] position = new float[3];
     private float[] rotation = new float[3];
-    private TDIState state=TDIState.desktop;
+    private float rotationLimit;
+    private TDIState state = TDIState.desktop;
 	private boolean locked;
 	private boolean isScale;
 
@@ -33,7 +34,7 @@ public class TDI {
 		return this.position;
 	}
 
-	public Enum<TDIState> getState()
+	public TDIState getState()
 	{
 		return state;
 		
@@ -136,4 +137,22 @@ public class TDI {
     public enum TDIState {
         inapp, desktop, taskbar, window, sleep
     }
+
+	/**
+	 * @return the rotationLimit
+	 */
+	public float getRotationLimit() {
+		return rotationLimit;
+	}
+
+	public void calculateRotationLimit(){
+		rotationLimit = (360/icons.size())/2;
+	}
+	
+	/**
+	 * @param rotationLimit the rotationLimit to set
+	 */
+	public void setRotationLimit(float rotationLimit) {
+		this.rotationLimit = rotationLimit;
+	}
 }
