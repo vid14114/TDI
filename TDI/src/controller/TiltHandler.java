@@ -20,7 +20,7 @@ public class TiltHandler implements TiltListener {
 	 * @see controller.TiltListener#tilt(controller.TiltEvent)
 	 */
 	@Override
-	public void tilt(TiltEvent e) {
+	public void tiltedTDI(TiltEvent e) {
 		TDI tdi = big.getTdis().get(big.getTdis().indexOf(e.getTDI()));
 		switch (e.getRotation()) {
 		case up:			

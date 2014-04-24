@@ -1,12 +1,14 @@
 package controller;
+import java.util.ArrayList;
+
 import view.TDI;
 
 public class Rotation extends Thread{
 	private RotationListener rotationListener;
-	BigLogic bigLogic;
+	ArrayList<TDI> tdis;
 	
-	public Rotation(BigLogic bigLogic){
-		this.bigLogic = bigLogic;
+	public Rotation(ArrayList<TDI> tdis){
+		this.tdis = tdis;
 	}	
 	
 	public void setRotationListener(RotationListener rotationListener) {
@@ -14,16 +16,16 @@ public class Rotation extends Thread{
 	}
 	
 	private void rotation(RotationType rotationType, TDI currentTDI){
-		rotationListener.rotate(new RotateEvent(rotationType, currentTDI));
+		rotationListener.rotatedTDI(new RotateEvent(rotationType, currentTDI));
 	}
 	
-	public void rotated(TDI command){
+	public void rotate(TDI command){
 		final TDI tdi = command; 
 		new Runnable() {
 			
 			@Override
 			public void run() {
-				TDI currentTDI = bigLogic.getTdis().get(bigLogic.getTdis().indexOf(tdi));
+				TDI currentTDI = tdis.get(tdis.indexOf(tdi));
 				float upperBorder = currentTDI.getRotation()[0] + currentTDI.getRotationLimit();
 				float lowerBorder = currentTDI.getRotation()[0] - currentTDI.getRotationLimit();
 				if(lowerBorder < 0)
@@ -47,7 +49,7 @@ public class Rotation extends Thread{
 }
 
 interface RotationListener{
-	public void rotate(RotateEvent e);
+	public void rotatedTDI(RotateEvent e);
 }
 
 

@@ -10,7 +10,7 @@ public class RotationHandler implements RotationListener {
 	}
 
 	@Override
-	public void rotate(RotateEvent e) {
+	public void rotatedTDI(RotateEvent e) {
 		switch (e.getRotation()) {
 		case left:
 			rotateLeft(e.getTDI());

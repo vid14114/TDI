@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.color.CMMException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import view.Wallpaper;
  * oben bewegen: y alt > y neu
  * unten bewegen: y alt < y neu
  */
-public class BigLogic implements Runnable, ActionListener {
+public class BigLogic implements ActionListener {
 
     private final ConfigLoader configLoader;
     private final TDIDialog tdiDialog;
@@ -46,8 +45,9 @@ public class BigLogic implements Runnable, ActionListener {
     private final PluginServer plugserv = new PluginServer();
     private ArrayList<Icon> icons;
     private ArrayList<TDI> tdis;
-    private Server server;
-    /**
+    private Server server;    
+
+	/**
      * counter for scaling
      */
     private int scaleCount = 0;
@@ -63,11 +63,6 @@ public class BigLogic implements Runnable, ActionListener {
     public Wallpaper getWallpaper() {
 		return wallpaper;
 	}
-
-	/**
-     * The commands that have to be executed.
-     */
-    private ArrayList<TDI> commands = new ArrayList<TDI>();
     /**
      *	Compensation Value for position change
      */
@@ -80,12 +75,24 @@ public class BigLogic implements Runnable, ActionListener {
         configLoader = new ConfigLoader();
         pluginTableModel = new PluginTableModel(configLoader.getPlugins());
         tdiDialog = new TDIDialog(this, pluginTableModel);
-
+        
         icons = configLoader.loadIcons();
         Collections.sort(icons);
         wallpaper = new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio(), configLoader.loadScreensize());
+        
+        tilt = new Tilt(new float[]{0,0,0});
+    	tilt.setTiltListener(new TiltHandler(this));    	
+    	
+    	rotation = new Rotation(tdis);
+    	rotation.setRotationListener(new RotationHandler(this));
+    	
+    	move = new Move(tdis);
+    	move.setMoveListener(new MoveHandler(this));
     }
 
+    Tilt tilt;
+    Rotation rotation;
+    Move move;
     /**
      * Lädt Dialog und Desktop configuration
      *
@@ -93,145 +100,15 @@ public class BigLogic implements Runnable, ActionListener {
      */
     public static void main(String[] args) {
         TDIDirectories.createDirectories();
-        new Thread(new BigLogic()).start();
-        //new BigLogic();
-    }
-
-    /**
-     * The run method that is overridden
-     */
-    public void run() {    	    	
-        //initialize tilt listener
-		Tilt tilt = new Tilt(new float[]{0,0,0});
-    	tilt.setTiltListener(new TiltHandler(this));
-    	
-    	Rotation rotation = new Rotation(this);
-    	rotation.setRotationListener(new RotationHandler(this));    	
-    	while(true)
-    	{
-            if (commands.size() > 0) {            	
-                if (tdis.contains(commands.get(0))) {
-                    tilt.tilted(commands.get(0));                                        
-                    rotation.rotated(commands.get(0));
-                    
-                	TDI tdi = tdis.get(tdis.indexOf(commands.get(0)));
-                    TDI command = commands.get(0);
-                    
-                    //Position
-                    if (!Arrays.equals(tdi.getPosition(), command.getPosition())) {
-                        if (tdi.getPosition()[0] != command.getPosition()[0]) {
-                            int compPos = 1;
-                            if (tdi.getPosition()[0] >= command.getPosition()[0] + compPos || tdi.getPosition()[0] >= command.getPosition()[0] - compPos) {
-                                move(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            } else if (tdi.getPosition()[0] <= command.getPosition()[0] + compPos || tdi.getPosition()[0] <= command.getPosition()[0] - compPos) {
-                                move(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            }
-                        } else if (tdi.getPosition()[1] != command.getPosition()[1]) {
-                            int compPos = 1;
-                            if (tdi.getPosition()[1] <= command.getPosition()[1] + compPos || tdi.getPosition()[1] <= command.getPosition()[1] - compPos) {
-                                move(tdi, command);                                
-                                commands.remove(0);
-                                continue;
-                            } else if (tdi.getPosition()[1] + compPos > command.getPosition()[1] || tdi.getPosition()[1] >= command.getPosition()[1] - compPos) {
-                                move(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            }
-                        } else if (tdi.getPosition()[2] != command.getPosition()[2]) {
-                            int compHeight = 200;
-                            int compPos = 1;
-                            if ((tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) <= command.getPosition()[2] - compPos) {
-                                liftUp(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            } else if ((tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] + compPos || (tdi.getPosition()[2] - compHeight) >= command.getPosition()[2] - compPos) {
-                                putDown(tdi, command);
-                                commands.remove(0);
-                                continue;
-                            }
-                        }
-                    }
-                    commands.remove(0);
-                }
-            }
-        }
-    }
-    
-    private boolean moveChanged(float oldPos, float newPos){
-    	if(oldPos > newPos + compPos || oldPos < newPos + compPos)
-    		return true;
-    	return false;
+        new BigLogic();
     }
            
-    private boolean checkMovedToTaskbar(TDI tdi){
-    	TDI command = commands.get(0);
-    	while(commands.size() > 0){			
-			if(tdi.getId() == commands.get(0).getId() &&  
-					(moveChanged(tdi.getPosition()[0], commands.get(0).getPosition()[0]) ||
-					moveChanged(tdi.getPosition()[1], commands.get(0).getPosition()[1]))){
-				command = commands.get(0);
-				commands.remove(0);							
-			}else{
-				commands.set(0, command);
-				break;
-			}
-			try{
-				Thread.sleep(500);
-			}catch(InterruptedException e){}
-		}
-    	if(posInTaskbar(command.getPosition())) 
+    public boolean checkMovedToTaskbar(TDI tdi){    	
+    	if(posInTaskbar(tdi.getPosition())) 
     		return true;
     	return false;
     }
-    
-    private void move(TDI tdi, TDI command){
-    	switch (tdi.getState().toString()) {
-		case "desktop":			
-			if(!tdi.isLocked() && ProgramHandler.getRunningPrograms().size() == 0)
-				server.setPose(tdi.getId(), tdi.getPosition(), tdi.getRotation());
-			if(tdi.isLocked()){
-				if(checkMovedToTaskbar(tdi)){
-					ProgramHandler.openProgram(tdi.getIcons().get(0));
-					tdi.setRotationLimit((360/ProgramHandler.getRunningPrograms().size())/2);
-					tdi.toggleLock();
-					if(emptyTaskbar()){	
-						command = commands.get(0);
-						commands.remove(0);
-						tdi.setState(TDIState.taskbar);
-						tdi.setPosition(command.getPosition()[0], command.getPosition()[1], command.getPosition()[2]);						
-						
-						tdi = tdis.get((tdis.indexOf(tdi)+1)%2);
-					}
-					tdi.setState(TDIState.inapp); // should be in app
-					tdi.setPosition(0,0,0);//TODO Set the position to window position
-				}else
-					;//TODO move icon to certain position
-			}
-			break;
-		case "window":
-			//TODO Map the position of table to screen;
-			ProgramHandler.moveProgram((int)command.getPosition()[0], (int)command.getPosition()[1]);
-			break;
-		case "taskbar":
-			//TODO move to taskbar location
-            break;
-		case "inapp":
-          plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());
-          break;
-		case "sleep":
-          if (ProgramHandler.getNonMinimized() == 0) {
-              tdi.setState(TDIState.desktop);
-              splitIcons();
-          } else
-              tdi.setState(TDIState.desktop);
-          break;          
-		}
-    	Executor.saveBackground(wallpaper.markArea(tdis));
-    }
+        
 
 //    private void move(TDI tdi, TDI commands) {//TODO major rewrite
 //        switch (tdi.getState().toString()) {            
@@ -275,7 +152,6 @@ public class BigLogic implements Runnable, ActionListener {
     private void liftUp(TDI tdi, TDI commands)//heben
     {
         if(tdi.getState().equals(TDIState.inapp)){
-            tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
             plugserv.sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
         }
     }
@@ -283,15 +159,21 @@ public class BigLogic implements Runnable, ActionListener {
     private void putDown(TDI tdi, TDI commands)//senken
     {
     	if(tdi.getState().equals(TDIState.inapp)){
-            tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
             plugserv.sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
         }
     }
+    
+    /**
+	 * @return the server
+	 */
+	public Server getServer() {
+		return server;
+	}
 
     /**
      * @return true if any (other) TDI is in taskbar state
      */
-    private boolean emptyTaskbar() {
+    public boolean emptyTaskbar() {
         for (TDI t : tdis) {
             if (t.getState().equals(TDIState.taskbar))
                 return false;
@@ -314,15 +196,7 @@ public class BigLogic implements Runnable, ActionListener {
     public void setTdis(ArrayList<TDI> tdis) {
         this.tdis = tdis;
     }
-
-    public ArrayList<TDI> getCommands() {
-        return commands;
-    }
-
-    public void setCommands(ArrayList<TDI> commands) {
-        this.commands = commands;
-    }
-
+   
     /**
      * checks if givenPos is in taskbar //TODO Methode
      *
@@ -394,8 +268,9 @@ public class BigLogic implements Runnable, ActionListener {
                 public void run() {
                     ArrayList<TDI> tdis = server.fullPose();
                     if (tdis != null)
-                        for (TDI t : tdis)
-                            commands.add(t);
+                        for (TDI t : tdis){
+                            newCommand(t);
+                        }
                 }
             }, 0, 500);
             // startTDI clicked
@@ -449,5 +324,12 @@ public class BigLogic implements Runnable, ActionListener {
 	public PluginServer getPlugserv() {
 		return plugserv;
 	}
+	
+	public void newCommand(TDI command){
+		tilt.tilt(command);
+		move.move(command);
+		rotation.rotate(command);
+		if(tdis.get(tdis.indexOf(command)).getState().equals(TDIState.inapp))
+			plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());
+	}
 }
-

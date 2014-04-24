@@ -17,7 +17,7 @@ public class Tilt{
 	}
 	
 	private void tilt(){
-		tiltListener.tilt(new TiltEvent(tiltType, currentTDI));
+		tiltListener.tiltedTDI(new TiltEvent(tiltType, currentTDI));
 	}
 	
 	//	public void tilted(float )
@@ -25,9 +25,9 @@ public class Tilt{
 		tiltListener = listener;
 	}
 
-	public void tilted(TDI tdi){		
-		float[] rot = tdi.getRotation();
-		if(tiltType != null && currentTDI.equals(tdi)){
+	public void tilt(TDI command){		
+		float[] rot = command.getRotation();
+		if(tiltType != null && currentTDI.equals(command)){
 			if(rot[2] == restingTiltPos[2] || rot[1] == restingTiltPos[1])
 				new Runnable() {
 					public void run() {
@@ -36,24 +36,24 @@ public class Tilt{
 					}
 				}.run();				
 		}
-		currentTDI = tdi;
-		if(rot[2] != restingTiltPos[2]){
-			if(rot[2] > restingTiltPos[2]+compensation)
+		currentTDI = command;
+		if(rot[1] != restingTiltPos[1]){
+			if(rot[1] > restingTiltPos[1]+compensation)
 				tiltType = TiltType.up;
-			else if(rot[2] < restingTiltPos[2]-compensation)
+			else if(rot[1] < restingTiltPos[1]-compensation)
 				tiltType = TiltType.down;
 		}
-		else if(rot[1] != restingTiltPos[1]){
-			if(rot[1] > restingTiltPos[1]+compensation)
+		else if(rot[2] != restingTiltPos[2]){
+			if(rot[2] > restingTiltPos[2]+compensation)
 				tiltType = TiltType.left;
-			else if(rot[1] < restingTiltPos[1]-compensation)
+			else if(rot[2] < restingTiltPos[2]-compensation)
 				tiltType = TiltType.right;
 		}
 	}
 }
 
 interface TiltListener{
-	public void tilt(TiltEvent e);
+	public void tiltedTDI(TiltEvent e);
 }
 class TiltEvent{
 	private TiltType tilt;

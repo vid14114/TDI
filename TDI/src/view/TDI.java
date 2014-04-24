@@ -57,10 +57,8 @@ public class TDI {
 	{
 		this.isScale=scale;
 	}
-	public void setPosition(float x, float y, float z) {
-		position[0] = x;
-		position[1] = y;
-		position[2] = z;
+	public void setPosition(float[] position) {
+		this.position = position;
 	}
 
 	public float[] getRotation() {
