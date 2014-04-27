@@ -19,12 +19,8 @@ import model.TDILogger;
  * @author abideen
  */
 public final class Executor {
-	private static int counter=0;
-    /*
-     * Environment checking: TODO check enviroment at startup
-     * command -v wmctrl xdg-open xfconf-query xprop
-     */
-    public static void startPlugins(String[] plugins) {
+
+	public static void startPlugins(String[] plugins) {
         try {
             for (String plugin : plugins)
                 Runtime.getRuntime().exec(new String[]{"java", "-jar", TDIDirectories.TDI_PLUGINS + "/" + plugin + ".jar"});
@@ -32,7 +28,9 @@ public final class Executor {
             TDILogger.logError(e.getMessage());
         }
     }
-
+    /*
+     * command -v wmctrl xdg-open xfconf-query xprop
+     */
 //	//TODO finish	
 //	public static void getStatus() throws IOException{
 //		BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("command -v wmctrl xdg-open xfconf-query gvfs-mount").getInputStream()));
@@ -46,8 +44,7 @@ public final class Executor {
             Runtime.getRuntime().exec(new String[]{"xfdesktop","--reload"});
             restore.deleteOnExit();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	TDILogger.logError("Error saving wallpaper "+ e.getMessage());
         }
     }
 
@@ -109,6 +106,7 @@ public final class Executor {
                 if (line.contains("_NET_ACTIVE_WINDOW(WINDOW)") && wmctrlID == null)
                     wmctrlID = line.split("#")[1].trim().split(",")[0].replaceFirst("0x", "0x0");
         } catch (IOException e) {
+        	TDILogger.logError(e.getMessage());
         }
         return wmctrlID;
     }
@@ -128,8 +126,7 @@ public final class Executor {
             BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-panel", "-p", "/panels/panel-1/size"}).getInputStream()));
             panelSize = bf.readLine();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	TDILogger.logError(e.getMessage());
         }
         return panelSize;
     }
@@ -140,8 +137,7 @@ public final class Executor {
             BufferedReader bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfwm4", "-p", "/general/placement_ratio"}).getInputStream()));
             ratio = bf.readLine();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            TDILogger.logError(e.getMessage());
         }
         return ratio;
     }

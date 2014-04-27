@@ -91,10 +91,8 @@ public class TDIDialog extends JDialog implements ActionListener {
         try {
             logo = ImageIO.read(new File("images/tdi.jpg"));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             System.out.print("Image not found");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         JLabel picLabel = new JLabel(new ImageIcon(logo));

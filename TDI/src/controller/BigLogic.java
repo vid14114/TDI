@@ -46,16 +46,6 @@ public class BigLogic implements ActionListener {
     private ArrayList<Icon> icons;
     private ArrayList<TDI> tdis;
     private Server server;    
-
-	/**
-     * counter for scaling
-     */
-    private int scaleCount = 0;
-
-    private TDI otherFocused;
-    
-    private float defaultRotX=0;
-
     /**
      * The wallpaper
      */
@@ -63,13 +53,6 @@ public class BigLogic implements ActionListener {
     public Wallpaper getWallpaper() {
 		return wallpaper;
 	}
-    /**
-     *	Compensation Value for position change
-     */
-    private int compHeight = 200;
-    private int compPos = 1;
-    
-    private int thresholdRotation=10;
 
     public BigLogic() {
         configLoader = new ConfigLoader();
@@ -109,60 +92,7 @@ public class BigLogic implements ActionListener {
     	return false;
     }
         
-
-//    private void move(TDI tdi, TDI commands) {//TODO major rewrite
-//        switch (tdi.getState().toString()) {            
-//                       if (!tdi.isScale()) {
-//    if (startScaleMode(commands, TDIState.window)) {
-//        scaleCount += 1;
-//        int waitTime = 5;
-//        if (scaleCount == waitTime) {//A
-//            scaleCount = 0;
-//            tdi.setIsScale(true);
-//            otherFocused.setIsScale(true);
-//            int width = (int) (otherFocused.getPosition()[0] - tdi.getPosition()[0]);
-//            int height = (int) (otherFocused.getPosition()[1] - tdi.getPosition()[1]);
-//            ProgramHandler.resizeProgram(width, height);
-//            tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
-//            otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
-//            //vibrate? LED? some notification?
-//        }
-//    } else {
-//        if (ProgramHandler.getRunningPrograms().size() > 0) {
-//            if (ProgramHandler.getNonMinimized() == 0) {//B
-//                tdi.setState(TDIState.desktop);
-//                tdi.setPosition(commands.getPosition()[0], commands.getPosition()[1], commands.getPosition()[2]);
-//                for (TDI t : tdis) {
-//                    t.setState(TDIState.desktop);
-//                }
-//                splitIcons();
-//            }
-//        }
-//    }
-//} else {
-//    //wenn bereits im scale
-//    int width = (int) (otherFocused.getPosition()[0] - tdi.getPosition()[0]);
-//    int height = (int) (otherFocused.getPosition()[1] - tdi.getPosition()[1]);
-//    ProgramHandler.resizeProgram(width, height);
-//    tdi.setPosition(0, 0, tdi.getPosition()[2]); //TODO
-//    otherFocused.setPosition(0, 0, otherFocused.getPosition()[2]);// param übernahme
-//}
-//            
-
-    private void liftUp(TDI tdi, TDI commands)//heben
-    {
-        if(tdi.getState().equals(TDIState.inapp)){
-            plugserv.sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
-        }
-    }
-
-    private void putDown(TDI tdi, TDI commands)//senken
-    {
-    	if(tdi.getState().equals(TDIState.inapp)){
-            plugserv.sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
-        }
-    }
-    
+               
     /**
 	 * @return the server
 	 */
@@ -206,20 +136,6 @@ public class BigLogic implements ActionListener {
         return true;
     }
 
-    /**
-     * checks if a taskbar TDI and a window TDI are near enough to start the scale mode
-     */
-    private boolean startScaleMode(TDI t1, TDIState state) {
-        int range = 5;
-        for (TDI t2 : tdis) {
-            if (t2.getState().equals(state)) {
-                otherFocused = t2;
-                return t1.getPosition()[0] <= t2.getPosition()[0] + range && t1.getPosition()[0] >= t2.getPosition()[0] - range || t1.getPosition()[1] <= t2.getPosition()[1] + range && t1.getPosition()[1] >= t2.getPosition()[1] - range || t2.getPosition()[0] <= t1.getPosition()[0] + range && t2.getPosition()[0] >= t1.getPosition()[0] - range || t2.getPosition()[1] <= t1.getPosition()[1] + range && t2.getPosition()[1] >= t1.getPosition()[1] - range;
-            }
-        }
-        return false;
-    }
-
     public void splitIcons() {
         int iconsAssigned = 0;
         for (int i = 0; i < tdis.size(); i++) {
@@ -237,9 +153,9 @@ public class BigLogic implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         tdiDialog.setErrorMessage("");
-        //	if(e.getActionCommand().equals(TDIState.restore));
-        //TODO Restore;
-        //	else
+        if(e.getActionCommand().equals("Restore"))
+        	configLoader.recoverWallpaper();
+       	else
         {
             String ip;
             if ((ip = checkIp(tdiDialog.getIp1().getText(), tdiDialog.getIp2().getText(), tdiDialog.getIp3().getText(), tdiDialog.getIp4().getText())) == null)
@@ -255,12 +171,10 @@ public class BigLogic implements ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server("192.168.43.32");
+            server = new Server(ip);
             tdis = server.fullPose();
-            defaultRotX=tdis.get(0).getRotation()[0];
             splitIcons();
             Executor.saveBackground(wallpaper.markArea(tdis));
-            //TODO Positionen für TDIs am Tisch berechnen, (besprechen!)
             Timer mo = new Timer();
             mo.scheduleAtFixedRate(new TimerTask() {
 
@@ -326,10 +240,13 @@ public class BigLogic implements ActionListener {
 	}
 	
 	public void newCommand(TDI command){
-		tilt.tilt(command);
-		move.move(command);
-		rotation.rotate(command);
+		tilt.tilt(command); //Check whether the user exists inapp mode 
 		if(tdis.get(tdis.indexOf(command)).getState().equals(TDIState.inapp))
 			plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());
+		else
+		{
+			move.move(command);
+			rotation.rotate(command);
+		}
 	}
 }

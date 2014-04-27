@@ -39,7 +39,6 @@ public class ServerTest implements Runnable {
                     dis = new DataInputStream(client.getInputStream());
 
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 while (listening) {
@@ -47,7 +46,6 @@ public class ServerTest implements Runnable {
                     try {
                         input = dis.readByte();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                         break;
                     }
@@ -60,7 +58,7 @@ public class ServerTest implements Runnable {
                 }
             }
         }).start();
-        Server s = new Server("127.0.0.1"); //TODO test case
+        Server s = new Server("127.0.0.1");
         ArrayList<TDI> t = s.fullPose();
         System.out.println(t1.toString());
         System.out.println(t.get(0).toString());
@@ -90,7 +88,6 @@ public class ServerTest implements Runnable {
             dos.writeFloat((float) q.getQ3());
             listening = false;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

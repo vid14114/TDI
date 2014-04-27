@@ -18,7 +18,7 @@ public class PluginServer implements Runnable {
 					InetAddress.getByName("127.0.0.1"));
 			server.setSoTimeout(0);
 		} catch (IOException e) {
-			// TODO Error message
+			TDILogger.logError(e.getMessage());
 		}
 	}
 
@@ -31,7 +31,7 @@ public class PluginServer implements Runnable {
 				socket.setSoTimeout(0);
 				clients.add(socket);
 			} catch (IOException e) {
-				// TODO Error message
+				TDILogger.logError(e.getMessage());
 			}
 		}
 	}
@@ -76,7 +76,6 @@ public class PluginServer implements Runnable {
 			for (Socket client : clients)
 				client.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

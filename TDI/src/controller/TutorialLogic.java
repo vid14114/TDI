@@ -41,7 +41,7 @@ class TutorialLogic implements Runnable {
             tv.setText("6/11 In-App Modus\nAls Sie das Program gestartet haben, haben Sie vielleicht bemerkt, dass ein TDI unten/oben auf dem Tisch blieb, der TDI ist jetzt in Taskleiste Modus. Der TDI, der sich in die Mitte "
                     + "des Arbeitsplatzes bewegt hat, befindet sich in In-App-Modus. In-App-Modus ist eine Sondermodus, wo Entwickler sogenannte \"plugins\" entwickeln können, um TDI Funktionalität in verschiedenen Programmen unterstützen zu können. Beachten Sie, dass dieses Programm nur Fenstern "
                     + "manipuliert und nicht in der ist Programme selbst zu manipulieren. Um dies zu können, "
-                    + "benötigen Sie die so genannten Plug-Ins. Um In-App-Modus verlassen zu können, neigen Sie den TDI nach rechts");//TODO check correctness
+                    + "benötigen Sie die so genannten Plug-Ins. Um In-App-Modus verlassen zu können, neigen Sie den TDI nach rechts");
             for (i = 0; i < tdis.size() && !tdis.get(i).getState().equals(TDIState.inapp); i++) ;
             while (tdis.get(i).getState().equals(TDIState.inapp)) ;
             tv.setText("7/11 Fenster Modus\nDer TDI ist nun im Fenster Modus. Im Fenster Modus können Sie die Fenster selbst manipulieren: verschieben, minimieren: nach unten neigen, maximieren: nach oben neigen, schließen: nach unten neigen. Lassen Sie uns versuchen, ein paar Funktionalitäten zu testen. Bewegen Sie den Fenster durch Bewegen des TDIs");

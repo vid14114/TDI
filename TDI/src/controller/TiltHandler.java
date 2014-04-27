@@ -49,7 +49,6 @@ public class TiltHandler implements TiltListener {
                 break;
             case inapp:
                 tdi.setState(TDIState.window);
-                //end of plugin
                 break;
 		default:
 			break;
@@ -77,9 +76,6 @@ public class TiltHandler implements TiltListener {
                 	tdi.setState(TDIState.desktop);                	
                 else
                 	 //TODO Check logic                	
-                break;
-            case inapp:
-                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
                 break;
 		default:
 			break;
@@ -110,9 +106,6 @@ public class TiltHandler implements TiltListener {
                     big.splitIcons();
                 }
                 break;
-            case inapp:
-                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
-                break;
 		default:
 			break;
         }
@@ -134,9 +127,6 @@ public class TiltHandler implements TiltListener {
                     tdi.setState(TDIState.desktop);
                     big.splitIcons();
                 }
-                break;
-            case inapp:
-                big.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition(), tdi.getRotation());
                 break;
 		default:
 			break;

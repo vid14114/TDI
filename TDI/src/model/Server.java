@@ -29,8 +29,7 @@ public class Server {
             send = new DataOutputStream(client.getOutputStream());
             read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
         } catch (IOException e) {
-            System.out.print("Error, could not connect to port 12435 ");
-            e.printStackTrace();
+            TDILogger.logError("Error, could not connect to port 12435 "+ e.getMessage());
         }
     }
 
@@ -116,18 +115,16 @@ public class Server {
             send.writeFloat(rot[3]);
             byte ack = read.readByte();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	TDILogger.logError(e.getMessage());
         }
     }
 
-    public void setExt(byte id) { // Not yet implemented in
+    public void setExt(byte id) { //TODO Set ext needs to be implemented
         // WifiTransmitter
         try {
             send.writeByte(ACTOConst.WI_SET_EXT);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	TDILogger.logError(e.getMessage());
         }
     }
 
@@ -140,8 +137,7 @@ public class Server {
             send.writeFloat(trans[2]);
             byte ack = read.readByte();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	TDILogger.logError(e.getMessage());
         }
     }
 
@@ -157,8 +153,7 @@ public class Server {
             send.writeFloat((float) q.getQ3());
             byte ack = read.readByte();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            TDILogger.logError(e.getMessage());
         }
     }
 }

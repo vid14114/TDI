@@ -31,8 +31,9 @@ public class Move {
 	}
 	
 	public void move(TDI command){		
-		TDI currentTDI = tdis.get(tdis.indexOf(command));
-		if(currentTDI.getState().equals(TDIState.window)){
+		TDI currentTDI = tdis.get(tdis.indexOf(command));		
+		if(currentTDI.getState().equals(TDIState.window) || currentTDI.isScale()){
+			currentTDI.setPosition(command.getPosition());
 			moved(currentTDI);
 			return;
 		}

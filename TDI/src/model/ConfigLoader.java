@@ -29,6 +29,7 @@ import controller.Executor;
 public class ConfigLoader {
     private static File iconsRc = lastFileModified();
     public static String imageType;
+    private File oldWallpaper;
 
     /**
      * Searches for the last modified file in the xfce4 desktop folder
@@ -188,14 +189,14 @@ public class ConfigLoader {
 
     public BufferedImage loadWallpaper() {
         BufferedImage wallpaper = null;
-        File wallpaperFile = new File(Executor.getBackground());
+        oldWallpaper = new File(Executor.getBackground());        
         try {
             try {
-            	imageType = wallpaperFile.getName().split("\\.")[1];
-                ImageIO.write((wallpaper = ImageIO.read(wallpaperFile)),
+            	imageType = oldWallpaper.getName().split("\\.")[1];            	
+                ImageIO.write((wallpaper = ImageIO.read(oldWallpaper)),
                         imageType,
                         new File(TDIDirectories.TDI_RESTORE + "/"
-                                + wallpaperFile.getName())
+                                + oldWallpaper.getName())
                 );
             } catch (Exception e1) {
                 TDILogger.
@@ -207,7 +208,7 @@ public class ConfigLoader {
             TDILogger
                     .logError("An error occured while trying to load the wallpaper");
         } finally {
-            wallpaperFile.deleteOnExit();
+            oldWallpaper.deleteOnExit();
         }
         return wallpaper;
     }
@@ -268,6 +269,8 @@ public class ConfigLoader {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(
                     TDIDirectories.TDI_PREFERENCE, false));
+            if(oldWallpaper.exists())
+            	bw.write(oldWallpaper.getAbsolutePath()+"\n");
             for (String line : plugins)
                 bw.write(line + "\n");
             bw.close();
@@ -321,5 +324,22 @@ public class ConfigLoader {
     public int getPlacementRatio() {
         return Integer.parseInt(Executor.getPlacementRatio());
     }
+
+	public void recoverWallpaper() {
+		try{
+			if(oldWallpaper.exists()){
+				Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", oldWallpaper.getAbsolutePath()});
+				Runtime.getRuntime().exec(new String[]{"xfdesktop","--reload"});        	
+			}else
+			{
+				BufferedReader br = new BufferedReader(new FileReader(TDIDirectories.TDI_PREFERENCE));
+				Runtime.getRuntime().exec(new String[]{"xfconf-query", "-c", "xfce4-desktop", "-p", "/backdrop/screen0/monitor0/image-path", "-s", br.readLine()});
+				Runtime.getRuntime().exec(new String[]{"xfdesktop","--reload"});
+				br.close();
+			}
+		}catch(IOException e){
+			TDILogger.logError(e.getMessage());
+		}
+	}
 
 }

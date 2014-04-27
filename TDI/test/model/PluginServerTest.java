@@ -55,7 +55,6 @@ public class PluginServerTest {
                     s1.close();
                     s2.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

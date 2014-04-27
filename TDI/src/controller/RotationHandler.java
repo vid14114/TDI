@@ -31,10 +31,6 @@ public class RotationHandler implements RotationListener {
 		case taskbar:
 			ProgramHandler.restoreRight();
 			break;
-		case inapp:
-			bigLogic.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition(),
-					tdi.getRotation());
-			break;
 		default:
 			break;
 		}
@@ -49,10 +45,6 @@ public class RotationHandler implements RotationListener {
 			break;
 		case taskbar:
 			ProgramHandler.restoreLeft();
-			break;
-		case inapp:
-			bigLogic.getPlugserv().sendMessage(tdi.getId(), tdi.getPosition(),
-					tdi.getRotation());
 			break;
 		default:
 			break;
