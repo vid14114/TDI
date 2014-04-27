@@ -32,32 +32,33 @@ public class TestSetup {
 		b.setTdis(tdis);
 		b.splitIcons();
 		Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
-		Thread.sleep(1000);
-		t=new Thread(b);
-		t.start();
+		//Thread.sleep(1000);
+		//t=new Thread(b);
+		//t.start();
 	}
 	
 	@Test
 	public void bRotateRightDesktop() {
 		System.out.println("right");
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{100,0,0});
-		b.getCommands().add(t2);
+		//b.getCommands().add(t2);
+		b.newCommand(t2);
 	}
 	
 	@Test
 	public void cRotateLeftDesktop() {
 		System.out.println("left");
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{-100,0,0});
-		b.getCommands().add(t2);
+		b.newCommand(t2);
 	}
 	
 	@Test
 	public void dLockUnlock(){
 		System.out.println("lock");
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-50,-100}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,-50,-100}));
 		Assert.assertEquals(true, b.getTdis().get(0).isLocked());
 		System.out.println("unlock");
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,-100}));
 		Assert.assertEquals(false, b.getTdis().get(0).isLocked());
 	}
 	
@@ -72,19 +73,19 @@ public class TestSetup {
 		//Start with test
 		int openedPrograms = ProgramHandler.getRunningPrograms().size();
 		//1. Lock TDI
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,0,-100}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,0,-100}));
 		
 		//2. Move to bottom
-		b.getCommands().add(new TDI((byte)49, 200, 100, 100, new float[]{0,-60,-100}));
+		b.newCommand(new TDI((byte)49, 200, 100, 100, new float[]{0,-60,-100}));
 		//3. A program should have opened, TDI should be in inapp mode
 		Assert.assertEquals((openedPrograms+1), ProgramHandler.getRunningPrograms().size());
 		Assert.assertEquals(TDIState.inapp, b.getTdis().get(1).getState());
 		//4. Get the TDI out of in app mode, by tilting right
-		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-70,0}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,-70,0}));
 		Assert.assertEquals(TDIState.window, b.getTdis().get(1).getState());
 		//5. Tilt the TDI to the left, thereby closing it.
-		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-50,0}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,-50,0}));
 		Assert.assertEquals(openedPrograms, ProgramHandler.getRunningPrograms().size());
 	}
 	
@@ -97,16 +98,16 @@ public class TestSetup {
 		//Start with test
 		int openedPrograms = ProgramHandler.getRunningPrograms().size();
 		//1. Lock TDI
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
-		b.getCommands().add(new TDI((byte)49, 100, 100, 100, new float[]{0,0,0}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,-60,0}));
+		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,0,0}));
 		//2. Move to bottom
-		b.getCommands().add(new TDI((byte)49, 100, 200, 100, new float[]{0,-60,0}));
+		b.newCommand(new TDI((byte)49, 100, 200, 100, new float[]{0,-60,0}));
 		//3. A program should have opened, TDI should be in inapp mode
 
 		//4. Get the TDI out of in app mode, by tilting right
-		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,0}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,0}));
 		//5. Tilt the TDI up, thereby toggling maximize and restore
-		b.getCommands().add(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,-20}));	
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,-60,-20}));
 	}
 	
 	//@Test
@@ -115,8 +116,8 @@ public class TestSetup {
 		System.out.println("doubleRight");
 		TDI t1=new TDI((byte) 49, 100, 100, 100, new float[]{0, 0, 50});
 		TDI t2=new TDI((byte) 49, 100, 100, 100, new float[]{0, 0, 100});
-		b.getCommands().add(t1);
-		b.getCommands().add(t2);
+		b.newCommand(t1);
+		b.newCommand(t2);
 	}
 	
 	@Ignore //Need other tests before this one, pls do :)
@@ -127,8 +128,8 @@ public class TestSetup {
 		TDI t1=new TDI((byte) 49, 100, 100, 100, new float[]{-45, 0, 0});
 		TDI t2=new TDI((byte) 49, 100, 100, 100, new float[]{0, 0, 0});
 		TDI t3=new TDI((byte) 49, 100, 100, 100, new float[]{-45, 0, 0});
-		b.getCommands().add(t1);
-		b.getCommands().add(t2);
-		b.getCommands().add(t3);
+		b.newCommand(t1);
+		b.newCommand(t2);
+		b.newCommand(t3);
 	}
 }
