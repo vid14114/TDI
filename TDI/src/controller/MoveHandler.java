@@ -33,8 +33,10 @@ public class MoveHandler implements MoveListener{
 	
 	@Override
 	public void movedTDI(TDI tdi) {
+		System.out.println("Move");
 		if(tdi.isScale()){
 			moveScaleMode(tdi);
+			System.out.println("Scale");
 			return;
 		}
 		if(startScaleMode(tdi)) return;
@@ -59,8 +61,12 @@ public class MoveHandler implements MoveListener{
 	}
 	
 	private void moveDesktopMode(TDI tdi){
-		if(!tdi.isLocked() && ProgramHandler.getRunningPrograms().size() == 0)
+		System.out.println("Desktop");
+		if(!tdi.isLocked() && ProgramHandler.getRunningPrograms().size() == 0){
+			System.out.println("IN");
 			bigLogic.getServer().setPose(tdi.getId(), tdi.getPosition(), tdi.getRotation());
+			System.out.println("OUT");
+		}
 		if(tdi.isLocked()){
 			if(bigLogic.checkMovedToTaskbar(tdi)){
 				ProgramHandler.openProgram(tdi.getIcons().get(0));
@@ -82,7 +88,7 @@ public class MoveHandler implements MoveListener{
 		ProgramHandler.moveProgram((int)tdi.getPosition()[0], (int)tdi.getPosition()[1]);
 	}
 	
-  private void moveScaleMode(TDI tdi) {//TODO Exit scale mode
+  private void moveScaleMode(TDI tdi) {//Exit through right tilting
 	  if(tdi.equals(scaleTDI)) return;
 	  ProgramHandler.resizeProgram((int)Math.abs(scaleTDI.getPosition()[0] - tdi.getPosition()[0]),(int) Math.abs(scaleTDI.getPosition()[1] - tdi.getPosition()[1]));	  
   }

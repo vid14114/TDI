@@ -165,6 +165,12 @@ public class BigLogic implements ActionListener {
             );
             tdis.get(i).calculateRotationLimit();
         }
+        refreshBackground();
+    }
+    
+    public void refreshBackground(){
+    	Executor.saveBackground(getWallpaper().markArea(
+				getTdis()));
     }
 
     @Override
@@ -188,13 +194,12 @@ public class BigLogic implements ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server(ip);
+            server = new Server("192.168.43.12");
             tdis = server.fullPose();
             splitIcons();
-            Executor.saveBackground(wallpaper.markArea(tdis));
-            tilt = new Tilt(new float[]{0,0,0});
+            tilt = new Tilt(tdis.get(0).getRotation());
         	tilt.setTiltListener(new TiltHandler(this));    	
-        	
+
         	rotation = new Rotation(tdis);
         	rotation.setRotationListener(new RotationHandler(this));
         	
@@ -211,7 +216,7 @@ public class BigLogic implements ActionListener {
                             newCommand(t);
                         }
                 }
-            }, 0, 500);
+            }, 0, 1000);
             // startTDI clicked
             if (e.getActionCommand().equals("Tutorial starten"))
                 new Thread(new TutorialLogic(tdis)).start();

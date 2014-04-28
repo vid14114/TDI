@@ -11,6 +11,7 @@ public class RotationHandler implements RotationListener {
 
 	@Override
 	public void rotatedTDI(RotateEvent e) {
+		System.out.println("Rotate");
 		switch (e.getRotation()) {
 		case left:
 			rotateLeft(e.getTDI());
@@ -25,8 +26,7 @@ public class RotationHandler implements RotationListener {
 		switch (tdi.getState()) {
 		case desktop:
 			tdi.rotateIconsClockwise();
-			Executor.saveBackground(bigLogic.getWallpaper().markArea(
-					bigLogic.getTdis()));
+			bigLogic.refreshBackground();
 			break;
 		case taskbar:
 			ProgramHandler.restoreRight();
@@ -40,8 +40,7 @@ public class RotationHandler implements RotationListener {
 		switch (tdi.getState()) {
 		case desktop:
 			tdi.rotateIconsCounterClockwise();
-			Executor.saveBackground(bigLogic.getWallpaper().markArea(
-					bigLogic.getTdis()));
+			bigLogic.refreshBackground();
 			break;
 		case taskbar:
 			ProgramHandler.restoreLeft();

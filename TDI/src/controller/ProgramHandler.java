@@ -223,8 +223,8 @@ class ProgramHandler {
         try {
             Runtime.getRuntime().exec(
                     new String[]{"wmctrl", "-i", "-r",
-                            getFocusedWindow(), "-b", "toggle",
-                            "maximized_vert", "maximized_horz"}
+                            getFocusedWindow(), "-b", "toggle,",
+                            "maximized_vert,", "maximized_horz"}
             );
         } catch (IOException e) {
             e.printStackTrace();

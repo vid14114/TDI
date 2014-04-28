@@ -26,8 +26,8 @@ public class Rotation extends Thread{
 			@Override
 			public void run() {
 				TDI currentTDI = tdis.get(tdis.indexOf(tdi));
-				float upperBorder = currentTDI.getRotation()[0] + currentTDI.getRotationLimit();
-				float lowerBorder = currentTDI.getRotation()[0] - currentTDI.getRotationLimit();
+				float upperBorder = currentTDI.getRotation()[0] + (currentTDI.getRotationLimit()/2);
+				float lowerBorder = currentTDI.getRotation()[0] - (currentTDI.getRotationLimit()/2);
 				if(tdi.getRotation()[0] < lowerBorder){
 					int rot = Math.abs((int) ((lowerBorder - tdi.getRotation()[0])/currentTDI.getRotationLimit()));
 					currentTDI.getRotation()[0] = tdi.getRotation()[0];

@@ -27,14 +27,16 @@ public class Tilt{
 
 	public void tilt(TDI command){		
 		float[] rot = command.getRotation();
-		if(tiltType != null && currentTDI.equals(command)){
-			if(rot[2] == restingTiltPos[2] || rot[1] == restingTiltPos[1])
-				new Runnable() {
-					public void run() {
-						tilt();
-						tiltType = null;
-					}
-				}.run();				
+		if(tiltType != null){
+			if(currentTDI.equals(command))
+				if(rot[2] == restingTiltPos[2] || rot[1] == restingTiltPos[1])
+					new Runnable() {
+						public void run() {
+							tilt();
+							tiltType = null;
+						}
+					}.run();
+			return;
 		}
 		currentTDI = command;
 		if(rot[1] != restingTiltPos[1]){

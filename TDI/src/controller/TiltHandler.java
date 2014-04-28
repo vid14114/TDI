@@ -21,6 +21,7 @@ public class TiltHandler implements TiltListener {
 	 */
 	@Override
 	public void tiltedTDI(TiltEvent e) {
+		System.out.println("Tilt");
 		TDI tdi = big.getTdis().get(big.getTdis().indexOf(e.getTDI()));
 		switch (e.getRotation()) {
 		case up:			
@@ -35,6 +36,11 @@ public class TiltHandler implements TiltListener {
 	}
 	
 	private void tiltRight(TDI tdi) {
+		if(tdi.isScale()){
+			for (TDI t : big.getTdis())
+                t.setIsScale(false);
+			return;
+		}
         switch (tdi.getState()) {
             case desktop:
                 tdi.toggleLock();
@@ -53,7 +59,6 @@ public class TiltHandler implements TiltListener {
 		default:
 			break;
         }
-        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 	
 	private void tiltLeft(TDI tdi) {
@@ -79,7 +84,6 @@ public class TiltHandler implements TiltListener {
 		default:
 			break;
         }
-        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 
     private void tiltUp(TDI tdi) {
@@ -108,7 +112,6 @@ public class TiltHandler implements TiltListener {
 		default:
 			break;
         }
-        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 
     private void tiltDown(TDI tdi) {
@@ -130,6 +133,5 @@ public class TiltHandler implements TiltListener {
 		default:
 			break;
         }
-        Executor.saveBackground(big.getWallpaper().markArea(big.getTdis()));
     }
 }

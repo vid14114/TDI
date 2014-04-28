@@ -25,11 +25,11 @@ public class WallpaperTest {
     	b.splitIcons();
     	b.getTdis().get(0).rotateIconsClockwise();
     	b.getTdis().get(0).rotateIconsClockwise();
-    	Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
+    	b.refreshBackground();
     	Thread.sleep(3000);
     	b.getTdis().get(0).rotateIconsCounterClockwise();
     	b.getTdis().get(1).rotateIconsClockwise();
-    	Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
+    	b.refreshBackground();
     	while(true);
     }
 

@@ -26,6 +26,7 @@ public class TestSetup {
 		b=new BigLogic();
 		tdis.add(t1);
 		b.setTdis(tdis);
+		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
 		b.splitIcons();
 		Tilt tilt = new Tilt(new float[]{0,0,0});
     	tilt.setTiltListener(new TiltHandler(b));    	
@@ -39,7 +40,6 @@ public class TestSetup {
 		b.setTilt(tilt);
 		b.setRotation(rotation);
 		b.setMove(move);
-		Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
 		Thread.sleep(1000);
 		//t=new Thread(b);
 		//t.start();
@@ -82,10 +82,6 @@ public class TestSetup {
 	@Test
 	public void eCloseProgram() throws InterruptedException{
 		System.out.println("Open a program and close it");
-		//Prerequisite: I need two TDIs
-		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
-		b.splitIcons();
-		Executor.saveBackground(b.getWallpaper().markArea(b.getTdis()));
 		
 		//Start with test
 		int openedPrograms = ProgramHandler.getRunningPrograms().size();
@@ -113,7 +109,7 @@ public class TestSetup {
 	
 	@Test
 	public void fMaximizeAndRestore() throws InterruptedException{
-		System.out.println("Maximize and restore program");
+		System.out.println("Maximize and restore program and move it");
 		//1. Lock TDI
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0, 0,-60}));
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0,0,0}));
@@ -122,13 +118,53 @@ public class TestSetup {
 		b.newCommand(new TDI((byte)49, 501, 100, 100, new float[]{0,0,0}));
 		b.newCommand(new TDI((byte)49, 501, 100, 100, new float[]{0,0,0}));
 
-		//4. Get the TDI out of in app mode, by tilting right
+		//3. Get the TDI out of in app mode, by tilting right
 		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0, 0,-60}));
 		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0, 0,0}));
-		//5. Tilt the TDI up, thereby toggling maximize and restore
-		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,60, 0}));
-		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,0, 0}));
 		Thread.sleep(1000);
+		//4. Tilt the TDI up, thereby toggling maximize and restore
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,60, 0}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,0, 0}));				
+		Thread.sleep(1000);
+		//5. Moving window around
+		b.newCommand(new TDI((byte)50, 200, 400, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 400, 200, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 240, 200, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 200, 320, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		
+		
+		//6. Scaling the window
+		b.newCommand(new TDI((byte)50, 200, 104, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 200, 320, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 300, 320, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 200, 138, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		//Exiting scale mode
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0, 0,-60}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0, 0,0}));
+		Thread.sleep(1000);
+		
+		
+		//5. Moving window around again
+		b.newCommand(new TDI((byte)50, 200, 400, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 400, 200, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 240, 200, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+		b.newCommand(new TDI((byte)50, 200, 320, 200, new float[]{0,0, 0}));
+		Thread.sleep(200);
+
+		//7. Tilt the TDI to the left, thereby closing it.
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,0,70}));
+		b.newCommand(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
 	}
 	
 	//@Test
