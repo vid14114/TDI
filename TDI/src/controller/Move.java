@@ -13,7 +13,7 @@ public class Move {
 	
 	public Move(ArrayList<TDI> tdis){
 		this.tdis = tdis;
-		moveFlags = new boolean[tdis.size()];
+		moveFlags = new boolean[2];
 	}
 	
 	private boolean moveChanged(float oldPos, float newPos){

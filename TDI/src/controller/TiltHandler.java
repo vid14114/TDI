@@ -67,15 +67,14 @@ public class TiltHandler implements TiltListener {
                 break;
             case window:
                 ProgramHandler.closeProgram();
-                tdi.setRotationLimit((360/ProgramHandler.getRunningPrograms().size())/2);
-                if (ProgramHandler.getRunningPrograms().size() == 0){                
-                	for(int i = 0; i < big.getTdis().size(); big.getTdis().get(i).setState(TDIState.desktop));
+                if (ProgramHandler.getRunningPrograms().size() == 0){     
+                	for(int i = 0; i < big.getTdis().size(); big.getTdis().get(i).setState(TDIState.desktop), i++);
                 	big.splitIcons();
                 }
-                else if(ProgramHandler.getNonMinimized() == 0)
-                	tdi.setState(TDIState.desktop);                	
-                else
-                	 //TODO Check logic                	
+                else if(ProgramHandler.getNonMinimized() == 0){
+                	tdi.setState(TDIState.desktop);      
+                	tdi.setRotationLimit((360/ProgramHandler.getRunningPrograms().size())/2); 
+                }              	
                 break;
 		default:
 			break;

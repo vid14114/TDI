@@ -62,19 +62,34 @@ public class BigLogic implements ActionListener {
         icons = configLoader.loadIcons();
         Collections.sort(icons);
         wallpaper = new Wallpaper(configLoader.loadWallpaper(), configLoader.getBlockSize(), configLoader.getPanelSize(), configLoader.getPlacementRatio(), configLoader.loadScreensize());
-        
-        tilt = new Tilt(new float[]{0,0,0});
-    	tilt.setTiltListener(new TiltHandler(this));    	
-    	
-    	rotation = new Rotation(tdis);
-    	rotation.setRotationListener(new RotationHandler(this));
-    	
-    	move = new Move(tdis);
-    	move.setMoveListener(new MoveHandler(this));
     }
 
     Tilt tilt;
-    Rotation rotation;
+    public Tilt getTilt() {
+		return tilt;
+	}
+
+	public void setTilt(Tilt tilt) {
+		this.tilt = tilt;
+	}
+
+	public Rotation getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(Rotation rotation) {
+		this.rotation = rotation;
+	}
+
+	public Move getMove() {
+		return move;
+	}
+
+	public void setMove(Move move) {
+		this.move = move;
+	}
+
+	Rotation rotation;
     Move move;
     /**
      * Lädt Dialog und Desktop configuration
@@ -133,7 +148,9 @@ public class BigLogic implements ActionListener {
      * @return
      */
     private boolean posInTaskbar(float[] pos) {
-        return true;
+        if(pos[0]>500)
+        	return true;
+        return false;
     }
 
     public void splitIcons() {
@@ -175,6 +192,14 @@ public class BigLogic implements ActionListener {
             tdis = server.fullPose();
             splitIcons();
             Executor.saveBackground(wallpaper.markArea(tdis));
+            tilt = new Tilt(new float[]{0,0,0});
+        	tilt.setTiltListener(new TiltHandler(this));    	
+        	
+        	rotation = new Rotation(tdis);
+        	rotation.setRotationListener(new RotationHandler(this));
+        	
+        	move = new Move(tdis);
+        	move.setMoveListener(new MoveHandler(this));
             Timer mo = new Timer();
             mo.scheduleAtFixedRate(new TimerTask() {
 

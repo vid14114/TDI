@@ -28,18 +28,14 @@ public class Rotation extends Thread{
 				TDI currentTDI = tdis.get(tdis.indexOf(tdi));
 				float upperBorder = currentTDI.getRotation()[0] + currentTDI.getRotationLimit();
 				float lowerBorder = currentTDI.getRotation()[0] - currentTDI.getRotationLimit();
-				if(lowerBorder < 0)
-					lowerBorder = 360 + lowerBorder;
-				if(upperBorder > 360)
-					upperBorder = 0 + (upperBorder-360);
-				if(tdi.getRotation()[0] < lowerBorder && tdi.getRotation()[0] > upperBorder){
-					int rot = (int) ((lowerBorder - currentTDI.getPosition()[0])/currentTDI.getRotationLimit());
+				if(tdi.getRotation()[0] < lowerBorder){
+					int rot = Math.abs((int) ((lowerBorder - tdi.getRotation()[0])/currentTDI.getRotationLimit()));
 					currentTDI.getRotation()[0] = tdi.getRotation()[0];
 					for(;rot >= 0; rot--) rotation(RotationType.left, currentTDI);			
 				}
 				
 				if(tdi.getRotation()[0] > upperBorder){
-					int rot = (int) ((upperBorder - currentTDI.getPosition()[0])/currentTDI.getRotationLimit());			
+					int rot = Math.abs((int) ((upperBorder - tdi.getRotation()[0])/currentTDI.getRotationLimit()));			
 					currentTDI.getRotation()[0] = tdi.getRotation()[0];
 					for(;rot >= 0; rot--) rotation(RotationType.right, currentTDI);			
 				}
