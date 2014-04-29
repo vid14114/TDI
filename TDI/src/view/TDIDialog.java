@@ -77,7 +77,7 @@ public class TDIDialog extends JDialog implements ActionListener {
         main.setLayout(new BorderLayout());
 
         // Changing options of the panels
-        header.setSize(600, 50);
+        header.setSize(600, 100);
         header.setLocation(0, 0);
         header.setBackground(colorHeader);
         content.setSize(480, 550);
@@ -95,9 +95,23 @@ public class TDIDialog extends JDialog implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JLabel picLabel = new JLabel(new ImageIcon(logo));
-        picLabel.setSize(10, 10);
+        
+       
+         JLabel picLabel = new JLabel(new ImageIcon(logo));
+         picLabel.setPreferredSize(new Dimension(30, 30));
         header.add(picLabel, BorderLayout.NORTH);
+        
+        // add a text to the first "startup" page
+        JPanel welcomePanel = new JPanel();
+        welcomePanel.setLayout(new BoxLayout(welcomePanel,BoxLayout.PAGE_AXIS));
+        JTextArea welcomeText = new JTextArea();
+        welcomeText.setText("Welcome to the TDI application. To start the TDI application or to start the Tutorial click on the startbutton to the right! Have fun! ");
+        welcomeText.setVisible(true);
+        welcomeText.setBounds(new Rectangle(new Dimension(30, 40)));
+        welcomeText.setLineWrap(true); // line breaks
+        welcomeText.setAutoscrolls(true);
+        welcomeText.setBorder(null);
+        
         // Placing buttons statically
         pluginButton.setPreferredSize(new Dimension(90, 30));
         restoreButton.setPreferredSize(new Dimension(90, 30));
@@ -114,6 +128,11 @@ public class TDIDialog extends JDialog implements ActionListener {
         options.add(helpButton);
         options.add(restoreButton);
         options.add(connectButton);
+        
+        content.add(welcomeText);
+        content.add(Box.createRigidArea(new Dimension(450, 200)));
+        
+        content.updateUI();
 
         // Panels added to main panel
         main.add(content);
