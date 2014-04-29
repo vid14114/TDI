@@ -22,20 +22,6 @@ public class RotationHandler implements RotationListener {
 		}
 	}
 
-	private void rotateLeft(TDI tdi) {
-		switch (tdi.getState()) {
-		case desktop:
-			tdi.rotateIconsCounterClockwise();
-			bigLogic.refreshBackground();
-			break;
-		case taskbar:
-			ProgramHandler.restoreLeft();
-			break;
-		default:
-			break;
-		}
-	}
-
 	private void rotateRight(TDI tdi) {
 		switch (tdi.getState()) {
 		case desktop:
@@ -44,6 +30,20 @@ public class RotationHandler implements RotationListener {
 			break;
 		case taskbar:
 			ProgramHandler.restoreRight();
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void rotateLeft(TDI tdi) {
+		switch (tdi.getState()) {
+		case desktop:
+			tdi.rotateIconsCounterClockwise();
+			bigLogic.refreshBackground();
+			break;
+		case taskbar:
+			ProgramHandler.restoreLeft();
 			break;
 		default:
 			break;

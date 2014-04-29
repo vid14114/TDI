@@ -16,80 +16,79 @@ import view.TDI;
 
 public class ServerTest implements Runnable {
 
-	private Socket client;
-	private DataInputStream dis = null;
-	private DataOutputStream dos = null;
-	private final byte id = 0;
-	private boolean listening = true;
-	private final float[] rot = { 1, 2, 4 };
-	Server s;
-	private final TDI t1 = new TDI(id, 10, 100, 0, rot);
-	private ServerSocket wifiTrans;
+    private final byte id = 0;
+    private final float[] rot = {1, 2, 4};
+    private final TDI t1 = new TDI(id, 10, 100, 0, rot);
+    Server s;
+    private boolean listening = true;
+    private ServerSocket wifiTrans;
+    private Socket client;
+    private DataInputStream dis = null;
+    private DataOutputStream dos = null;
 
-	@Override
-	public void run() {
+    @Test
+    public void test() {
+        new Thread(new Runnable() {
 
-	}
+            @Override
+            public void run() {
+                try {
+                    wifiTrans = new ServerSocket(12435);
+                    client = wifiTrans.accept();
+                    dos = new DataOutputStream(client.getOutputStream());
+                    dis = new DataInputStream(client.getInputStream());
 
-	void sendFullPose() {
-		try {
-			dos.writeByte(ACTOConst.WI_ACK);
-			dos.writeByte(ACTOConst.WI_FULL_POSE);
-			dos.writeByte(t1.getId());
-			dos.writeFloat(t1.getPosition()[0]);
-			dos.writeFloat(t1.getPosition()[1]);
-			dos.writeFloat(t1.getPosition()[2]);
-			final Vector3D v = new Vector3D(t1.getRotation()[0],
-					t1.getRotation()[1], t1.getRotation()[2]);
-			final Quaternion q = new Quaternion(v.toArray());
-			dos.writeFloat((float) q.getQ0());
-			dos.writeFloat((float) q.getQ1());
-			dos.writeFloat((float) q.getQ2());
-			dos.writeFloat((float) q.getQ3());
-			listening = false;
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                while (listening) {
+                    byte input;
+                    try {
+                        input = dis.readByte();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                    switch (input) {
+                        case ACTOConst.WI_GET_POSE:
+                            sendFullPose();
+                            break;
+                    }
+                    break;
+                }
+            }
+        }).start();
+        Server s = new Server("127.0.0.1");
+        ArrayList<TDI> t = s.fullPose();
+        System.out.println(t1.toString());
+        System.out.println(t.get(0).toString());
+        Assert.assertEquals(t1.getId(), t.get(0).getId());
+        Assert.assertArrayEquals(t1.getPosition(), t.get(0).getPosition(), 0f);
+        Assert.assertArrayEquals(t1.getRotation(), t.get(0).getRotation(), 0f);
+    }
 
-	@Test
-	public void test() {
-		new Thread(new Runnable() {
+    @Override
+    public void run() {
 
-			@Override
-			public void run() {
-				try {
-					wifiTrans = new ServerSocket(12435);
-					client = wifiTrans.accept();
-					dos = new DataOutputStream(client.getOutputStream());
-					dis = new DataInputStream(client.getInputStream());
+    }
 
-				} catch (final IOException e) {
-					e.printStackTrace();
-				}
-				while (listening) {
-					byte input;
-					try {
-						input = dis.readByte();
-					} catch (final IOException e) {
-						e.printStackTrace();
-						break;
-					}
-					switch (input) {
-					case ACTOConst.WI_GET_POSE:
-						sendFullPose();
-						break;
-					}
-					break;
-				}
-			}
-		}).start();
-		final Server s = new Server("127.0.0.1");
-		final ArrayList<TDI> t = s.fullPose();
-		System.out.println(t1.toString());
-		System.out.println(t.get(0).toString());
-		Assert.assertEquals(t1.getId(), t.get(0).getId());
-		Assert.assertArrayEquals(t1.getPosition(), t.get(0).getPosition(), 0f);
-		Assert.assertArrayEquals(t1.getRotation(), t.get(0).getRotation(), 0f);
-	}
+    void sendFullPose() {
+        try {
+            dos.writeByte(ACTOConst.WI_ACK);
+            dos.writeByte(ACTOConst.WI_FULL_POSE);
+            dos.writeByte(t1.getId());
+            dos.writeFloat(t1.getPosition()[0]);
+            dos.writeFloat(t1.getPosition()[1]);
+            dos.writeFloat(t1.getPosition()[2]);
+            Vector3D v = new Vector3D(t1.getRotation()[0], t1.getRotation()[1], t1.getRotation()[2]);
+            Quaternion q = new Quaternion(v.toArray());
+            dos.writeFloat((float) q.getQ0());
+            dos.writeFloat((float) q.getQ1());
+            dos.writeFloat((float) q.getQ2());
+            dos.writeFloat((float) q.getQ3());
+            listening = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
