@@ -22,7 +22,7 @@ class TutorialLogic implements Runnable {
             //First Step
             Icon temp = tdis.get(0).getIcons().get((tdis.get(0).getIcons().size() - 1));
             //First step
-            tv.setText("1/11 - Desktop Modus\nBitte wählen Sie den Icon " + temp.getName() + " an der Position " + temp.getPosition().x + ","
+            tv.setText("1/11 - Desktop Modus\nBitte wählen Sie das Icon " + temp.getName() + " an der Position " + temp.getPosition().x + ","
                     + temp.getPosition().y + " durch Drehen des zugeordneten TDIs, bis das Symbol markiert ist. ");
             while (!tdis.get(0).getIcons().get(0).equals(temp)) ; //Wait period
             //Second Step

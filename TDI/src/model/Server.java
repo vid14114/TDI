@@ -110,11 +110,11 @@ public class Server {
             send.writeFloat(pos[1]);
             send.writeFloat(pos[2]);
             Rotation r=new Rotation(RotationOrder.XYZ, rot[0], rot[1], rot[2]);
+            send.writeFloat((float) r.getQ3());
             send.writeFloat((float) r.getQ0());
             send.writeFloat((float) r.getQ1());
             send.writeFloat((float) r.getQ2());
-            send.writeFloat((float) r.getQ3());
-//            byte ack = read.readByte();
+            byte ack = read.readByte();
         } catch (IOException e) {
         	TDILogger.logError(e.getMessage());
         }
@@ -156,5 +156,17 @@ public class Server {
         } catch (IOException e) {
             TDILogger.logError(e.getMessage());
         }
+    }
+    
+    public void setPlSize(int size[])
+    {
+    	try {
+			send.writeInt(size[0]);
+			send.writeInt(size[1]);
+	   		send.writeInt(size[2]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    		
     }
 }
