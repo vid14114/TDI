@@ -161,6 +161,7 @@ public class Server {
     public void setPlSize(int size[])
     {
     	try {
+    		send.writeByte(ACTOConst.WI_SET_PLSIZE);
 			send.writeInt(size[0]);
 			send.writeInt(size[1]);
 	   		send.writeInt(size[2]);
