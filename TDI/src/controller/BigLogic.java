@@ -199,8 +199,13 @@ public class BigLogic implements ActionListener {
             server.setPlSize(plsize);
             tdis = server.fullPose();
             splitIcons();
-            tilt = new Tilt(tdis.get(0).getRotation());
-        	tilt.setTiltListener(new TiltHandler(this));    	
+            try{
+            	tilt = new Tilt(tdis.get(0).getRotation());
+            	tilt.setTiltListener(new TiltHandler(this));
+            }catch(IndexOutOfBoundsException e1){
+            	tilt = new Tilt(new float[]{0,0,0});
+            	tilt.setTiltListener(new TiltHandler(this));
+            }
 
         	rotation = new Rotation(tdis);
         	rotation.setRotationListener(new RotationHandler(this));

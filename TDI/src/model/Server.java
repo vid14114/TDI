@@ -119,15 +119,6 @@ public class Server {
         	TDILogger.logError(e.getMessage());
         }
     }
-
-    public void setExt(byte id) { //TODO Set ext needs to be implemented
-        // WifiTransmitter
-        try {
-            send.writeByte(ACTOConst.WI_SET_EXT);
-        } catch (IOException e) {
-        	TDILogger.logError(e.getMessage());
-        }
-    }
     
     public void toggleGreenLED(byte id, byte state) {
     	try {
@@ -195,7 +186,7 @@ public class Server {
             send.writeFloat((float) q.getQ1());
             send.writeFloat((float) q.getQ2());
             send.writeFloat((float) q.getQ3());
-            byte ack = read.readByte();
+            read.readByte();
         } catch (IOException e) {
             TDILogger.logError(e.getMessage());
         }
@@ -208,7 +199,7 @@ public class Server {
 			send.writeInt(size[0]);
 			send.writeInt(size[1]);
 	   		send.writeInt(size[2]);
-	   		byte ack=read.readByte();
+	   		read.readByte();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
