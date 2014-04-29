@@ -95,6 +95,11 @@ public class Wallpaper {
             if(posX!=firstX)
             	posX-=ratio;
             g2.fill(new Rectangle2D.Float(posX * scalingX, posY * scalingY, (realWidth-blockSize+2*ratio) * scalingX, (realHeight-blockSize) * scalingY));
+            if(colorAreas.get(i).isLocked())
+            {
+            	g2.setColor(Color.black);
+            	g2.fill(new Rectangle2D.Float(colorAreas.get(i).getIcons().get(0).getPosition().x * scalingX, colorAreas.get(i).getIcons().get(0).getPosition().y * scalingY, 10 * scalingX, 10 * scalingY));
+            }
             g2.drawImage(b, 0, 0, null);
         }
         return b;
