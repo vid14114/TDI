@@ -61,7 +61,7 @@ public class Icon implements Comparable<Icon>{
 	 * @param position
 	 *            the position to set
 	 */
-    void setPosition(Point position) {
+    public void setPosition(Point position) {
         if (position == null)
             return;
 		this.position = position;

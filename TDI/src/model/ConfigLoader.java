@@ -30,7 +30,8 @@ public class ConfigLoader {
     private static File iconsRc = lastFileModified();
     public static String imageType;
     private File oldWallpaper;
-
+    public static int blockSize;
+    
     /**
      * Searches for the last modified file in the xfce4 desktop folder
      *
@@ -314,6 +315,7 @@ public class ConfigLoader {
         } catch (IOException e) {
 
         }
+        blockSize = iconSize + (2 * margin); 
         return iconSize + (2 * margin);
     }
 
@@ -324,6 +326,29 @@ public class ConfigLoader {
     public int getPlacementRatio() {
         return Integer.parseInt(Executor.getPlacementRatio());
     }
+    
+	public void updateConfig(ArrayList<Icon> icons) {
+		try {
+			//Read all lines
+			BufferedWriter bw = new BufferedWriter(new FileWriter(iconsRc));
+			for (Icon icon : icons) {
+				bw.write("[" + icon.getName() + "]");
+				bw.newLine();
+				bw.write("row=" + icon.getPosition().x);
+				bw.newLine();
+				bw.write("col=" + icon.getPosition().y);
+				bw.newLine();
+				bw.newLine();
+			}
+			bw.close();
+			// refresh the desktop manager
+			Runtime.getRuntime().exec("xfdesktop --reload").waitFor();
+		} catch (IOException e) {
+			TDILogger.logError("Couldn't save the configuration file");
+		} catch (InterruptedException e) {
+			TDILogger.logError(e.getMessage());
+		}
+	}
 
 	public void recoverWallpaper() {
 		try{

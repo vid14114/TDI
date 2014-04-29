@@ -48,6 +48,25 @@ public final class Executor {
         }
     }
 
+    public static float[] getWindowPosition(){
+    	float[] position = new float[]{0,0};
+    	BufferedReader bf;
+    	try {
+			bf = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(new String[]{"xwininfo","-id",getFocusedWindow()}).getInputStream()));
+			String line;
+			while ((line = bf.readLine()) != null){
+                if (line.contains("Absolute upper-left X:"))
+                    position[0] =  Integer.parseInt(line.split(":")[1].trim());
+                if (line.contains("Absolute upper-left Y:"))
+                	position[1] =  Integer.parseInt(line.split(":")[1].trim());
+			}
+			bf.close();
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}     	
+    	return position;
+    }
+    
     /**
      * Calls the xfconf-query method which returns the location of the background
      *

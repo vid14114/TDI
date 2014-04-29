@@ -1,54 +1,34 @@
 package controller;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import model.ConfigLoader;
 import model.PluginServer;
 import model.PluginTableModel;
 import model.Server;
 import model.TDIDirectories;
+import model.TDILogger;
 import view.Icon;
 import view.TDI;
 import view.TDI.TDIState;
 import view.TDIDialog;
 import view.Wallpaper;
-
-/**
- * Implements Runnable interface. Is Master, is big.
- * rotation(z,x,y) [annahme]
- * Info:
- * rechts neigen => x alt > x neu
- * links neigen => x alt < x neu
- * oben neigen => y alt > y neu
- * runter neigen => y alt < y neu
- * rechts drehen => z alt > z neu
- * links drehen => z alt < z neu
- * <p>
- * Position(x,y,z)
- * heben => z neu > (z alt - var) //e.g. var = 200; [not used]
- * rechts bewegen: x alt > x neu
- * links bewegen: x alt < x neu
- * oben bewegen: y alt > y neu
- * unten bewegen: y alt < y neu
- */
 public class BigLogic implements ActionListener {
 
     private final ConfigLoader configLoader;
     private final TDIDialog tdiDialog;
     private final PluginTableModel pluginTableModel;
     private final PluginServer plugserv = new PluginServer();
+    public float[] playFieldMaxValues= {0,0};
+    public float[] playFieldMinValues= {800,800};
+    public float scaleX;
+    public float scaleY;
     private ArrayList<Icon> icons;
     private ArrayList<TDI> tdis;
-    private Server server;    
-    /**
-     * The wallpaper
-     */
+    private Server server; 
     private Wallpaper wallpaper;
     public Wallpaper getWallpaper() {
 		return wallpaper;
@@ -100,9 +80,13 @@ public class BigLogic implements ActionListener {
         TDIDirectories.createDirectories();
         new BigLogic();
     }
+    
+    public float getTaskbarLocation(){
+    	return playFieldMaxValues[0]/0.9f;
+    }
            
-    public boolean checkMovedToTaskbar(TDI tdi){    	
-    	if(posInTaskbar(tdi.getPosition())) 
+    public boolean checkMovedToTaskbar(float position){    	
+    	if(position > getTaskbarLocation()) 
     		return true;
     	return false;
     }
@@ -141,17 +125,6 @@ public class BigLogic implements ActionListener {
     public void setTdis(ArrayList<TDI> tdis) {
         this.tdis = tdis;
     }
-   
-    /**
-     * checks if givenPos is in taskbar //TODO Methode
-     *
-     * @return
-     */
-    private boolean posInTaskbar(float[] pos) {
-        if(pos[0]>500)
-        	return true;
-        return false;
-    }
 
     public void splitIcons() {
         int iconsAssigned = 0;
@@ -166,6 +139,14 @@ public class BigLogic implements ActionListener {
             tdis.get(i).calculateRotationLimit();
         }
         refreshBackground();
+    }
+    
+    public void refreshIcons(){
+    	ArrayList<Icon> icons = new ArrayList<>();
+    	for(TDI tdi: tdis){
+    		icons.addAll(tdi.getIcons());
+    	}
+    	configLoader.updateConfig(icons);
     }
     
     public void refreshBackground(){
@@ -194,9 +175,9 @@ public class BigLogic implements ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server("192.168.43.12");
+            server = new Server(ip);
             int[] plsize={800,800,100};
-            server.setPlSize(plsize);
+            server.setPlSize(plsize);           
             tdis = server.fullPose();
             splitIcons();
             try{
@@ -223,7 +204,7 @@ public class BigLogic implements ActionListener {
                             newCommand(t);
                         }
                 }
-            }, 0, 1000);
+            }, 0, 500);
             // startTDI clicked
             if (e.getActionCommand().equals("Tutorial starten"))
                 new Thread(new TutorialLogic(tdis)).start();
@@ -276,14 +257,39 @@ public class BigLogic implements ActionListener {
 		return plugserv;
 	}
 	
+	private void calculateScale(){
+		scaleX = configLoader.loadScreensize().x/(playFieldMaxValues[0]-playFieldMinValues[0]);
+		scaleY = configLoader.loadScreensize().y/(playFieldMaxValues[1]-playFieldMinValues[1]);
+	}
+	
+	public void checkPlayGround(float[] position){
+		if(position[0] > playFieldMaxValues[0])
+			playFieldMaxValues[0] = position[0]; 
+		if(position[1] > playFieldMaxValues[1])
+			playFieldMaxValues[1] = position[1];
+		if(position[0] < playFieldMinValues[0])
+			playFieldMinValues[0] = position[0]; 
+		if(position[1] < playFieldMinValues[1])
+			playFieldMinValues[1] = position[1];	
+		calculateScale();
+	}
+	
 	public void newCommand(TDI command){
-		tilt.tilt(command); //Check whether the user exists inapp mode 
-		if(tdis.get(tdis.indexOf(command)).getState().equals(TDIState.inapp))
-			plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());
-		else
-		{
-			move.move(command);
-			rotation.rotate(command);
+		checkPlayGround(command.getPosition());
+		try{
+			tilt.tilt(command); //Checks whether the user exists inapp mode 
+			if(tdis.get(tdis.indexOf(command)).getState().equals(TDIState.inapp))
+				plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());
+			else
+			{
+				move.move(command);
+				rotation.rotate(command);
+			}
+		}catch(IndexOutOfBoundsException e){			
+			if(!tdis.contains(command)){
+				TDILogger.logInfo("New TDI detected by server");
+				tdis.add(command);
+			}
 		}
 	}
 }

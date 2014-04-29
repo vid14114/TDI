@@ -21,7 +21,6 @@ public class TiltHandler implements TiltListener {
 	 */
 	@Override
 	public void tiltedTDI(TiltEvent e) {
-		System.out.println("Tilt");
 		TDI tdi = big.getTdis().get(big.getTdis().indexOf(e.getTDI()));
 		switch (e.getRotation()) {
 		case up:			
@@ -36,6 +35,7 @@ public class TiltHandler implements TiltListener {
 	}
 	
 	private void tiltRight(TDI tdi) {
+		System.out.println("Tilt right");
 		if(tdi.isScale()){
 			for (TDI t : big.getTdis())
                 t.setIsScale(false);
@@ -62,6 +62,7 @@ public class TiltHandler implements TiltListener {
     }
 	
 	private void tiltLeft(TDI tdi) {
+		System.out.println("Tilt left");
         switch (tdi.getState()) {
             case taskbar:
                 ProgramHandler.closeAllPrograms();
@@ -87,6 +88,7 @@ public class TiltHandler implements TiltListener {
     }
 
     private void tiltUp(TDI tdi) {
+    	System.out.println("Tilt up");
         switch (tdi.getState()) {
             case taskbar:
                 ProgramHandler.restoreAllPrograms();
@@ -115,6 +117,7 @@ public class TiltHandler implements TiltListener {
     }
 
     private void tiltDown(TDI tdi) {
+    	System.out.println("Tilt down");
         switch (tdi.getState()) {
             case taskbar:
                 ProgramHandler.minimizeAllPrograms();

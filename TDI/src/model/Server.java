@@ -20,11 +20,12 @@ import view.TDI;
 public class Server {
     private static DataOutputStream send;
     private static DataInputStream read;
+    Socket client;
 
     public Server(String ip) {
         try {
             // Created a new socket which is bound to the port 12345
-            Socket client = new Socket(ip, 12435);
+            client = new Socket(ip, 12435);
             client.setKeepAlive(true);
             send = new DataOutputStream(client.getOutputStream());
             read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
@@ -33,13 +34,22 @@ public class Server {
         }
     }
 
-    public ArrayList<TDI> fullPose() {
+    /* (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		client.close();
+	}
+
+	public ArrayList<TDI> fullPose() {
         ArrayList<TDI> tdis = new ArrayList<TDI>();
         try {
             //send.writeByte(ACTOConst.WI_FULL_POSE);
             send.writeByte(ACTOConst.WI_GET_POSE);
             send.writeByte(49); //TUIO 1
-            byte ack = read.readByte();
+            read.readByte();
             read.mark(9);
             byte wi_msg = read.readByte();
             read.reset();
@@ -69,7 +79,7 @@ public class Server {
 
             send.writeByte(ACTOConst.WI_GET_POSE);
             send.writeByte(50); //TUIO 2
-            ack = read.readByte();
+            read.readByte();
             read.mark(9);
             wi_msg = read.readByte();
             read.reset();
@@ -114,7 +124,7 @@ public class Server {
             send.writeFloat((float) r.getQ0());
             send.writeFloat((float) r.getQ1());
             send.writeFloat((float) r.getQ2());
-            byte ack = read.readByte();
+            read.readByte();
         } catch (IOException e) {
         	TDILogger.logError(e.getMessage());
         }
@@ -170,7 +180,7 @@ public class Server {
             send.writeFloat(trans[0]);
             send.writeFloat(trans[1]);
             send.writeFloat(trans[2]);
-            byte ack = read.readByte();
+            read.readByte();
         } catch (IOException e) {
         	TDILogger.logError(e.getMessage());
         }

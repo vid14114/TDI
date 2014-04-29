@@ -11,7 +11,6 @@ public class RotationHandler implements RotationListener {
 
 	@Override
 	public void rotatedTDI(RotateEvent e) {
-		System.out.println("Rotate");
 		switch (e.getRotation()) {
 		case left:
 			rotateLeft(e.getTDI());
@@ -23,6 +22,7 @@ public class RotationHandler implements RotationListener {
 	}
 
 	private void rotateRight(TDI tdi) {
+		System.out.println("rotate right");
 		switch (tdi.getState()) {
 		case desktop:
 			tdi.rotateIconsClockwise();
@@ -37,6 +37,7 @@ public class RotationHandler implements RotationListener {
 	}
 
 	private void rotateLeft(TDI tdi) {
+		System.out.println("rotate left");
 		switch (tdi.getState()) {
 		case desktop:
 			tdi.rotateIconsCounterClockwise();

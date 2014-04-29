@@ -3,7 +3,9 @@ package model;
 import javax.swing.table.AbstractTableModel;
 
 public class PluginTableModel extends AbstractTableModel {
-    private final Object[][] rowData;
+	private static final long serialVersionUID = -6690022287132576741L;
+
+	private final Object[][] rowData;
 
     private final String[] columnNames = {"Plugin", "Activated"};
 
