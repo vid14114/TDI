@@ -194,7 +194,9 @@ public class BigLogic implements ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server("192.168.43.210");
+            server = new Server("192.168.43.12");
+            int[] plsize={800,800,100};
+            server.setPlSize(plsize);
             tdis = server.fullPose();
             splitIcons();
             tilt = new Tilt(tdis.get(0).getRotation());

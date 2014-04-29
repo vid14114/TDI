@@ -128,6 +128,49 @@ public class Server {
         	TDILogger.logError(e.getMessage());
         }
     }
+    
+    public void toggleGreenLED(byte id, byte state) {
+    	try {
+			send.writeByte(ACTOConst.WI_SET_EXT);
+			send.writeByte(ACTOConst.USB_SET_DI_UNIT);
+			send.writeByte(id);
+			send.writeByte((byte) 2);
+			send.writeByte(state);
+			read.readByte();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void toggleRedLED(byte id, byte state) {
+    	try {
+			send.writeByte(ACTOConst.WI_SET_EXT);
+			send.writeByte(ACTOConst.USB_SET_DI_UNIT);
+			send.writeByte(id);
+			send.writeByte((byte) 4);
+			send.writeByte(state);
+			read.readByte();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void toggleVibro(byte id, byte state) {
+    	try {
+			send.writeByte(ACTOConst.WI_SET_EXT);
+			send.writeByte(ACTOConst.USB_SET_DI_UNIT);
+			send.writeByte(id);
+			send.writeByte((byte) 5);
+			send.writeByte(state);
+			read.readByte();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
 
     public void setTrans(byte id, float[] trans) {
         try {
@@ -165,9 +208,9 @@ public class Server {
 			send.writeInt(size[0]);
 			send.writeInt(size[1]);
 	   		send.writeInt(size[2]);
+	   		byte ack=read.readByte();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    		
     }
 }

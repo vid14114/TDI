@@ -78,16 +78,19 @@ public class MusicDialog extends JDialog implements ActionListener{
 			//move right
 			if(x>this.x+compensation){
 				this.x=x;
+				System.out.println("mpc next");
 				Runtime.getRuntime().exec("mpc next");
 			}
 			//move left
 			if(x<this.x-compensation){
 				this.x=x;
+				System.out.println("mpc prev");
 				Runtime.getRuntime().exec("mpc prev");
 			}
 			//toggle
 			if(y>this.y+compensation){
 				this.y=y;
+				System.out.println("mpc toggle");
 				Runtime.getRuntime().exec("mpc toggle");
 			}
 		}
@@ -100,12 +103,15 @@ public class MusicDialog extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent actionPerformed) {
 		try {
 		if(actionPerformed.getSource() == previousButton){
+				System.out.println("mpc prev");
 				Runtime.getRuntime().exec("mpc prev");
 		}
 		if(actionPerformed.getSource() == nextButton){
+			System.out.println("mpc next");
 			Runtime.getRuntime().exec("mpc next");
 		}
 		if(actionPerformed.getSource() == togglePauseButton){
+			System.out.println("mpc toggle");
 			Runtime.getRuntime().exec("mpc toggle");
 		}
 		} catch (IOException e) {
