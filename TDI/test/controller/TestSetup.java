@@ -23,10 +23,11 @@ public class TestSetup {
 		System.out.println("before");
 		ArrayList<TDI> tdis=new ArrayList<>();
 		TDI t1=new TDI((byte) 49,100,100,100, new float[]{0,0,0});
+		TDI t2=new TDI((byte) 50,150,150,100, new float[]{0,0,0});
 		b=new BigLogic();
 		tdis.add(t1);
+		tdis.add(t2);
 		b.setTdis(tdis);
-		b.getTdis().add(new TDI((byte)50, 200, 200, 200, new float[]{0,0,0}));
 		b.splitIcons();
 		Tilt tilt = new Tilt(new float[]{0,0,0});
     	tilt.setTiltListener(new TiltHandler(b));    	
@@ -45,7 +46,6 @@ public class TestSetup {
 		//t.start();
 	}
 	
-	@Ignore
 	@Test
 	public void bRotateRightDesktop() throws InterruptedException {
 		System.out.println("right");
@@ -55,22 +55,26 @@ public class TestSetup {
 		Thread.sleep(1000);
 	}
 	
-	@Ignore
 	@Test
 	public void cRotateLeftDesktop() throws InterruptedException {
 		System.out.println("left");
 		TDI t2=new TDI((byte) 49,100,100,100, new float[]{-40,0,0});
 		b.newCommand(t2);
-		Thread.sleep(5000);
+		Thread.sleep(1000);
 	}
 	
-	@Ignore
 	@Test
-	public void dLockUnlock() throws InterruptedException{
+	public void dLock() throws InterruptedException{
 		System.out.println("lock");
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0, 0, -50}));
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0, 0, 0}));
 		Assert.assertEquals(true, b.getTdis().get(0).isLocked());
+		Thread.sleep(1000);
+	}
+	
+	@Test
+	public void dUnlock() throws InterruptedException
+	{
 		System.out.println("unlock");
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0, 0, -50}));
 		b.newCommand(new TDI((byte)49, 100, 100, 100, new float[]{0, 0, 0}));
@@ -106,7 +110,7 @@ public class TestSetup {
 		Thread.sleep(1000);
 	}
 	
-	
+	@Ignore
 	@Test
 	public void fMaximizeAndRestore() throws InterruptedException{
 		System.out.println("Maximize and restore program and move it");
@@ -178,7 +182,7 @@ public class TestSetup {
 	}
 	
 	@Ignore //Need other tests before this one, pls do :)
-	//@Test
+	@Test
 	public void zTutorial8() {
 		System.out.println("minimize");
 		b.getTdis().get(0).setState(TDIState.window);

@@ -98,19 +98,21 @@ public class TDIDialog extends JDialog implements ActionListener {
         
        
          JLabel picLabel = new JLabel(new ImageIcon(logo));
-         picLabel.setPreferredSize(new Dimension(30, 30));
+         picLabel.setPreferredSize(new Dimension(50, 30));
         header.add(picLabel, BorderLayout.NORTH);
         
         // add a text to the first "startup" page
         JPanel welcomePanel = new JPanel();
+        welcomePanel.setSize(500, 500);
         welcomePanel.setLayout(new BoxLayout(welcomePanel,BoxLayout.PAGE_AXIS));
         JTextArea welcomeText = new JTextArea();
-        welcomeText.setText("Welcome to the TDI application. To start the TDI application or to start the Tutorial click on the startbutton to the right! Have fun! ");
+        welcomeText.setText("Welcome to the TDI application. To start  the TDI application or to start the Tutorial click on the startbutton to the right! Have fun! ");
         welcomeText.setVisible(true);
-        welcomeText.setBounds(new Rectangle(new Dimension(30, 40)));
+        welcomeText.setBounds(new Rectangle(new Dimension(100, 100)));
         welcomeText.setLineWrap(true); // line breaks
         welcomeText.setAutoscrolls(true);
         welcomeText.setBorder(null);
+        welcomeText.setBackground(colorContent);
         
         // Placing buttons statically
         pluginButton.setPreferredSize(new Dimension(90, 30));
@@ -129,8 +131,11 @@ public class TDIDialog extends JDialog implements ActionListener {
         options.add(restoreButton);
         options.add(connectButton);
         
-        content.add(welcomeText);
-        content.add(Box.createRigidArea(new Dimension(450, 200)));
+        welcomePanel.add(welcomeText);
+        welcomePanel.add(Box.createRigidArea(new Dimension(450,0)));
+        content.add(welcomePanel);
+   //     content.add(Box.createRigidArea(new Dimension(450, 200)));
+        
         
         content.updateUI();
 
