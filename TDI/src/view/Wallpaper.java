@@ -9,6 +9,12 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
+/**
+ * Die Wallpaper Klasse repräsentiert das Wallpaper
+ * 
+ * @author TDI Team
+ */
+
 public class Wallpaper {
 
     /**

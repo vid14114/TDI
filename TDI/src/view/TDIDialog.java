@@ -27,6 +27,12 @@ import javax.swing.JTextField;
 
 import model.PluginTableModel;
 
+/**
+ * Die TDIDialog zeigt den Dialog an
+ * 
+ * @author TDI Team
+ */
+
 public class TDIDialog extends JDialog implements ActionListener {
 
     private static final long serialVersionUID = -1221054153637014114L;

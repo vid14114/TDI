@@ -1,5 +1,11 @@
 package main;
 
+/**
+ * Main Klasse enthaelt unsere Mainmethode diese Methode wird verwendet um den Rest aufzurufen.
+ * 
+ * @author TDI Team
+ */
+
 public class Main {
 
 	public static void main(String[] args) {

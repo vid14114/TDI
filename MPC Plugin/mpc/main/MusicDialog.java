@@ -11,6 +11,11 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Die MusicDialog Klasse zeigt den Dialog für die Musik an
+ * 
+ * @author TDI Team
+ */
 
 public class MusicDialog extends JDialog implements ActionListener{
 	/**
@@ -87,7 +92,7 @@ public class MusicDialog extends JDialog implements ActionListener{
 		previousButton.setText("Previous");
 		nextButton.setText("Next");
 		togglePauseButton.setText("Pause/Play");
-		musicLabel.setText("DJ Anil - Anihilate them!");
+		musicLabel.setText("Michael Jackson - Thriller");
 		
 		musicLabel.setHorizontalAlignment(JLabel.CENTER);
 		

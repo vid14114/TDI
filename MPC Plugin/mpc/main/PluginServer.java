@@ -11,6 +11,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+/**
+ * Der PluginServer kommuniziert mit dem TDI Programm
+ * 
+ * @author TDI Team
+ */
+
 public class PluginServer implements Runnable{
 
 	/**

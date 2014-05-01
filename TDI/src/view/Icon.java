@@ -2,6 +2,12 @@ package view;
 
 import java.awt.Point;
 
+/**
+ * Die Icon Klasse repräsentiert ein Icon
+ * 
+ * @author TDI Team
+ */
+
 public class Icon implements Comparable<Icon>{
 	/**
 	 * Name des Icons auf dem Desktop

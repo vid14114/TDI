@@ -8,8 +8,11 @@ import javax.swing.JTextArea;
 import javax.swing.JWindow;
 
 /**
- * @author abideen
+ * Die TutorialView Klasse zeigt das Tutorial an
+ * 
+ * @author TDI Team
  */
+
 public class TutorialView {
 	/**
 	 * Das Textfeld

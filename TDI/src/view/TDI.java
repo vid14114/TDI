@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Die TDI Klasse repräsentiert ein TDI
+ * 
+ * @author TDI Team
+ */
+
 public class TDI {
     
     /**
