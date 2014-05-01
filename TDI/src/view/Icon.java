@@ -9,7 +9,7 @@ public class Icon implements Comparable<Icon>{
 	private String name;
 	
 	/**
-	 * Der Pfad der benötigt wird um das Programm auszuführen
+	 * Der Pfad der benoetigt wird um das Programm auszufuehren
 	 */
 	private String[] execPath;
 	
@@ -51,14 +51,14 @@ public class Icon implements Comparable<Icon>{
 	}
 
     /**
-     * @return der Pfad zum ausführen des Programms
+     * @return der Pfad zum ausfuehren des Programms
      */
 	public String[] getExecPath() {
 		return execPath;
 	}
 
 	/**
-     * @param execPath das ist der Pfad zum ausführen des Programms auf den der derzeitige gesetzt wird
+     * @param execPath das ist der Pfad zum ausfuehren des Programms auf den der derzeitige gesetzt wird
      */
 	public void setExecPath(String[] execPath) {
 		this.execPath = execPath;

@@ -17,12 +17,12 @@ public class Wallpaper {
     private final BufferedImage background;
     
     /**
-     * Die größe des Panels
+     * Die groeße des Panels
      */
     private float panelSize;
     
     /**
-     * Das Verhältnis des Bildes zum Wallpaper etc.
+     * Das Verhaeltnis des Bildes zum Wallpaper etc.
      */
     private int ratio;
 
@@ -32,7 +32,7 @@ public class Wallpaper {
     private int realWidth;
     
     /**
-     * Die wahre Höhe
+     * Die wahre Hoehe
      */
     private int realHeight;
 
@@ -47,17 +47,17 @@ public class Wallpaper {
     private float scalingY;
     
     /**
-     * Die größe des Blocks der gezeichnet wird für jeden Icon
+     * Die groeße des Blocks der gezeichnet wird fuer jeden Icon
      */
     private int blockSize;
 
     /**
 	 * Konstruktor von TutorialView
 	 * @param background das Hintergrundbild
-	 * @param blockSize die Blockgröße
-	 * @param panelSize die Panelgröße
-	 * @param ratio das Verhältniss
-	 * @param screensize die größe des Bildschirms
+	 * @param blockSize die Blockgroeße
+	 * @param panelSize die Panelgroeße
+	 * @param ratio das Verhaeltniss
+	 * @param screensize die groeße des Bildschirms
 	 */
     public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio, Point screensize) {
         this.background = background;

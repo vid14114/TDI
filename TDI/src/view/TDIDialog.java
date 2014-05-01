@@ -32,7 +32,7 @@ public class TDIDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = -1221054153637014114L;
     
     /**
-     * Für Fehlermeldungen
+     * Fuer Fehlermeldungen
      */
     private final JTextField errorMessage = new JTextField();
     
@@ -95,7 +95,7 @@ public class TDIDialog extends JDialog implements ActionListener {
     private final JButton helpButton = new JButton("!S.O.S!");
     
     /**
-     * Der Knopf um Verbindungsinputfeld zu öffnen
+     * Der Knopf um Verbindungsinputfeld zu oeffnen
      */
     private final JButton connectButton = new JButton("Start");
     
@@ -111,22 +111,22 @@ public class TDIDialog extends JDialog implements ActionListener {
     
     
     /**
-     * Textfeld für den ersten Teil der IP
+     * Textfeld fuer den ersten Teil der IP
      */
     private final JTextField ip1 = new JTextField();
     
     /**
-     * Textfeld für den zweiten Teil der IP
+     * Textfeld fuer den zweiten Teil der IP
      */
     private final JTextField ip2 = new JTextField();
     
     /**
-     * Textfeld für den dritten Teil der IP
+     * Textfeld fuer den dritten Teil der IP
      */
     private final JTextField ip3 = new JTextField();
     
     /**
-     * Textfeld für den vierten Teil der IP
+     * Textfeld fuer den vierten Teil der IP
      */
     private final JTextField ip4 = new JTextField();
     
@@ -141,15 +141,15 @@ public class TDIDialog extends JDialog implements ActionListener {
     private final PluginTableModel pluginTableModel;
     
     /**
-     * Das Panel für das View wo man die IP eingibt
+     * Das Panel fuer das View wo man die IP eingibt
      */
     private final JPanel ipPanel = new JPanel(new FlowLayout());
 
     /**
 	 * Konstruktor TDIDialog
 	 * 
-	 * @param tdiActionListener der ActionListener für das View
-	 * @param pluginTableModel das TableModel für die Plugins
+	 * @param tdiActionListener der ActionListener fuer das View
+	 * @param pluginTableModel das TableModel fuer die Plugins
 	 */
     public TDIDialog(ActionListener tdiActionListener, PluginTableModel pluginTableModel) {
         super();
@@ -465,28 +465,28 @@ public class TDIDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * @return Gibt das erste IPfeld zurück
+     * @return Gibt das erste IPfeld zurueck
      */
     public JTextField getIp1() {
         return ip1;
     }
 
     /**
-     * @return Gibt das zweite IPfeld zurück
+     * @return Gibt das zweite IPfeld zurueck
      */
     public JTextField getIp2() {
         return ip2;
     }
 
     /**
-     * @return Gibt das dritte IPfeld zurück
+     * @return Gibt das dritte IPfeld zurueck
      */
     public JTextField getIp3() {
         return ip3;
     }
 
     /**
-     * @return Gibt das vierte IPfeld zurück
+     * @return Gibt das vierte IPfeld zurueck
      */
     public JTextField getIp4() {
         return ip4;

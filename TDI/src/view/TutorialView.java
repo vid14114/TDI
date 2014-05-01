@@ -33,7 +33,7 @@ public class TutorialView {
                 150, 0);
         w.setBackground(Color.GRAY);
         jt.setFont(new Font(null, Font.BOLD, 14));
-        jt.setText("Willkommen zum Tutorial.\n Hier erfahren Sie, wie du die TDIs zum Steuern des Desktops und den Programmen nutzen kannst.Bitte warten Sie, während das Tutorial wird geladen");
+        jt.setText("Willkommen zum Tutorial.\n Hier erfahren Sie, wie du die TDIs zum Steuern des Desktops und den Programmen nutzen kannst.Bitte warten Sie, waehrend das Tutorial wird geladen");
         jt.setLineWrap(true);
         w.add(jt);
 

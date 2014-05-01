@@ -7,12 +7,13 @@ import java.util.List;
 public class TDI {
     
     /**
+     * ü ä ö
      * Identifiert das TDI
 	 */
 	private byte id;
 	
 	/**
-	 * Eine Liste der Icons für die das TDI zuständig ist
+	 * Eine Liste der Icons fuer die das TDI zustaendig ist
 	 */
     private ArrayList<Icon> icons;
     
@@ -32,7 +33,7 @@ public class TDI {
     private boolean moving;
     
     /**
-	 * @return gibt zurück ob sich das TDI bewegt
+	 * @return gibt zurueck ob sich das TDI bewegt
 	 */
 	public boolean isMoving() {
 		return moving;
@@ -107,7 +108,7 @@ public class TDI {
 	}
 	
 	/**
-	 * @return gibt zurück ob es gelocked ist
+	 * @return gibt zurueck ob es gelocked ist
 	 */
 	public boolean isLocked()
 	{
@@ -115,7 +116,7 @@ public class TDI {
 	}
 	
 	/**
-	 * @return gibt zurück ob es am skalieren ist
+	 * @return gibt zurueck ob es am skalieren ist
 	 */
 	public boolean isScale()
 	{
@@ -123,7 +124,7 @@ public class TDI {
 	}
 	
 	/**
-	 * @return gibt zurück ob es skaliert ist
+	 * @return gibt zurueck ob es skaliert ist
 	 */
 	public void setIsScale(boolean scale)
 	{
@@ -138,7 +139,7 @@ public class TDI {
 	}
 
 	/**
-	 * @return gibt die Rotation zurück
+	 * @return gibt die Rotation zurueck
 	 */
 	public float[] getRotation() {
 		return rotation;
@@ -152,7 +153,7 @@ public class TDI {
 	}
 
     /**
-     * Wählt das nächste Icon aus
+     * Waehlt das naechste Icon aus
      */
     public void rotateIconsClockwise() {
         Icon temp = icons.get(0);
@@ -161,7 +162,7 @@ public class TDI {
     }
 
     /**
-     * Wählt das vorherige Icon aus
+     * Waehlt das vorherige Icon aus
      */
     public void rotateIconsCounterClockwise() {
         Icon temp = icons.get(icons.size() - 1);
@@ -177,7 +178,7 @@ public class TDI {
     }
 
     /**
-	 * @return gibt die ID zurück
+	 * @return gibt die ID zurueck
 	 */
     public byte getId() {
         return id;
@@ -191,7 +192,7 @@ public class TDI {
     }
 
     /**
-	 * @return gibt die Icons zurück
+	 * @return gibt die Icons zurueck
 	 */
     public ArrayList<Icon> getIcons() {
         return icons;
@@ -205,7 +206,7 @@ public class TDI {
     }
 
     /**
-	 * @return gibt die Beschreibung der Klasse in einer leserlcihen Form zurück
+	 * @return gibt die Beschreibung der Klasse in einer leserlichen Form zurueck
 	 */
     @Override
     public String toString() {
@@ -219,7 +220,7 @@ public class TDI {
 
     /**
      * @param obj das Objekt mit dem verglichen wird
-	 * @return gibt zurück ob die Objekte gleich sind
+	 * @return gibt zurueck ob die Objekte gleich sind
 	 */
     @Override
     public boolean equals(Object obj) {
@@ -234,14 +235,14 @@ public class TDI {
     }
 
     /**
-     *Definiert das enum für die states
+     *Definiert das enum fuer die states
      */
     public enum TDIState {
         inapp, desktop, taskbar, window, sleep
     }
 
     /**
-	 * @return gibt das Limit der Rotation zurück
+	 * @return gibt das Limit der Rotation zurueck
 	 */
 	public float getRotationLimit() {
 		return rotationLimit;
