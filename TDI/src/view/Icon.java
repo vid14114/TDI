@@ -4,62 +4,75 @@ import java.awt.Point;
 
 public class Icon implements Comparable<Icon>{
 	/**
-	 * Name of the icon
+	 * Name des Icons auf dem Desktop
 	 */
 	private String name;
+	
 	/**
-	 * The execution path to the program.
+	 * Der Pfad der benötigt wird um das Programm auszuführen
 	 */
 	private String[] execPath;
+	
 	/**
-	 * The position of the icon on the desktop
+	 * Die Position des Icons auf dem Desktop
 	 */
 	private Point position;
 
 	/**
-	 * Command to mount removable drives
+	 * Der Befehl um entfernbare Platten zu mounten
 	 */
 	private String[] mountCmd;
 
 	/**
-	 * Constructor of icon
+	 * Konstruktor von Icon
 	 * 
-	 * @param name
-	 * @param position
+	 * @param name Name des Icons
+	 * @param position die Position auf dem Desktop
 	 */
 	public Icon(String name, Point position) {
 		setName(name);
 		setPosition(position);
 	}
 
+	 /**
+     * @return der Name
+     */
 	public String getName() {
 		return name;
 	}
 
+	/**
+     * @param name das ist der Name des Icons auf den der derzeitige gesetzt wird
+     */
     void setName(String name) {
         if (name == null)
             return;
 		this.name = name;
 	}
 
+    /**
+     * @return der Pfad zum ausführen des Programms
+     */
 	public String[] getExecPath() {
 		return execPath;
 	}
 
+	/**
+     * @param execPath das ist der Pfad zum ausführen des Programms auf den der derzeitige gesetzt wird
+     */
 	public void setExecPath(String[] execPath) {
 		this.execPath = execPath;
 	}
 
 	/**
-	 * @return the position
+	 * @return die Position des Icons
 	 */
 	public Point getPosition() {
 		return position;
 	}
 
 	/**
-	 * @param position
-	 *            the position to set
+	 * @param position das ist die Position auf die der derzeitige gesetzt wird
 	 */
     public void setPosition(Point position) {
         if (position == null)
@@ -67,17 +80,22 @@ public class Icon implements Comparable<Icon>{
 		this.position = position;
 	}
 
+    /**
+	 * @return der Pfad zum mounten
+	 */
 	public String[] getMountPath() {
 		return mountCmd;
 	}
 
+	/**
+	 * @param mountCmd das ist der Pfad zum Mounten auf den der derzeitige gesetzt wird
+	 */
 	public void setMountCmd(String[] mountCmd) {
 		this.mountCmd = mountCmd;
 	}
 
 	/**
-	 * The equals method only checks whether the name is equal all other
-	 * attributes are ignored
+	 * Diese Methode kontrolliert ob die Namen gleich sind, alles andere wird ignoriert
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -91,6 +109,9 @@ public class Icon implements Comparable<Icon>{
         return name.equals(other.name);
     }
 
+	/**
+	 * Vergleicht 2 Icons miteinander
+	 */
 	@Override
 	public int compareTo(Icon i) {
         return ((position.x - i.position.x) * 1000) + position.y - i.position.y;

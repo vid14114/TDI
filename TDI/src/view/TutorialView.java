@@ -11,9 +11,18 @@ import javax.swing.JWindow;
  * @author abideen
  */
 public class TutorialView {
+	/**
+	 * Das Textfeld
+	 */
     private final JTextArea jt;
+    /**
+	 * Das Fenster
+	 */
     private final JWindow w;
 
+    /**
+	 * Konstruktor von TutorialView
+	 */
     public TutorialView() {
         //Initialize a window and a textfield
         w = new JWindow();
@@ -32,6 +41,9 @@ public class TutorialView {
         w.setAlwaysOnTop(true);
     }
 
+    /**
+	 * @param text das ist der Text auf den der derzeitige gesetzt wird
+	 */
     public void setText(String text) {
         jt.setText(text);
         w.repaint();

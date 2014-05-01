@@ -12,23 +12,53 @@ import java.util.ArrayList;
 public class Wallpaper {
 
     /**
-     * The image of the wallpaper
+     * Das Bild des Wallpapers
      */
     private final BufferedImage background;
+    
     /**
-     * The block size of each icon
+     * Die größe des Panels
      */
     private float panelSize;
+    
+    /**
+     * Das Verhältnis des Bildes zum Wallpaper etc.
+     */
     private int ratio;
 
+    /**
+     * Die wahre Breite
+     */
     private int realWidth;
+    
+    /**
+     * Die wahre Höhe
+     */
     private int realHeight;
 
+    /**
+     * Die Skalierung der X-Achse
+     */
     private float scalingX;
+    
+    /**
+     * Die Skalierung der Y-Achse
+     */
     private float scalingY;
     
+    /**
+     * Die größe des Blocks der gezeichnet wird für jeden Icon
+     */
     private int blockSize;
 
+    /**
+	 * Konstruktor von TutorialView
+	 * @param background das Hintergrundbild
+	 * @param blockSize die Blockgröße
+	 * @param panelSize die Panelgröße
+	 * @param ratio das Verhältniss
+	 * @param screensize die größe des Bildschirms
+	 */
     public Wallpaper(BufferedImage background, int blockSize, int panelSize, int ratio, Point screensize) {
         this.background = background;
         this.ratio = ratio;
@@ -41,12 +71,7 @@ public class Wallpaper {
     }
 
     /**
-     * Marks the area of the tdi with the specified color.
-     * <p>
-     * As parameters we give the array of ids (for the tdis) and the hashtable
-     * of selected icons.
-     *
-     * @param colorAreas The TDIs with their icons, and we will generate the markedArea
+     * @param colorAreas Die TDIs die markiert werden
      */
     public BufferedImage markArea(ArrayList<TDI> colorAreas) {
         BufferedImage b = deepCopy(background);
@@ -105,6 +130,11 @@ public class Wallpaper {
         return b;
     }
     
+    /**
+     * 
+     * @param bi das Bild
+     * @return macht eine deep copy
+     */
     static BufferedImage deepCopy(BufferedImage bi) {
     	 ColorModel cm = bi.getColorModel();
     	 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();

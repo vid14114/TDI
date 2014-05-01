@@ -13,14 +13,36 @@ import java.nio.ByteBuffer;
 
 public class PluginServer implements Runnable{
 
-	
+	/**
+	 * Der Client
+	 */
 	private Socket client;
+	
+	/**
+	 * Das was geschickt wird
+	 */
 	private static DataOutputStream send;
+	
+	/**
+	 * Das was empfangen wird
+	 */
 	private static DataInputStream read;
+	
+	/**
+	 * Die ip
+	 */
 	String ip ="127.0.0.1";
+	
+	/**
+	 * Der Dialog
+	 */
 	MusicDialog m;
 	byte[] by = new byte[4];
 
+	/**
+	 * Konstruktor des PluginServers
+	 * @param m der MusicDialog
+	 */
 	public PluginServer(MusicDialog m){
 		this.m = m;
 		try {
@@ -36,6 +58,9 @@ public class PluginServer implements Runnable{
 	}
 
 
+	/**
+	 * Empfängt permanent Informationen und gibt sie dem Dialog weiter
+	 */
 	@Override
 	public void run() {
 		try{

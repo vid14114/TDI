@@ -13,16 +13,54 @@ import javax.swing.JPanel;
 
 
 public class MusicDialog extends JDialog implements ActionListener{
+	/**
+	 * Der Knopf um das vorherige Lied abzuspielen
+	 */
 	JButton previousButton = new JButton();
+	
+	/**
+	 * Der Knopf um das nächste Lied abzuspielen
+	 */
 	JButton nextButton = new JButton();
+	
+	/**
+	 * Der Knopf um zu pausieren und weiter zu spielen
+	 */
 	JButton togglePauseButton = new JButton();
+	
+	/**
+	 * Das Lied das gerade spielt
+	 */
 	JLabel musicLabel = new JLabel();
 	
+	/**
+	 * Die ID des TDIs
+	 */
 	float id;
+	
+	/**
+	 * X-Positon des TDIs
+	 */
 	float x;
+	
+	/**
+	 * Y-Position des TDIs
+	 */
 	float y;
+	
+	/**
+	 * Z-Position des TDIs
+	 */
 	float z;
+	
+	/**
+	 * Die Kompensation damit nicht jede kleinste Bewegung als Befehl zählt
+	 */
 	int compensation;
+	
+	/**
+	 * Der Musikdialog
+	 */
 	public MusicDialog(){
 		super();
 		id=-1;
@@ -39,6 +77,9 @@ public class MusicDialog extends JDialog implements ActionListener{
 		setResizable(false);
 	}
 	
+	/**
+	 * @return der Inhalt das MusikDialogs
+	 */
 	public JPanel musicPane(){
 		JPanel main = new JPanel();
 		main.setLayout(new BorderLayout());
@@ -65,6 +106,13 @@ public class MusicDialog extends JDialog implements ActionListener{
 		return main;
 	}
 	
+	/**
+	 * Schaut ob sich das TDI bewegt
+	 * @param id um das TDi zu identifizieren
+	 * @param x die neue X-Position
+	 * @param y die neue Y-Position
+	 * @param z die neue Z-Position
+	 */
 	public void TDIMoved(float id,float x,float y,float z){
 		if(this.id==-1){
 			this.id=id;
@@ -99,6 +147,9 @@ public class MusicDialog extends JDialog implements ActionListener{
 		}
 	}
 
+	/**
+	 * Falls ein Knopf gedrückt wird
+	 */
 	@Override
 	public void actionPerformed(ActionEvent actionPerformed) {
 		try {

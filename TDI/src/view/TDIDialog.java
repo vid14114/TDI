@@ -30,52 +30,145 @@ import model.PluginTableModel;
 public class TDIDialog extends JDialog implements ActionListener {
 
     private static final long serialVersionUID = -1221054153637014114L;
-    // for errorMessages
+    
+    /**
+     * Für Fehlermeldungen
+     */
     private final JTextField errorMessage = new JTextField();
-    //test
-    // background colors
+    
+    /**
+     * Farbe des Inhalts  
+     */
     private final Color colorContent = new Color(240, 248, 255);
+    
+    /**
+     * Farbe der Kopfzeile
+     */
     private final Color colorHeader = new Color(240, 248, 255);
+    
+    /**
+     * Farbe der Optionen  
+     */
     private final Color colorOptions = new Color(240, 248, 255);
+    
+    /**
+     * Farbe des Vordergrundes 
+     */
     private final Color foregroundColor = new Color(1);
+    
+    /**
+     * das Hauptpanel 
+     */
     private final JPanel main = new JPanel();
+    
+    /**
+     * das Kopfzeilenpanel
+     * es ist im Hauptpanel
+     */
     private final JPanel header = new JPanel();
+    
+    /**
+     * das Inhaltspanel
+     * es ist im Hauptpanel
+     */
     private final JPanel content = new JPanel();
+    
+    /**
+     * das Optionenpanel
+     * es ist im Hauptpanel
+     */
     private final JPanel options = new JPanel();
-    // Creating buttons
+    
+    /**
+     * Der Knopf um Pluginview aufzurufen
+     */
     private final JButton pluginButton = new JButton("Plugins");
+    
+    /**
+     * Der Knopf um Restoreview aufzurufen
+     */
     private final JButton restoreButton = new JButton("Restore");
+    
+    /**
+     * Der Knopf um Helpview aufzurufen
+     */
     private final JButton helpButton = new JButton("!S.O.S!");
-    private final JButton connectButton = new JButton("Start");// button to open ip input field
-    private final JButton startTDI = new JButton("start TDI");// button to start actual program
+    
+    /**
+     * Der Knopf um Verbindungsinputfeld zu öffnen
+     */
+    private final JButton connectButton = new JButton("Start");
+    
+    /**
+     * Der Knopf um das Programm zu starten
+     */
+    private final JButton startTDI = new JButton("start TDI");
+    
+    /**
+     * Der Knopf um das Tutorial zu starten
+     */
     private final JButton startTutorialButton = new JButton("Tutorial starten");
-    // creating textbox for ip-insert
+    
+    
+    /**
+     * Textfeld für den ersten Teil der IP
+     */
     private final JTextField ip1 = new JTextField();
+    
+    /**
+     * Textfeld für den zweiten Teil der IP
+     */
     private final JTextField ip2 = new JTextField();
+    
+    /**
+     * Textfeld für den dritten Teil der IP
+     */
     private final JTextField ip3 = new JTextField();
+    
+    /**
+     * Textfeld für den vierten Teil der IP
+     */
     private final JTextField ip4 = new JTextField();
+    
+    /**
+     * Der Actionlistener
+     */
     private final ActionListener actionListener;
+    
+    /**
+     * Das Model mit den Plugins
+     */
     private final PluginTableModel pluginTableModel;
-    // Panel used for onConnect ip insertion
+    
+    /**
+     * Das Panel für das View wo man die IP eingibt
+     */
     private final JPanel ipPanel = new JPanel(new FlowLayout());
 
-
+    /**
+	 * Konstruktor TDIDialog
+	 * 
+	 * @param tdiActionListener der ActionListener für das View
+	 * @param pluginTableModel das TableModel für die Plugins
+	 */
     public TDIDialog(ActionListener tdiActionListener, PluginTableModel pluginTableModel) {
         super();
-        setTitle("Tangible Desktop Items"); //TODO Must be changed
+        setTitle("Tangible Desktop Items");
         setSize(600, 600);
         setLocation(400, 200);
         this.actionListener = tdiActionListener;
         this.pluginTableModel = pluginTableModel;
         setContentPane(onWelcome());
         setVisible(true);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);//TODO smt. not working
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
     }
 
+    /**
+     * Setzt den Content auf den Welcomepanel
+     */
     JPanel onWelcome() {
         main.setLayout(new BorderLayout());
-
         // Changing options of the panels
         header.setSize(600, 100);
         header.setLocation(0, 0);
@@ -147,9 +240,9 @@ public class TDIDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * Shows help-information
+     * Setzt den Content auf den Helppanel
      */
-    void onHelp() { // Maria
+    void onHelp() {
 
         // clear panel
         content.removeAll();
@@ -191,10 +284,9 @@ public class TDIDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * Initializes 4 input Fields separated by dots to enter the users IP and a
-     * Button to start the connection
+     * Setzt den Content auf den Connectpanel
      */
-    void onConnect() { // Maria
+    void onConnect() {
 
         // clear panel
         content.removeAll();
@@ -325,13 +417,16 @@ public class TDIDialog extends JDialog implements ActionListener {
         ipPanel.updateUI();
     }
 
+    /**
+     * @param message das ist die Errormessage die die derzeitige gesetzt wird
+     */
     public void setErrorMessage(String message) {
         errorMessage.setText(message);
         ipPanel.updateUI();
     }
 
     /**
-     * Opens the onPlugin button
+     * Setzt den Content auf den Pluginpanel
      */
     void onPlugin() {
 
@@ -348,6 +443,9 @@ public class TDIDialog extends JDialog implements ActionListener {
         content.updateUI();
     }
 
+    /**
+     * @param actionPerformed diese Methode wird bei einer Aktion aufgerufen und actionPerfomed gibt dabei an welche Aktion
+     */
     @Override
     public void actionPerformed(ActionEvent actionPerformed) {
         // pluginButton clicked
@@ -367,28 +465,28 @@ public class TDIDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * @return the ip1
+     * @return Gibt das erste IPfeld zurück
      */
     public JTextField getIp1() {
         return ip1;
     }
 
     /**
-     * @return the ip2
+     * @return Gibt das zweite IPfeld zurück
      */
     public JTextField getIp2() {
         return ip2;
     }
 
     /**
-     * @return the ip3
+     * @return Gibt das dritte IPfeld zurück
      */
     public JTextField getIp3() {
         return ip3;
     }
 
     /**
-     * @return the ip4
+     * @return Gibt das vierte IPfeld zurück
      */
     public JTextField getIp4() {
         return ip4;
