@@ -100,7 +100,6 @@ public class Server {
                 rot[2] = (float) ((float) angles[2] * 180 / Math.PI);
                 if (x != 0) {
                     TDI t = new TDI(id, x, y, z, rot);
-                    System.out.println(t.toString());
                     tdis.add(t);
                 }
                 read.mark(9);
@@ -125,9 +124,13 @@ public class Server {
             send.writeFloat((float) r.getQ1());
             send.writeFloat((float) r.getQ2());
             read.readByte();
+            Thread.sleep(2000);
         } catch (IOException e) {
         	TDILogger.logError(e.getMessage());
-        }
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void toggleGreenLED(byte id, byte state) {
@@ -135,7 +138,7 @@ public class Server {
 			send.writeByte(ACTOConst.WI_SET_EXT);
 			send.writeByte(ACTOConst.USB_SET_DI_UNIT);
 			send.writeByte(id);
-			send.writeByte((byte) 2);
+			send.writeByte((byte) 5);
 			send.writeByte(state);
 			read.readByte();
 		} catch (IOException e) {
@@ -163,7 +166,7 @@ public class Server {
 			send.writeByte(ACTOConst.WI_SET_EXT);
 			send.writeByte(ACTOConst.USB_SET_DI_UNIT);
 			send.writeByte(id);
-			send.writeByte((byte) 5);
+			send.writeByte((byte) 2);
 			send.writeByte(state);
 			read.readByte();
 		} catch (IOException e) {

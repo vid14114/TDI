@@ -275,7 +275,7 @@ public class ConfigLoader {
             for (String line : plugins)
                 bw.write(line + "\n");
             bw.close();
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             TDILogger.logError("Error writing to "
                     + TDIDirectories.TDI_PREFERENCE);
         }

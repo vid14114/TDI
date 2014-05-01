@@ -44,7 +44,7 @@ public class TiltHandler implements TiltListener {
         switch (tdi.getState()) {
             case desktop:
                 tdi.toggleLock();
-                //TODO toggle green LED
+                big.getServer().toggleGreenLED(tdi.getId(), (byte)1);
                 break;
             case taskbar:
                 ProgramHandler.closeAllPrograms();                
@@ -105,11 +105,7 @@ public class TiltHandler implements TiltListener {
                 }
                 break;
             case window:
-                ProgramHandler.toggleMaximization();//
-                if (ProgramHandler.getNonMinimized() == 0) {
-                    tdi.setState(TDIState.desktop);
-                    big.splitIcons();
-                }
+                ProgramHandler.toggleMaximization();
                 break;
 		default:
 			break;

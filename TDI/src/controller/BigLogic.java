@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JOptionPane;
+
 import model.ConfigLoader;
 import model.PluginServer;
 import model.PluginTableModel;
@@ -82,10 +85,11 @@ public class BigLogic implements ActionListener {
     }
     
     public float getTaskbarLocation(){
-    	return playFieldMaxValues[0]/0.9f;
+    	System.out.println(playFieldMaxValues[0]*0.9f);
+    	return playFieldMaxValues[0]*0.9f;
     }
            
-    public boolean checkMovedToTaskbar(float position){    	
+    public boolean checkMovedToTaskbar(float position){  
     	if(position > getTaskbarLocation()) 
     		return true;
     	return false;
@@ -150,8 +154,10 @@ public class BigLogic implements ActionListener {
     }
     
     public void refreshBackground(){
+    	try{
     	Executor.saveBackground(getWallpaper().markArea(
 				getTdis()));
+    	}catch(NullPointerException e){}
     }
 
     @Override
@@ -175,14 +181,19 @@ public class BigLogic implements ActionListener {
                     configLoader.savePlugins(plugins);
                 }
             }.run();
-            server = new Server(ip);
-            int[] plsize={800,800,100};
-            server.setPlSize(plsize);           
-            tdis = server.fullPose();
-            splitIcons();
+            server = new Server("192.168.43.128");            
             try{
+            	server.setPlSize(new int[]{800,800,100});           
+                tdis = server.fullPose();	
+            }catch(NullPointerException e1){
+            	JOptionPane.showMessageDialog(null, "Could not connect to server");
+            	return;
+            }            
+            splitIcons();
+            try{            	
             	tilt = new Tilt(tdis.get(0).getRotation());
             	tilt.setTiltListener(new TiltHandler(this));
+            	
             }catch(IndexOutOfBoundsException e1){
             	tilt = new Tilt(new float[]{0,0,0});
             	tilt.setTiltListener(new TiltHandler(this));
@@ -277,6 +288,14 @@ public class BigLogic implements ActionListener {
 	public void newCommand(TDI command){
 		checkPlayGround(command.getPosition());
 		try{
+			if(tdis.get(tdis.indexOf(command)).isMoving())
+			{
+				TDI tdi = tdis.get(tdis.indexOf(command));
+				if(move.moveChanged(tdi.getPosition()[0], command.getPosition()[0]) || move.moveChanged(tdi.getPosition()[1], command.getPosition()[1]))
+					return;
+				else
+					tdi.setMoving(false);
+			}			
 			tilt.tilt(command); //Checks whether the user exists inapp mode 
 			if(tdis.get(tdis.indexOf(command)).getState().equals(TDIState.inapp))
 				plugserv.sendMessage(command.getId(), command.getPosition(), command.getRotation());

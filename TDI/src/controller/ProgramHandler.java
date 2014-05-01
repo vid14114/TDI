@@ -2,6 +2,7 @@ package controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import model.TDILogger;
@@ -220,12 +221,12 @@ class ProgramHandler {
      */
     public static void toggleMaximization() {
         if (runningPrograms.size() == 0 || desktopMode) return;
-        try {
-            Runtime.getRuntime().exec(
+        try {            
+        	InputStreamReader bf = new InputStreamReader(Runtime.getRuntime().exec(
                     new String[]{"wmctrl", "-i", "-r",
-                            getFocusedWindow(), "-b", "toggle,",
-                            "maximized_vert,", "maximized_horz"}
-            );
+                            getFocusedWindow(), "-b", "toggle,maximized_vert,maximized_horz"}).getErrorStream());
+        	BufferedReader bf2 = new BufferedReader(bf);
+        	while (bf2.ready()) System.out.println(bf2.readLine());
         } catch (IOException e) {
             e.printStackTrace();
         }

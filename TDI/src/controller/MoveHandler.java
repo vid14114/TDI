@@ -2,12 +2,14 @@ package controller;
 import java.awt.Point;
 
 import model.ConfigLoader;
+import model.Server;
 import view.TDI;
 import view.TDI.TDIState;
 
 public class MoveHandler implements MoveListener{
 	BigLogic bigLogic;
 	TDI scaleTDI;
+	float compensation = 20;
 	
 	public MoveHandler(BigLogic bigLogic){
 		this.bigLogic = bigLogic;
@@ -35,20 +37,45 @@ public class MoveHandler implements MoveListener{
     }
 
 	
+    public boolean moveChanged(float oldPos, float newPos){		
+		if(oldPos + compensation < newPos || oldPos-compensation > newPos)
+			return true;
+		return false;
+	}
+    
 	@Override
-	public void movedTDI(TDI tdi) {		
-		if(tdi.isScale()){
-			moveScaleMode(tdi);
+	public void movedTDI(TDI command) {
+		TDI current = bigLogic.getTdis().get(bigLogic.getTdis().indexOf(command));		
+		
+		if(current.getState().equals(TDIState.desktop) && !current.isLocked() && ProgramHandler.getRunningPrograms().size() == 0 
+				&& (moveChanged(current.getPosition()[0], command.getPosition()[0]) || moveChanged(current.getPosition()[1], command.getPosition()[1]))){
+			current.setMoving(true);
+			bigLogic.getServer().setPose(current.getId(), current.getPosition(), current.getRotation());
+			return;
+		}			
+		
+		if(current.isScale()){
+			current.setPosition(command.getPosition());
+			moveScaleMode(current);
 			return;
 		}
-		if(startScaleMode(tdi)) return;
-		switch (tdi.getState()) {
-		case desktop: moveDesktopMode(tdi); break;
-		case window: moveWindowMode(tdi); break;
+		if(startScaleMode(current)){
+			current.setPosition(command.getPosition());
+			return;
+		}
+		switch (current.getState()) {
+		case desktop: 
+			if(current.isLocked()){
+				current.setPosition(command.getPosition());
+				moveDesktopMode(current);				
+			}break;
+		case window: 
+			current.setPosition(command.getPosition());
+			moveWindowMode(current); break;
 		case taskbar:
-			bigLogic.getServer().setPose(tdi.getId(), new float[]{bigLogic.getTaskbarLocation(), tdi.getPosition()[1], tdi.getPosition()[2]},  tdi.getRotation());			
+			bigLogic.getServer().setPose(current.getId(), new float[]{bigLogic.getTaskbarLocation(), current.getPosition()[1], current.getPosition()[2]},  current.getRotation());			
             break;		
-		case sleep: moveSleepMode(tdi); break;
+		case sleep: moveSleepMode(current); break;
 		default:
 			break;          
 		}
@@ -62,25 +89,27 @@ public class MoveHandler implements MoveListener{
             tdi.setState(TDIState.desktop);
 	}
 	
-	private void moveDesktopMode(TDI tdi){
-		System.out.println("Move desktop");
-		if(!tdi.isLocked() && ProgramHandler.getRunningPrograms().size() == 0)
-			bigLogic.getServer().setPose(tdi.getId(), tdi.getPosition(), tdi.getRotation());
-		if(tdi.isLocked()){
+	private void moveDesktopMode(TDI tdi){			
+		if(tdi.isLocked()){			
+			System.out.println("Desktop MOde enter");
 			if(bigLogic.checkMovedToTaskbar(tdi.getPosition()[0])){
 				ProgramHandler.openProgram(tdi.getIcons().get(0));
 				tdi.setRotationLimit((360/ProgramHandler.getRunningPrograms().size())/2);
 				tdi.toggleLock();
+				bigLogic.getServer().toggleGreenLED(tdi.getId(), (byte)13);
 				if(bigLogic.emptyTaskbar()){	
 					tdi.setState(TDIState.taskbar);					
 					tdi = bigLogic.getTdis().get((bigLogic.getTdis().indexOf(tdi)+1)%2);
 				}
 				tdi.setState(TDIState.inapp);
 				float[] position = Executor.getWindowPosition();
-				tdi.setPosition(new float[]{position[0]/bigLogic.scaleX,position[1]/bigLogic.scaleX,0});
+				tdi.setPosition(new float[]{position[0]/bigLogic.scaleX,position[1]/bigLogic.scaleY,0});
+				tdi.setRotation(new float[]{0,0,0});
+				tdi.setMoving(true);
+				bigLogic.getServer().setPose(tdi.getId(), tdi.getPosition(), tdi.getRotation());
 			}else{
-				int row = ((int)tdi.getPosition()[0]*(int)bigLogic.scaleX)/ConfigLoader.blockSize;
-				int col = ((int)tdi.getPosition()[1]*(int)bigLogic.scaleY)/ConfigLoader.blockSize;
+				int row = (int) ((bigLogic.playFieldMaxValues[0] - (int)tdi.getPosition()[0]*(int)bigLogic.scaleX)/ConfigLoader.blockSize);
+				int col = (int) (( bigLogic.playFieldMaxValues[1] - (int)tdi.getPosition()[1]*(int)bigLogic.scaleY)/ConfigLoader.blockSize);
 				tdi.getIcons().get(0).setPosition(new Point(row, col));
 				bigLogic.refreshIcons();
 			}
@@ -91,7 +120,7 @@ public class MoveHandler implements MoveListener{
 		ProgramHandler.moveProgram((int)tdi.getPosition()[0]*(int)bigLogic.scaleX, (int)tdi.getPosition()[1]*(int)bigLogic.scaleY);
 	}
 	
-  private void moveScaleMode(TDI tdi) {//Exit through right tilting
+  private void moveScaleMode(TDI tdi) {
 	  if(tdi.equals(scaleTDI)) return;
 	  ProgramHandler.resizeProgram((int)Math.abs(scaleTDI.getPosition()[0] - tdi.getPosition()[0]),(int) Math.abs(scaleTDI.getPosition()[1] - tdi.getPosition()[1]));	  
   }

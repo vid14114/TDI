@@ -8,15 +8,16 @@ import view.TDI.TDIState;
 public class Move {
 	private MoveListener moveListener;
 	private ArrayList<TDI> tdis;
-	private boolean[] moveFlags;	
-	static final int compensation = 5; 
+	private boolean[] moveFlags;
+	private float[][] oldPos = new float[2][3];
+	static final int compensation = 20; 
 	
 	public Move(ArrayList<TDI> tdis){
 		this.tdis = tdis;
 		moveFlags = new boolean[2];
 	}
 	
-	private boolean moveChanged(float oldPos, float newPos){
+	public boolean moveChanged(float oldPos, float newPos){
 		if(oldPos + compensation < newPos || oldPos-compensation > newPos)
 			return true;
 		return false;
@@ -34,23 +35,20 @@ public class Move {
 		TDI currentTDI = tdis.get(tdis.indexOf(command));		
 		if(currentTDI.getState().equals(TDIState.window) || currentTDI.isScale()){
 			currentTDI.setPosition(command.getPosition());
-			moved(currentTDI);
+			moved(command);
 			return;
 		}
 		if(moveFlags[tdis.indexOf(command)]){ //Currently being moved			
-			if(moveChanged(currentTDI.getPosition()[0], command.getPosition()[0]) || moveChanged(currentTDI.getPosition()[1], command.getPosition()[1]))
-				currentTDI.setPosition(command.getPosition());
+			if(moveChanged(oldPos[tdis.indexOf(command)][0], command.getPosition()[0]) || moveChanged(oldPos[tdis.indexOf(command)][1], command.getPosition()[1]))
+				oldPos[tdis.indexOf(command)] = command.getPosition();				
 			else{
 				moveFlags[tdis.indexOf(command)] = false;
-				currentTDI.setPosition(command.getPosition());
-				moved(currentTDI);
+				moved(command);
 			}
 		}
 		else{
-			if(moveChanged(currentTDI.getPosition()[0], command.getPosition()[0]) || moveChanged(currentTDI.getPosition()[1], command.getPosition()[1])){
+			if(moveChanged(oldPos[tdis.indexOf(command)][0], command.getPosition()[0]) || moveChanged(oldPos[tdis.indexOf(command)][1], command.getPosition()[1]))
 				moveFlags[tdis.indexOf(command)] = true;
-				currentTDI.setPosition(command.getPosition());
-			}
 		}
 	}
 }

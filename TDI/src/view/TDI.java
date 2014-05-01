@@ -13,7 +13,22 @@ public class TDI {
     private ArrayList<Icon> icons;
     private float[] position = new float[3];
     private float[] rotation = new float[3];
-    private float rotationLimit;
+    private boolean moving;
+    /**
+	 * @return the moving
+	 */
+	public boolean isMoving() {
+		return moving;
+	}
+
+	/**
+	 * @param moving the moving to set
+	 */
+	public void setMoving(boolean moving) {
+		this.moving = moving;
+	}
+
+	private float rotationLimit;
     private TDIState state = TDIState.desktop;
 	private boolean locked;
 	private boolean isScale;
@@ -144,7 +159,7 @@ public class TDI {
 	}
 
 	public void calculateRotationLimit(){
-		rotationLimit = (360/icons.size())/2;
+		rotationLimit = (360/icons.size());
 	}
 	
 	/**

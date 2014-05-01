@@ -3,13 +3,14 @@ import view.TDI;
 
 public class Tilt{
 	private TiltListener tiltListener;
-	private float[] restingTiltPos = new float[3];
+	private float[] restingTiltPos = new float[]{0,0,0};
 	TiltType tiltType = null;
-	static int compensation = 5;
+	static int compensation = 30;
 	TDI currentTDI;
+	float tiltPos;
 	
 	public Tilt(float[] restingRotation){
-		this.restingTiltPos = restingRotation;
+//		this.restingTiltPos = restingRotation;
 	}
 	
 	public void setRestingRotation(float[] rotation){
@@ -18,6 +19,7 @@ public class Tilt{
 	
 	private void tilt(){
 		tiltListener.tiltedTDI(new TiltEvent(tiltType, currentTDI));
+		tiltType = null;
 	}
 	
 	//	public void tilted(float )
@@ -28,28 +30,54 @@ public class Tilt{
 	public void tilt(TDI command){		
 		float[] rot = command.getRotation();
 		if(tiltType != null){
-			if(currentTDI.equals(command))
-				if(rot[2] == restingTiltPos[2] || rot[1] == restingTiltPos[1])
-					new Runnable() {
-						public void run() {
-							tilt();
-							tiltType = null;
-						}
-					}.run();
+			System.out.println("TDI: "+currentTDI.getId() );
+			if(currentTDI.equals(command)){
+				switch(tiltType)
+				{
+				case down:
+					if(tiltPos < rot[2])
+						tilt();
+					break;
+				case left:
+					if(tiltPos > rot[1])
+						tilt();
+					break;
+				case right:
+					if(tiltPos < rot[1])
+						tilt();
+					break;
+				case up:
+					if(tiltPos > rot[2])
+						tilt();
+					break;				
+				}
+			}
 			return;
 		}
-		currentTDI = command;
-		if(rot[1] != restingTiltPos[1]){
-			if(rot[1] > restingTiltPos[1]+compensation)
-				tiltType = TiltType.up;
-			else if(rot[1] < restingTiltPos[1]-compensation)
-				tiltType = TiltType.down;
-		}
-		else if(rot[2] != restingTiltPos[2]){
+		if(rot[2] != restingTiltPos[2]){
 			if(rot[2] > restingTiltPos[2]+compensation)
+			{
+				tiltType = TiltType.up;
+				tiltPos = rot[2];
+				currentTDI = command;
+			}				
+			else if(rot[2] < restingTiltPos[2]-compensation){
+				tiltType = TiltType.down;
+				tiltPos = rot[2];
+				currentTDI = command;
+			}
+		}
+		if(rot[1] != restingTiltPos[1]){
+			if(rot[1] > restingTiltPos[1]+compensation){
 				tiltType = TiltType.left;
-			else if(rot[2] < restingTiltPos[2]-compensation)
+				tiltPos = rot[1];
+				currentTDI = command;
+			}
+			else if(rot[1] < restingTiltPos[1]-compensation){
 				tiltType = TiltType.right;
+				tiltPos = rot[1];
+				currentTDI = command;
+			}
 		}
 	}
 }

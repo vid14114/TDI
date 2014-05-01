@@ -8,7 +8,7 @@ import view.TDI;
 import view.TDI.TDIState;
 import view.TutorialView;
 
-class TutorialLogic implements Runnable {
+public class TutorialLogic implements Runnable {
     private final TutorialView tv = new TutorialView();
     private final ArrayList<TDI> tdis;
 
