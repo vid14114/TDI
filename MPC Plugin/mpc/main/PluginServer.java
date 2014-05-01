@@ -59,7 +59,7 @@ public class PluginServer implements Runnable{
 
 
 	/**
-	 * Empfängt permanent Informationen und gibt sie dem Dialog weiter
+	 * Empfaengt permanent Informationen und gibt sie dem Dialog weiter
 	 */
 	@Override
 	public void run() {

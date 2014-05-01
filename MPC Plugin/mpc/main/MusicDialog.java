@@ -19,7 +19,7 @@ public class MusicDialog extends JDialog implements ActionListener{
 	JButton previousButton = new JButton();
 	
 	/**
-	 * Der Knopf um das nächste Lied abzuspielen
+	 * Der Knopf um das naechste Lied abzuspielen
 	 */
 	JButton nextButton = new JButton();
 	
@@ -54,7 +54,7 @@ public class MusicDialog extends JDialog implements ActionListener{
 	float z;
 	
 	/**
-	 * Die Kompensation damit nicht jede kleinste Bewegung als Befehl zählt
+	 * Die Kompensation damit nicht jede kleinste Bewegung als Befehl zaehlt
 	 */
 	int compensation;
 	
@@ -148,7 +148,7 @@ public class MusicDialog extends JDialog implements ActionListener{
 	}
 
 	/**
-	 * Falls ein Knopf gedrückt wird
+	 * Falls ein Knopf gedrueckt wird
 	 */
 	@Override
 	public void actionPerformed(ActionEvent actionPerformed) {
