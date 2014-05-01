@@ -104,10 +104,10 @@ public class ConfigLoader {
             // xdg-open: everything inside ~/Desktop
             if (desktopDirectoriesAndFiles == null)
                 desktopDirectoriesAndFiles = returnDirectoriesAndFiles(new File(
-                        System.getProperty("user.home") + "/Arbeitsfläche"));// directories
+                        System.getProperty("user.home") + "/Arbeitsflaeche"));// directories
             if (desktopShortcuts == null)
                 desktopShortcuts = returnDesktopFiles(new File(
-                        System.getProperty("user.home") + "/Arbeitsfläche")); // .desktop
+                        System.getProperty("user.home") + "/Arbeitsflaeche")); // .desktop
             // The following code is split up into several parts --> .desktop
             // files, directories, default icons, removable,
             {// Parsing of .desktop files
