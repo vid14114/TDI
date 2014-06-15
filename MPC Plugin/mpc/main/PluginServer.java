@@ -97,4 +97,25 @@ public class PluginServer implements Runnable{
 			return;
 		}
 	}
+	
+	public void sendMessage(float id, float[] pos, float[] rot) {
+		final byte[][] messages = {ByteBuffer.allocate(4).putFloat(id).array(), 
+				ByteBuffer.allocate(4).putFloat(pos[0]).array(),
+				ByteBuffer.allocate(4).putFloat(pos[1]).array(),
+				ByteBuffer.allocate(4).putFloat(pos[2]).array(),
+				ByteBuffer.allocate(4).putFloat(rot[0]).array(),
+				ByteBuffer.allocate(4).putFloat(rot[1]).array(),
+				ByteBuffer.allocate(4).putFloat(rot[2]).array(),};
+		new Runnable() {			
+			@Override
+			public void run() {
+					try {
+						for(byte[] message : messages)
+							client.getOutputStream().write(message);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			}
+		}.run();
+	}
 }
