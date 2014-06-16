@@ -8,7 +8,7 @@ import java.awt.Point;
  * @author TDI Team
  */
 
-public class Icon implements Comparable<Icon>{
+public class Icon implements Comparable<Icon> {
 	/**
 	 * Name des Icons auf dem Desktop
 	 */
