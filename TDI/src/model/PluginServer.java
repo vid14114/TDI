@@ -23,25 +23,30 @@ public class PluginServer implements Runnable {
 	/**
 	 * Siehe {@link ServerSocket}
 	 */
-	private ServerSocket server;
-
+	private ServerSocket serverSocket;
+	private Server server;
+	
 	/**
 	 * Startet den server
 	 */
 	public PluginServer() {
 		try {
-			server = new ServerSocket(34000, 50,
+			serverSocket = new ServerSocket(34000, 50,
 					InetAddress.getByName("127.0.0.1"));
-			server.setSoTimeout(0);
+			serverSocket.setSoTimeout(0);
 		} catch (IOException e) {
 			TDILogger.logError(e.getMessage());
 		}
+	}
+	
+	public void setServer(Server server){
+		this.server = server;
 	}
 
 	@Override
 	protected void finalize() {
 		try {
-			server.close();
+			serverSocket.close();
 			for (Socket client : clients)
 				client.close();
 		} catch (IOException e) {
@@ -56,10 +61,45 @@ public class PluginServer implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Socket socket = server.accept();
+				final Socket socket = serverSocket.accept();
 				socket.setKeepAlive(true);
 				socket.setSoTimeout(0);
 				clients.add(socket);
+				new Runnable() {
+					
+					@Override
+					public void run() {
+						while(socket.isConnected())
+						{
+							byte b[] = new byte[4];
+							try {								
+								byte id = (byte) socket.getInputStream().read();																
+								
+								socket.getInputStream().read(b);
+								float x = ByteBuffer.wrap(b).getFloat();								
+								socket.getInputStream().read(b);
+								float y = ByteBuffer.wrap(b).getFloat();								
+								socket.getInputStream().read(b);
+								float z = ByteBuffer.wrap(b).getFloat();
+								float[] pos = {x,y,z};
+								
+								socket.getInputStream().read(b);
+								x = ByteBuffer.wrap(b).getFloat();								
+								socket.getInputStream().read(b);
+								y = ByteBuffer.wrap(b).getFloat();								
+								socket.getInputStream().read(b);
+								z = ByteBuffer.wrap(b).getFloat();
+								float[] rot = {x,y,z};
+								server.setPose(id, pos, rot);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						try {
+							socket.close();
+						} catch (IOException e) {}
+					}
+				}.run();
 			} catch (IOException e) {
 				TDILogger.logError(e.getMessage());
 			}
