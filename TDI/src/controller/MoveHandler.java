@@ -28,7 +28,7 @@ public class MoveHandler implements MoveListener {
 	 * Die Kompensationswerte fuer die Bewegung eines TDIs. Da die Werte vom
 	 * Handy sehr ungenau werden koennen.
 	 */
-	float compensation = 20;
+	float compensation = 50;
 
 	/**
 	 * Der Konstruktor nimmt eine Instanze der {@link BigLogic} an
@@ -37,31 +37,6 @@ public class MoveHandler implements MoveListener {
 	 */
 	public MoveHandler(BigLogic bigLogic) {
 		this.bigLogic = bigLogic;
-	}
-
-	/**
-	 * Prueft, ob zwei TDI sind nah genug beieinander sind, um Scale-Modus
-	 * starten
-	 * 
-	 * @return true, Scalemodus aktiviert, false falls nicht
-	 */
-	private boolean startScaleMode(TDI tdi) {
-		int range = 10; // TODO Range for closeness of TDI can and should be
-						// changed
-		for (TDI tdi2 : bigLogic.getTdis()) {
-			if (tdi.getId() == tdi2.getId())
-				break;
-			if (Math.abs(tdi.getPosition()[0] - tdi2.getPosition()[0]) < range
-					|| Math.abs(tdi.getPosition()[1] - tdi2.getPosition()[1]) < range) {
-				tdi2.setIsScale(true);
-				tdi.setIsScale(true);
-				scaleTDI = tdi2;
-				bigLogic.getServer().toggleVibro(tdi.getId(), (byte) 12);
-				bigLogic.getServer().toggleVibro(tdi2.getId(), (byte) 12);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -81,6 +56,54 @@ public class MoveHandler implements MoveListener {
 	}
 
 	/**
+	 * Wird gerufen falls dich der {@link TDI} in {@link TDIState#desktop} Modus
+	 * befindet hat und bewegt wurde
+	 * 
+	 * @param tdi
+	 *            TDI, der bewegt wurde
+	 */
+	private void moveDesktopMode(TDI tdi) {
+		if (tdi.isLocked()) {
+			System.out.println("Desktop Mode enter");
+			System.out.println(bigLogic.getTaskbarLocation());
+			if (bigLogic.checkMovedToTaskbar(tdi.getPosition()[0])) {
+				ProgramHandler.openProgram(tdi.getIcons().get(0));
+				try{
+					tdi.setRotationLimit((360 / ProgramHandler.getRunningPrograms()
+						.size()) / 2);
+				}catch(ArithmeticException e){return;}
+				tdi.toggleLock();
+				bigLogic.getServer().toggleGreenLED(tdi.getId(), (byte) 1);
+				if (bigLogic.emptyTaskbar()) {
+					tdi.setState(TDIState.taskbar);
+					tdi = bigLogic.getTdis().get(
+							(bigLogic.getTdis().indexOf(tdi) + 1) % 2);
+				}
+				tdi.setState(TDIState.inapp);
+				float[] position = Executor.getWindowPosition();
+				if(position[0] < 40) position[0] = 50;
+				if(position[1] < 40) position[1] = 40;
+				tdi.setPosition(new float[] { position[0] / bigLogic.scaleX,
+						position[1] / bigLogic.scaleY, 0 });
+				tdi.setRotation(new float[] { 0, 0, 0 });
+				tdi.setMoving(true);
+				bigLogic.getServer().setPose(tdi.getId(), tdi.getPosition(),
+						tdi.getRotation());
+			} else {
+				int row = (int) ((BigLogic.playFieldMaxValues[0] - (int) tdi
+						.getPosition()[0] * (int) bigLogic.scaleX) / ConfigLoader.blockSize);
+				int col = (int) ((BigLogic.playFieldMaxValues[1] - (int) tdi
+						.getPosition()[1] * (int) bigLogic.scaleY) / ConfigLoader.blockSize);
+				row = 10 - row;
+				col = 15 - col;
+				tdi.getIcons().get(0).setPosition(new Point(row, col));
+				bigLogic.refreshIcons();
+				bigLogic.refreshBackground();
+			}
+		}
+	}
+
+	/**
 	 * Die implementierte Methode von {@link MoveListener#movedTDI(TDI)}
 	 * kontrolliert die notwendigen Konditionen fuer eine Bewegung und fuehrt
 	 * die naechsten Schritte aus
@@ -96,6 +119,7 @@ public class MoveHandler implements MoveListener {
 				&& (moveChanged(current.getPosition()[0],
 						command.getPosition()[0]) || moveChanged(
 						current.getPosition()[1], command.getPosition()[1]))) {
+			System.out.println("Move desktop");
 			current.setMoving(true);
 			bigLogic.getServer().setPose(current.getId(),
 					current.getPosition(), current.getRotation());
@@ -140,6 +164,24 @@ public class MoveHandler implements MoveListener {
 	}
 
 	/**
+	 * Wird gerufen falls dich der {@link TDI} in {@link TDI#isScale()} Modus
+	 * befindet hat und bewegt wurde
+	 * 
+	 * @param tdi
+	 *            TDI, der bewegt wurde
+	 */
+	private void moveScaleMode(TDI tdi) {
+		if (tdi.equals(scaleTDI))
+			return;
+		ProgramHandler
+				.resizeProgram(
+						(int) Math.abs(scaleTDI.getPosition()[0]
+								- tdi.getPosition()[0]),
+						(int) Math.abs(scaleTDI.getPosition()[1]
+								- tdi.getPosition()[1]));
+	}
+
+	/**
 	 * Wird gerufen falls dich der {@link TDI} in {@link TDIState#sleep} Modus
 	 * befindet hat und bewegt wurde
 	 * 
@@ -152,46 +194,6 @@ public class MoveHandler implements MoveListener {
 			bigLogic.splitIcons();
 		} else
 			tdi.setState(TDIState.desktop);
-	}
-
-	/**
-	 * Wird gerufen falls dich der {@link TDI} in {@link TDIState#desktop} Modus
-	 * befindet hat und bewegt wurde
-	 * 
-	 * @param tdi
-	 *            TDI, der bewegt wurde
-	 */
-	private void moveDesktopMode(TDI tdi) {
-		if (tdi.isLocked()) {
-			System.out.println("Desktop MOde enter");
-			if (bigLogic.checkMovedToTaskbar(tdi.getPosition()[0])) {
-				ProgramHandler.openProgram(tdi.getIcons().get(0));
-				tdi.setRotationLimit((360 / ProgramHandler.getRunningPrograms()
-						.size()) / 2);
-				tdi.toggleLock();
-				bigLogic.getServer().toggleGreenLED(tdi.getId(), (byte) 13);
-				if (bigLogic.emptyTaskbar()) {
-					tdi.setState(TDIState.taskbar);
-					tdi = bigLogic.getTdis().get(
-							(bigLogic.getTdis().indexOf(tdi) + 1) % 2);
-				}
-				tdi.setState(TDIState.inapp);
-				float[] position = Executor.getWindowPosition();
-				tdi.setPosition(new float[] { position[0] / bigLogic.scaleX,
-						position[1] / bigLogic.scaleY, 0 });
-				tdi.setRotation(new float[] { 0, 0, 0 });
-				tdi.setMoving(true);
-				bigLogic.getServer().setPose(tdi.getId(), tdi.getPosition(),
-						tdi.getRotation());
-			} else {
-				int row = (int) ((bigLogic.playFieldMaxValues[0] - (int) tdi
-						.getPosition()[0] * (int) bigLogic.scaleX) / ConfigLoader.blockSize);
-				int col = (int) ((bigLogic.playFieldMaxValues[1] - (int) tdi
-						.getPosition()[1] * (int) bigLogic.scaleY) / ConfigLoader.blockSize);
-				tdi.getIcons().get(0).setPosition(new Point(row, col));
-				bigLogic.refreshIcons();
-			}
-		}
 	}
 
 	/**
@@ -208,21 +210,31 @@ public class MoveHandler implements MoveListener {
 	}
 
 	/**
-	 * Wird gerufen falls dich der {@link TDI} in {@link TDI#isScale()} Modus
-	 * befindet hat und bewegt wurde
+	 * Prueft, ob zwei TDI sind nah genug beieinander sind, um Scale-Modus
+	 * starten
 	 * 
-	 * @param tdi
-	 *            TDI, der bewegt wurde
+	 * @return true, Scalemodus aktiviert, false falls nicht
 	 */
-	private void moveScaleMode(TDI tdi) {
-		if (tdi.equals(scaleTDI))
-			return;
-		ProgramHandler
-				.resizeProgram(
-						(int) Math.abs(scaleTDI.getPosition()[0]
-								- tdi.getPosition()[0]),
-						(int) Math.abs(scaleTDI.getPosition()[1]
-								- tdi.getPosition()[1]));
+	private boolean startScaleMode(TDI tdi) {
+		int range = 10; // TODO Range for closeness of TDI can and should be
+						// changed
+		for (TDI tdi2 : bigLogic.getTdis()) {
+			if (tdi.getId() == tdi2.getId())
+				break;
+			if (Math.abs(tdi.getPosition()[0] - tdi2.getPosition()[0]) < range
+					|| Math.abs(tdi.getPosition()[1] - tdi2.getPosition()[1]) < range) {
+				tdi2.setIsScale(true);
+				tdi.setIsScale(true);
+				scaleTDI = tdi2;
+				bigLogic.getServer().toggleVibro(tdi.getId(), (byte) 12);
+				bigLogic.getServer().toggleVibro(tdi2.getId(), (byte) 12);
+				try {Thread.sleep(200);} catch (InterruptedException e) {}
+				bigLogic.getServer().toggleVibro(tdi.getId(), (byte) 0);
+				bigLogic.getServer().toggleVibro(tdi2.getId(), (byte) 0);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

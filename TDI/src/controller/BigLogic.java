@@ -64,12 +64,12 @@ public class BigLogic implements ActionListener {
 	 * Die maximalen Dimensionen(x,y) des Playgrounds werden in diesem Array
 	 * gespeichert
 	 */
-	public float[] playFieldMaxValues = { 0, 0 };
+	public static float[] playFieldMaxValues = { 800, 600 };
 	/**
 	 * Die minimalen Dimensionen(x,y) des Playgrounds werden in diesem Array
 	 * gespeichert
 	 */
-	public float[] playFieldMinValues = { 800, 800 };
+	public static float[] playFieldMinValues = { 100, 100 };
 	/**
 	 * Der Skalefaktor um die X Achse zwischen dem Tisch und das Bildschirm
 	 */
@@ -98,6 +98,9 @@ public class BigLogic implements ActionListener {
 	 */
 	private Wallpaper wallpaper;
 
+	
+	private float iconRowScale;
+	private float iconColScale;
 	/**
 	 * Siehe {@link Tilt} Doku
 	 */
@@ -111,6 +114,8 @@ public class BigLogic implements ActionListener {
 	 * Siehe {@link Move} Doku
 	 */
 	Move move;
+	public static int maxRow;
+	public static int maxCol;
 
 	/**
 	 * Konstruktor von BigLogic. Sie laedt die benoetigten Klassen, Datein und
@@ -126,6 +131,44 @@ public class BigLogic implements ActionListener {
 		wallpaper = new Wallpaper(configLoader.loadWallpaper(),
 				configLoader.getBlockSize(), configLoader.getPanelSize(),
 				configLoader.getPlacementRatio(), configLoader.loadScreensize());
+		calculateScale();
+	}
+	
+	public void calculatePosition(){
+		calculateScale();
+		calculateIconScale();
+		for(int i = 0; i < tdis.size(); i++)
+		{
+			TDI tdi = tdis.get(i);
+			int row = 0;
+			int col = 0;
+			for(Icon icon: tdi.getIcons()){
+				row += icon.getPosition().x;
+				col += icon.getPosition().y;
+			}					
+			float xPos = (row/tdi.getIcons().size()) * iconRowScale * scaleX;
+			float yPos = (col/tdi.getIcons().size()) * iconColScale * scaleY;
+			if(yPos < 20)
+				yPos = 20;
+			if(xPos > getTaskbarLocation())
+				xPos = getTaskbarLocation()-20;
+			server.setPose(tdi.getId(), new float[]{xPos, yPos, 0}, new float[]{90,0,0});
+			tdi.setMoving(true);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void calculateIconScale() {
+		for(Icon icon : icons){
+			if(icon.getPosition().x > maxRow)
+				maxRow = icon.getPosition().x;
+			if(icon.getPosition().y > maxCol)
+				maxCol = icon.getPosition().y;
+		}
+		iconRowScale = (playFieldMaxValues[0] - playFieldMinValues[0])/maxRow;
+		iconColScale = (playFieldMaxValues[1] - playFieldMinValues[1])/maxCol;
 	}
 
 	/**
@@ -161,9 +204,9 @@ public class BigLogic implements ActionListener {
 					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.43.128");
+			server = new Server("192.168.43.210");
 			try {
-				server.setPlSize(new int[] { 800, 800, 100 });
+				server.setPlSize(new int[] { 800, 600, 100 });
 				tdis = server.fullPose();
 			} catch (NullPointerException e1) {
 				JOptionPane.showMessageDialog(null,
@@ -287,7 +330,7 @@ public class BigLogic implements ActionListener {
 	 */
 	public void checkPlayGround(float[] position) {
 		if (position[0] > playFieldMaxValues[0])
-			playFieldMaxValues[0] = position[0];
+			playFieldMaxValues[0] = position[0];		
 		if (position[1] > playFieldMaxValues[1])
 			playFieldMaxValues[1] = position[1];
 		if (position[0] < playFieldMinValues[0])
@@ -328,9 +371,9 @@ public class BigLogic implements ActionListener {
 		return icons;
 	}
 
-	 public Move getMove() {
-	 return move;
-	 }
+	public Move getMove() {
+		return move;
+	}
 
 	/**
 	 * Der Pluginserver wird von den Listenerklassen benoetigt
@@ -341,9 +384,9 @@ public class BigLogic implements ActionListener {
 		return plugserv;
 	}
 
-	 public Rotation getRotation() {
-	 return rotation;
-	 }
+	public Rotation getRotation() {
+		return rotation;
+	}
 
 	/**
 	 * Gibt den Server zurueck
@@ -372,9 +415,9 @@ public class BigLogic implements ActionListener {
 		return tdis;
 	}
 
-	 public Tilt getTilt() {
-	 return tilt;
-	 }
+	public Tilt getTilt() {
+		return tilt;
+	}
 
 	/**
 	 * Die Wallpaper klasse zum editieren des Wallpapers
@@ -383,7 +426,7 @@ public class BigLogic implements ActionListener {
 	 */
 	public Wallpaper getWallpaper() {
 		return wallpaper;
-	}
+	}	
 
 	/**
 	 * Wenn der Server mit {@link Server#fullPose()} neue TDI Werte bekommt,
@@ -393,19 +436,17 @@ public class BigLogic implements ActionListener {
 	 * @param command
 	 *            Im Format der Klasse {@link TDI}
 	 */
-	public void newCommand(TDI command) {
-		checkPlayGround(command.getPosition());
+	public void newCommand(TDI command) {			
 		try {
-			if (tdis.get(tdis.indexOf(command)).isMoving()) {
-				TDI tdi = tdis.get(tdis.indexOf(command));
-				if (move.moveChanged(tdi.getPosition()[0],
-						command.getPosition()[0])
-						|| move.moveChanged(tdi.getPosition()[1],
-								command.getPosition()[1]))
-					return;
-				else
-					tdi.setMoving(false);
-			}
+//			if (tdis.get(tdis.indexOf(command)).isMoving()) {
+//				TDI tdi = tdis.get(tdis.indexOf(command));
+//				if (move.moveChanged(tdi.getPosition()[0], command.getPosition()[0])
+//						|| move.moveChanged(tdi.getPosition()[1],
+//								command.getPosition()[1]))
+//					return;
+//				else
+//					tdi.setMoving(false);
+//			}
 			tilt.tilt(command); // Checks whether the user exists inapp mode
 			if (tdis.get(tdis.indexOf(command)).getState()
 					.equals(TDIState.inapp))
@@ -447,21 +488,21 @@ public class BigLogic implements ActionListener {
 		configLoader.updateConfig(icons);
 	}
 
-	 public void setMove(Move move) {
-	 this.move = move;
-	 }
-	
-	 public void setRotation(Rotation rotation) {
-	 this.rotation = rotation;
-	 }
-	
-	 public void setTdis(ArrayList<TDI> tdis) {
-	 this.tdis = tdis;
-	 }
-	
-	 public void setTilt(Tilt tilt) {
-	 this.tilt = tilt;
-	 }
+	public void setMove(Move move) {
+		this.move = move;
+	}
+
+	public void setRotation(Rotation rotation) {
+		this.rotation = rotation;
+	}
+
+	public void setTdis(ArrayList<TDI> tdis) {
+		this.tdis = tdis;
+	}
+
+	public void setTilt(Tilt tilt) {
+		this.tilt = tilt;
+	}
 
 	/**
 	 * Die Icons werden auf den TDIs gemappt dann wird
@@ -478,6 +519,7 @@ public class BigLogic implements ActionListener {
 							iconsAssigned += f)));
 			tdis.get(i).calculateRotationLimit();
 		}
+		calculatePosition();
 		refreshBackground();
 	}
 }

@@ -3,11 +3,12 @@ package controller;
 import view.TDI;
 
 /**
- * Die {@link Tilt} Klasse kontrolliert ob ein TDI geneigt wurde oder nicht. Falls
- * ein TDI geneigt wurde, ruft er den {@link TiltListener} auf, der anschließend vom {@link TiltHandler} gehandelt wird
+ * Die {@link Tilt} Klasse kontrolliert ob ein TDI geneigt wurde oder nicht.
+ * Falls ein TDI geneigt wurde, ruft er den {@link TiltListener} auf, der
+ * anschließend vom {@link TiltHandler} gehandelt wird
  * 
  * @author TDI Team
- *
+ * 
  */
 public class Tilt {
 	/**
@@ -15,8 +16,8 @@ public class Tilt {
 	 */
 	private TiltListener tiltListener;
 	/**
-	 * Die RestingTiltPos der TDIs am Anfang.
-	 * Wichtig falls die Fläch auf der die TDIs liegen nicht flach ist
+	 * Die RestingTiltPos der TDIs am Anfang. Wichtig falls die Flaech auf der
+	 * die TDIs liegen nicht flach ist
 	 */
 	private float[] restingTiltPos = new float[] { 0, 0, 0 };
 	/**
@@ -24,8 +25,8 @@ public class Tilt {
 	 */
 	TiltType tiltType = null;
 	/**
-	 * Die Kompensationswerte fuer das Beigen eines TDIs. Da die Werte vom
-	 * Handy sehr ungenau werden koennen.
+	 * Die Kompensationswerte fuer das Beigen eines TDIs. Da die Werte vom Handy
+	 * sehr ungenau werden koennen.
 	 */
 	static int compensation = 30;
 	/**
@@ -43,10 +44,23 @@ public class Tilt {
 
 	/**
 	 * Setzt die Rotation der {@link #restingTiltPos}
-	 * @param rotation Die übergebene Tilt position
+	 * 
+	 * @param rotation
+	 *            Die uebergebene Tilt position
 	 */
 	public void setRestingRotation(float[] rotation) {
 		restingTiltPos = rotation;
+	}
+
+	// public void tilted(float )
+	/**
+	 * Setzt den Tiltlistener
+	 * 
+	 * @param listener
+	 *            Eine Instanze des Tiltlisteners
+	 */
+	public void setTiltListener(TiltListener listener) {
+		tiltListener = listener;
 	}
 
 	/**
@@ -57,19 +71,10 @@ public class Tilt {
 		tiltType = null;
 	}
 
-	// public void tilted(float )
 	/**
-	 * Setzt den Tiltlistener
-	 * @param listener Eine Instanze des Tiltlisteners
-	 */
-	public void setTiltListener(TiltListener listener) {
-		tiltListener = listener;
-	}
-
-	/**
-	 * Die {@link #tilt()} Methode wird von der {@link BigLogic#newCommand(TDI)} Methode aufgerufen.
-	 * Diese Methode ist dafuer zustaendig zu kontrollieren ob ein
-	 * {@link TDI} geneigt wurde oder nicht.
+	 * Die {@link #tilt()} Methode wird von der {@link BigLogic#newCommand(TDI)}
+	 * Methode aufgerufen. Diese Methode ist dafuer zustaendig zu kontrollieren
+	 * ob ein {@link TDI} geneigt wurde oder nicht.
 	 * 
 	 * @param command
 	 *            Die neuen Werte des {@link TDI}, vom
@@ -80,21 +85,37 @@ public class Tilt {
 		if (tiltType != null) {
 			if (currentTDI.equals(command)) {
 				switch (tiltType) {
-				case down:
-					if (tiltPos < rot[2])
+				case down:								//|| currentTDI.getRotation()[0] > 0 && currentTDI.getRotation()[0] < 90)
+					if (tiltPos < rot[2]){
+						if(currentTDI.getRotation()[0] > -180 && currentTDI.getRotation()[0] < -90) tiltType = TiltType.right;						
+						if(currentTDI.getRotation()[0] > 90 && currentTDI.getRotation()[0] < 180) tiltType = TiltType.up; 
+						if(currentTDI.getRotation()[0] > 0 && currentTDI.getRotation()[0] < 90) tiltType = TiltType.left;
 						tilt();
+					}
 					break;
 				case left:
-					if (tiltPos > rot[1])
+					if (tiltPos > rot[1]){						
+						if(currentTDI.getRotation()[0] > -180 && currentTDI.getRotation()[0] < -90) tiltType = TiltType.down;
+						if(currentTDI.getRotation()[0] > 90 && currentTDI.getRotation()[0] < 180) tiltType = TiltType.right;
+						if(currentTDI.getRotation()[0] > 0 && currentTDI.getRotation()[0] < 90) tiltType = TiltType.up;
 						tilt();
+					}
 					break;
 				case right:
-					if (tiltPos < rot[1])
+					if (tiltPos < rot[1]){
+						if(currentTDI.getRotation()[0] > -180 && currentTDI.getRotation()[0] < -90) tiltType = TiltType.up;
+						if(currentTDI.getRotation()[0] > 90 && currentTDI.getRotation()[0] < 180) tiltType = TiltType.left;
+						if(currentTDI.getRotation()[0] > 0 && currentTDI.getRotation()[0] < 90) tiltType = TiltType.down;
 						tilt();
+					}						
 					break;
 				case up:
-					if (tiltPos > rot[2])
+					if (tiltPos > rot[2]){
+						if(currentTDI.getRotation()[0] > -180 && currentTDI.getRotation()[0] < -90) tiltType = TiltType.left;
+						if(currentTDI.getRotation()[0] > 90 && currentTDI.getRotation()[0] < 180) tiltType = TiltType.down;
+						if(currentTDI.getRotation()[0] > 0 && currentTDI.getRotation()[0] < 90) tiltType = TiltType.right;
 						tilt();
+					}
 					break;
 				}
 			}
@@ -124,22 +145,14 @@ public class Tilt {
 		}
 	}
 }
-/**
- * Die Listener Klasse fuer die {@link Tilt} Klasse. Alle Klassen die move
- * handlen wollen muessen {@link TiltListener#tiltedTDI(TiltEvent)} implementieren
- * 
- * @author TDI Team
- * 
- */
-interface TiltListener {
-	public void tiltedTDI(TiltEvent e);
-}
 
 /**
- * Die {@link TiltEvent} Klasse ist wichtig für die Übergabe von einer {@link Tilt} event an den Listener.
- * Sie gibt die Information weiter um welchen Art des {@link Tilt} es sich handelt und welcher TDI betroffen ist 
+ * Die {@link TiltEvent} Klasse ist wichtig fuer die uebergabe von einer
+ * {@link Tilt} event an den Listener. Sie gibt die Information weiter um
+ * welchen Art des {@link Tilt} es sich handelt und welcher TDI betroffen ist
+ * 
  * @author TDI Team
- *
+ * 
  */
 class TiltEvent {
 	private TiltType tilt;
@@ -160,9 +173,23 @@ class TiltEvent {
 }
 
 /**
- * Es gibt vier tilt arten: {@link TiltType#right}, {@link TiltType#left}, {@link TiltType#up}, {@link TiltType#down}
+ * Die Listener Klasse fuer die {@link Tilt} Klasse. Alle Klassen die move
+ * handlen wollen muessen {@link TiltListener#tiltedTDI(TiltEvent)}
+ * implementieren
+ * 
  * @author TDI Team
- *
+ * 
+ */
+interface TiltListener {
+	public void tiltedTDI(TiltEvent e);
+}
+
+/**
+ * Es gibt vier tilt arten: {@link TiltType#right}, {@link TiltType#left},
+ * {@link TiltType#up}, {@link TiltType#down}
+ * 
+ * @author TDI Team
+ * 
  */
 enum TiltType {
 	right, left, up, down;

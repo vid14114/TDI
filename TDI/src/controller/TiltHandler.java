@@ -17,6 +17,28 @@ public class TiltHandler implements TiltListener {
 		this.big = big;
 	}
 
+	private void tiltDown(TDI tdi) {
+		System.out.println("Tilt down");
+		switch (tdi.getState()) {
+		case taskbar:
+			ProgramHandler.minimizeAllPrograms();
+			for (TDI t : big.getTdis()) {
+				t.setState(TDIState.desktop);
+			}
+			big.splitIcons();
+			break;
+		case window:
+			ProgramHandler.minimize();
+			if (ProgramHandler.getNonMinimized() == 0) {
+				tdi.setState(TDIState.desktop);
+				big.splitIcons();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -37,33 +59,6 @@ public class TiltHandler implements TiltListener {
 			break;
 		case left:
 			tiltLeft(tdi);
-			break;
-		}
-	}
-
-	private void tiltRight(TDI tdi) {
-		System.out.println("Tilt right");
-		if (tdi.isScale()) {
-			for (TDI t : big.getTdis())
-				t.setIsScale(false);
-			return;
-		}
-		switch (tdi.getState()) {
-		case desktop:
-			tdi.toggleLock();
-			big.getServer().toggleGreenLED(tdi.getId(), (byte) 1);
-			break;
-		case taskbar:
-			ProgramHandler.closeAllPrograms();
-			for (TDI t : big.getTdis()) {
-				t.setState(TDIState.desktop);
-			}
-			big.splitIcons();
-			break;
-		case inapp:
-			tdi.setState(TDIState.window);
-			break;
-		default:
 			break;
 		}
 	}
@@ -96,6 +91,33 @@ public class TiltHandler implements TiltListener {
 		}
 	}
 
+	private void tiltRight(TDI tdi) {
+		System.out.println("Tilt right");
+		if (tdi.isScale()) {
+			for (TDI t : big.getTdis())
+				t.setIsScale(false);
+			return;
+		}
+		switch (tdi.getState()) {
+		case desktop:
+			tdi.toggleLock();
+			big.getServer().toggleGreenLED(tdi.getId(), (byte) 1);
+			break;
+		case taskbar:
+			ProgramHandler.closeAllPrograms();
+			for (TDI t : big.getTdis()) {
+				t.setState(TDIState.desktop);
+			}
+			big.splitIcons();
+			break;
+		case inapp:
+			tdi.setState(TDIState.window);
+			break;
+		default:
+			break;
+		}
+	}
+
 	private void tiltUp(TDI tdi) {
 		System.out.println("Tilt up");
 		switch (tdi.getState()) {
@@ -115,28 +137,6 @@ public class TiltHandler implements TiltListener {
 			break;
 		case window:
 			ProgramHandler.toggleMaximization();
-			break;
-		default:
-			break;
-		}
-	}
-
-	private void tiltDown(TDI tdi) {
-		System.out.println("Tilt down");
-		switch (tdi.getState()) {
-		case taskbar:
-			ProgramHandler.minimizeAllPrograms();
-			for (TDI t : big.getTdis()) {
-				t.setState(TDIState.desktop);
-			}
-			big.splitIcons();
-			break;
-		case window:
-			ProgramHandler.minimize();
-			if (ProgramHandler.getNonMinimized() == 0) {
-				tdi.setState(TDIState.desktop);
-				big.splitIcons();
-			}
 			break;
 		default:
 			break;

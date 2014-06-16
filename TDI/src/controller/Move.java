@@ -4,9 +4,6 @@
 package controller;
 
 import java.util.ArrayList;
-
-import model.PluginServer;
-import model.Server;
 import view.TDI;
 import view.TDI.TDIState;
 
@@ -39,7 +36,7 @@ public class Move {
 	 * Die Kompensationswerte fuer die Bewegung eines TDIs. Da die Werte vom
 	 * Handy sehr ungenau werden koennen.
 	 */
-	static final int compensation = 20;
+	static final int compensation = 50;
 
 	/**
 	 * Der Konstuktor nimmt die TDIs an, und initialisert die moveflags
@@ -49,6 +46,42 @@ public class Move {
 	public Move(ArrayList<TDI> tdis) {
 		this.tdis = tdis;
 		moveFlags = new boolean[2];
+	}
+
+	/**
+	 * Die move Methode wird von der {@link BigLogic#newCommand(TDI)} Methode
+	 * aufgerufen. Diese Methode ist dafuer zustaendig zu kontrollieren ob sich
+	 * ein {@link TDI} bewegt hat oder nicht.
+	 * 
+	 * @param command
+	 *            Die neuen Werte des {@link TDI}, vom
+	 *            {@link BigLogic#newCommand(TDI)} uebergeben
+	 */
+	public void move(TDI command) {
+		TDI currentTDI = tdis.get(tdis.indexOf(command));
+		if (currentTDI.getState().equals(TDIState.window)
+				|| currentTDI.isScale()) {
+			currentTDI.setPosition(command.getPosition());
+			moved(command);
+			return;
+		}
+		if (moveFlags[tdis.indexOf(command)]) { // Currently being moved
+			if (moveChanged(oldPos[tdis.indexOf(command)][0],
+					command.getPosition()[0])
+					|| moveChanged(oldPos[tdis.indexOf(command)][1],
+							command.getPosition()[1]))
+				oldPos[tdis.indexOf(command)] = command.getPosition();
+			else {
+				moveFlags[tdis.indexOf(command)] = false;
+				moved(command);
+			}
+		} else {
+			if (moveChanged(oldPos[tdis.indexOf(command)][0],
+					command.getPosition()[0])
+					|| moveChanged(oldPos[tdis.indexOf(command)][1],
+							command.getPosition()[1]))
+				moveFlags[tdis.indexOf(command)] = true;
+		}
 	}
 
 	/**
@@ -85,42 +118,6 @@ public class Move {
 	 */
 	public void setMoveListener(MoveListener moveListener) {
 		this.moveListener = moveListener;
-	}
-
-	/**
-	 * Die move Methode wird von der {@link BigLogic#newCommand(TDI)} Methode aufgerufen.
-	 * Diese Methode ist dafuer zustaendig zu kontrollieren ob sich ein
-	 * {@link TDI} bewegt hat oder nicht.
-	 * 
-	 * @param command
-	 *            Die neuen Werte des {@link TDI}, vom
-	 *            {@link BigLogic#newCommand(TDI)} uebergeben
-	 */
-	public void move(TDI command) {
-		TDI currentTDI = tdis.get(tdis.indexOf(command));
-		if (currentTDI.getState().equals(TDIState.window)
-				|| currentTDI.isScale()) {
-			currentTDI.setPosition(command.getPosition());
-			moved(command);
-			return;
-		}
-		if (moveFlags[tdis.indexOf(command)]) { // Currently being moved
-			if (moveChanged(oldPos[tdis.indexOf(command)][0],
-					command.getPosition()[0])
-					|| moveChanged(oldPos[tdis.indexOf(command)][1],
-							command.getPosition()[1]))
-				oldPos[tdis.indexOf(command)] = command.getPosition();
-			else {
-				moveFlags[tdis.indexOf(command)] = false;
-				moved(command);
-			}
-		} else {
-			if (moveChanged(oldPos[tdis.indexOf(command)][0],
-					command.getPosition()[0])
-					|| moveChanged(oldPos[tdis.indexOf(command)][1],
-							command.getPosition()[1]))
-				moveFlags[tdis.indexOf(command)] = true;
-		}
 	}
 }
 

@@ -23,22 +23,17 @@ import model.TDILogger;
 public final class Executor {
 
 	/**
-	 * Alle plugins die der User auswaehlt, werden weitergegeben und gestartet
+	 * Fuehrt den angegebenen exec eines Programms aus
 	 * 
-	 * @param plugins
-	 *            Eine Liste von Plugins
+	 * @param exec
+	 *            Der Pfad des Programms
 	 */
-	public static void startPlugins(String[] plugins) {
+	public static void executeProgram(String[] exec) {
 		try {
-			for (String plugin : plugins)
-				Runtime.getRuntime().exec(
-						new String[] {
-								"java",
-								"-jar",
-								TDIDirectories.TDI_PLUGINS + "/" + plugin
-										+ ".jar" });
+			Runtime.getRuntime().exec(exec);
 		} catch (IOException e) {
-			TDILogger.logError(e.getMessage());
+			TDILogger
+					.logError("Unable to start program, is xdg-open installed?");
 		}
 	}
 
@@ -50,56 +45,6 @@ public final class Executor {
 	// BufferedReader bf = new BufferedReader(new
 	// InputStreamReader(Runtime.getRuntime().exec("command -v wmctrl xdg-open xfconf-query gvfs-mount").getInputStream()));
 	// }
-
-	/**
-	 * Speichert das neue Hintergrundbild ins {@link TDIDirectories#TDI_TEMP}
-	 * directory, greift auf die Konsole und setzt das Bild als Hintergrundbild
-	 * 
-	 * @param image
-	 *            Ein BufferedImage
-	 */
-	public static void saveBackground(BufferedImage image) {
-		try {
-			File restore = new File(TDIDirectories.TDI_TEMP + "/" + "temp."
-					+ ConfigLoader.imageType);
-			ImageIO.write(image, ConfigLoader.imageType, restore);
-			Runtime.getRuntime().exec(
-					new String[] { "xfconf-query", "-c", "xfce4-desktop", "-p",
-							"/backdrop/screen0/monitor0/image-path", "-s",
-							restore.getAbsolutePath() });
-			Runtime.getRuntime().exec(new String[] { "xfdesktop", "--reload" });
-			restore.deleteOnExit();
-		} catch (IOException e) {
-			TDILogger.logError("Error saving wallpaper " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Liefert die Position vom fokusierten Fenster zurueck
-	 * 
-	 * @return Ein Array mit der Positoin (x,y)
-	 */
-	public static float[] getWindowPosition() {
-		float[] position = new float[] { 0, 0 };
-		BufferedReader bf;
-		try {
-			bf = new BufferedReader(new InputStreamReader(
-					Runtime.getRuntime()
-							.exec(new String[] { "xwininfo", "-id",
-									getFocusedWindow() }).getInputStream()));
-			String line;
-			while ((line = bf.readLine()) != null) {
-				if (line.contains("Absolute upper-left X:"))
-					position[0] = Integer.parseInt(line.split(":")[1].trim());
-				if (line.contains("Absolute upper-left Y:"))
-					position[1] = Integer.parseInt(line.split(":")[1].trim());
-			}
-			bf.close();
-		} catch (IOException e) {
-			TDILogger.logError(e.getMessage());
-		}
-		return position;
-	}
 
 	/**
 	 * Ruft die xfconf-Abfragemethode, die den Pfad des Hintergrundbilds
@@ -124,38 +69,6 @@ public final class Executor {
 	}
 
 	/**
-	 * Fuehrt den angegebenen exec eines Programms aus
-	 * 
-	 * @param exec
-	 *            Der Pfad des Programms
-	 */
-	public static void executeProgram(String[] exec) {
-		try {
-			Runtime.getRuntime().exec(exec);
-		} catch (IOException e) {
-			TDILogger
-					.logError("Unable to start program, is xdg-open installed?");
-		}
-	}
-
-	/**
-	 * Gibt einen Screenshot in Form eines BufferedReader aller geoeffneten
-	 * Fenster aus
-	 * 
-	 * @return Einen {@link BufferedReader} mit allen geoefnetten Fenster
-	 */
-	public static BufferedReader getRunningTasks() {
-		try {
-			return new BufferedReader(new InputStreamReader(Runtime
-					.getRuntime().exec("wmctrl -lp").getInputStream()));
-		} catch (IOException e) {
-			TDILogger
-					.logError("Error getting list of programms, make sure wmctrl is installed");
-		}
-		return null;
-	}
-
-	/**
 	 * Holen Sie sich den aktuellen fokussierten Fenster
 	 * 
 	 * @return die wmctrlID des aktiven Fenster
@@ -175,22 +88,6 @@ public final class Executor {
 			TDILogger.logError(e.getMessage());
 		}
 		return wmctrlID;
-	}
-
-	/**
-	 * Gibt alle aktiven Wechseldatentraeger
-	 * 
-	 * @return Als {@link BufferedReader}
-	 */
-	public static BufferedReader getRemovableDiskList() {
-		try {
-			return new BufferedReader(new InputStreamReader(Runtime
-					.getRuntime().exec(new String[] { "gvfs-mount", "-li" })
-					.getInputStream()));
-		} catch (IOException e) {
-			TDILogger.logError(e.getMessage());
-		}
-		return null;
 	}
 
 	/**
@@ -234,5 +131,108 @@ public final class Executor {
 			TDILogger.logError(e.getMessage());
 		}
 		return ratio;
+	}
+
+	/**
+	 * Gibt alle aktiven Wechseldatentraeger
+	 * 
+	 * @return Als {@link BufferedReader}
+	 */
+	public static BufferedReader getRemovableDiskList() {
+		try {
+			return new BufferedReader(new InputStreamReader(Runtime
+					.getRuntime().exec(new String[] { "gvfs-mount", "-li" })
+					.getInputStream()));
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * Gibt einen Screenshot in Form eines BufferedReader aller geoeffneten
+	 * Fenster aus
+	 * 
+	 * @return Einen {@link BufferedReader} mit allen geoefnetten Fenster
+	 */
+	public static BufferedReader getRunningTasks() {
+		try {
+			return new BufferedReader(new InputStreamReader(Runtime
+					.getRuntime().exec("wmctrl -lp").getInputStream()));
+		} catch (IOException e) {
+			TDILogger
+					.logError("Error getting list of programms, make sure wmctrl is installed");
+		}
+		return null;
+	}
+
+	/**
+	 * Liefert die Position vom fokusierten Fenster zurueck
+	 * 
+	 * @return Ein Array mit der Positoin (x,y)
+	 */
+	public static float[] getWindowPosition() {
+		float[] position = new float[] { 0, 0 };
+		BufferedReader bf;
+		try {
+			bf = new BufferedReader(new InputStreamReader(
+					Runtime.getRuntime()
+							.exec(new String[] { "xwininfo", "-id",
+									getFocusedWindow() }).getInputStream()));
+			String line;
+			while ((line = bf.readLine()) != null) {
+				if (line.contains("Absolute upper-left X:"))
+					position[0] = Integer.parseInt(line.split(":")[1].trim());
+				if (line.contains("Absolute upper-left Y:"))
+					position[1] = Integer.parseInt(line.split(":")[1].trim());
+			}
+			bf.close();
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}
+		return position;
+	}
+
+	/**
+	 * Speichert das neue Hintergrundbild ins {@link TDIDirectories#TDI_TEMP}
+	 * directory, greift auf die Konsole und setzt das Bild als Hintergrundbild
+	 * 
+	 * @param image
+	 *            Ein BufferedImage
+	 */
+	public static void saveBackground(BufferedImage image) {
+		try {
+			File restore = new File(TDIDirectories.TDI_TEMP + "/" + "temp."
+					+ ConfigLoader.imageType);
+			ImageIO.write(image, ConfigLoader.imageType, restore);
+			Runtime.getRuntime().exec(
+					new String[] { "xfconf-query", "-c", "xfce4-desktop", "-p",
+							"/backdrop/screen0/monitor0/image-path", "-s",
+							restore.getAbsolutePath() });
+			Runtime.getRuntime().exec(new String[] { "xfdesktop", "--reload" });
+			restore.deleteOnExit();
+		} catch (IOException e) {
+			TDILogger.logError("Error saving wallpaper " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Alle plugins die der User auswaehlt, werden weitergegeben und gestartet
+	 * 
+	 * @param plugins
+	 *            Eine Liste von Plugins
+	 */
+	public static void startPlugins(String[] plugins) {
+		try {
+			for (String plugin : plugins)
+				Runtime.getRuntime().exec(
+						new String[] {
+								"java",
+								"-jar",
+								TDIDirectories.TDI_PLUGINS + "/" + plugin
+										+ ".jar" });
+		} catch (IOException e) {
+			TDILogger.logError(e.getMessage());
+		}
 	}
 }

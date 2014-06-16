@@ -5,91 +5,127 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Die TDI Klasse repr�sentiert ein TDI
+ * Die TDI Klasse repr�sentiert ein TDI
  * 
  * @author TDI Team
  */
 
-public class TDI {
-    
-    /**
-     * ü ä ö
-     * Identifiert das TDI
+public class TDI {                
+
+	/**
+	 * Identifiert das TDI
 	 */
 	private byte id;
-	
+
 	/**
 	 * Eine Liste der Icons fuer die das TDI zustaendig ist
 	 */
-    private ArrayList<Icon> icons;
-    
-    /**
-     * Wo sich das TDI befindet
-     */
-    private float[] position = new float[3];
-    
-    /**
-     * Ob das TDI gedreht ist und wie
-     */
-    private float[] rotation = new float[3];
-    
-    /**
-     * Ob das TDI bewegt wird oder nicht
-     */
-    private boolean moving;
-    
-    /**
-	 * @return gibt zurueck ob sich das TDI bewegt
-	 */
-	public boolean isMoving() {
-		return moving;
-	}
+	private ArrayList<Icon> icons;
 
 	/**
-	 * @param setzt die moving Variable auf die gegebene
+	 * Wo sich das TDI befindet
 	 */
-	public void setMoving(boolean moving) {
-		this.moving = moving;
-	}
+	private float[] position = new float[3];
+
+	/**
+	 * Ob das TDI gedreht ist und wie
+	 */
+	private float[] rotation = new float[3];
+
+	/**
+	 * Ob das TDI bewegt wird oder nicht
+	 */
+	private boolean moving;
 
 	/**
 	 * Das Limit der Rotation
 	 */
 	private float rotationLimit;
-	
+
 	/**
 	 * Ob das TDI im Desktop oder in der Taskbar ist
 	 */
-    private TDIState state = TDIState.desktop;
-    
-    /**
-     * Ob es gelocked ist
-     */
+	private TDIState state = TDIState.desktop;
+
+	/**
+	 * Ob es gelocked ist
+	 */
 	private boolean locked;
-	
+
 	/**
 	 * Ob es derzeit ein Fenster skaliert
 	 */
 	private boolean isScale;
 
-    /**
-     * Konstruktor von TDI
-     * 
-     * @param id ID des TDIs
-	 * @param posX X Position auf dem Tisch
-	 * @param posY Y Position auf dem Tisch
-	 * @param posZ Z Position auf dem Tisch
-	 * @param rot Wie es gedreht ist
-     */
-    public TDI(byte id, float posX, float posY, float posZ, float[] rot) {
-        this.id = id;
-        position[0] = posX;
-        position[1] = posY;
-        position[2] = posZ;
-        rotation = rot;
-    }
+	
+	/**
+	 * @return gibt zurueck ob sich das TDI bewegt
+	 */
+	public boolean isMoving() {
+		return moving;
+	}
+	
+	/**
+	 * Konstruktor von TDI
+	 * 
+	 * @param id
+	 *            ID des TDIs
+	 * @param posX
+	 *            X Position auf dem Tisch
+	 * @param posY
+	 *            Y Position auf dem Tisch
+	 * @param posZ
+	 *            Z Position auf dem Tisch
+	 * @param rot
+	 *            Wie es gedreht ist
+	 */
+	public TDI(byte id, float posX, float posY, float posZ, float[] rot) {
+		this.id = id;
+		position[0] = posX;
+		position[1] = posY;
+		position[2] = posZ;
+		rotation = rot;
+	}
 
-    /**
+	/**
+	 * Berechnet das Limit der Rotation
+	 */
+	public void calculateRotationLimit() {
+		rotationLimit = (360 / icons.size());
+	}
+
+	/**
+	 * @param obj
+	 *            das Objekt mit dem verglichen wird
+	 * @return gibt zurueck ob die Objekte gleich sind
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TDI other = (TDI) obj;
+		return id == other.id;
+	}
+
+	/**
+	 * @return gibt die Icons zurueck
+	 */
+	public ArrayList<Icon> getIcons() {
+		return icons;
+	}
+
+	/**
+	 * @return gibt die ID zurueck
+	 */
+	public byte getId() {
+		return id;
+	}
+
+	/**
 	 * @return Die Position
 	 */
 	public float[] getPosition() {
@@ -145,6 +181,8 @@ public class TDI {
 	}
 
 	/**
+=======
+>>>>>>> 751d496 Comments and improvements
 	 * @return gibt die Rotation zurueck
 	 */
 	public float[] getRotation() {
@@ -152,6 +190,7 @@ public class TDI {
 	}
 
 	/**
+<<<<<<< Upstream, based on branch 'master' of https://github.com/vid14114/TDI.git
 	 * @param rotation das ist die Rotation auf den der derzeitige gesetzt wird
 	 */
 	public void setRotation(float[] rotation) {
@@ -184,24 +223,10 @@ public class TDI {
     }
 
     /**
-	 * @return gibt die ID zurueck
-	 */
-    public byte getId() {
-        return id;
-    }
-
-    /**
 	 * @param id das ist die ID auf die die derzeitige gesetzt wird
 	 */
     public void setId(byte id) {
         this.id = id;
-    }
-
-    /**
-	 * @return gibt die Icons zurueck
-	 */
-    public ArrayList<Icon> getIcons() {
-        return icons;
     }
 
     /**
@@ -225,22 +250,6 @@ public class TDI {
     }
 
     /**
-     * @param obj das Objekt mit dem verglichen wird
-	 * @return gibt zurueck ob die Objekte gleich sind
-	 */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        TDI other = (TDI) obj;
-        return id == other.id;
-    }
-
-    /**
      *Definiert das enum fuer die states
      */
     public enum TDIState {
@@ -255,16 +264,21 @@ public class TDI {
 	}
 
 	/**
-	 * Berechnet das Limit der Rotation
+	 * @param setzt
+	 *            die moving Variable auf die gegebene
 	 */
-	public void calculateRotationLimit(){
-		rotationLimit = (360/icons.size());
+	public void setMoving(boolean moving) {
+		this.moving = moving;
 	}
-	
+
+
 	/**
-	 * @param rotationLimit das Limit der Rotation auf das das derzeitige Limit gesetzt wird
+	 * @param rotationLimit
+	 *            das Limit der Rotation auf das das derzeitige Limit gesetzt
+	 *            wird
 	 */
 	public void setRotationLimit(float rotationLimit) {
 		this.rotationLimit = rotationLimit;
 	}
+
 }
