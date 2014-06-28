@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import view.TDI;
 import controller.Executor;
 
 /**
@@ -20,6 +21,7 @@ public class PluginServer implements Runnable {
 	 * Eine {@link ArrayList} aller clients die verbunden
 	 */
 	private final ArrayList<Socket> clients = new ArrayList<>();
+	private ArrayList<TDI> tdis; 
 	/**
 	 * Siehe {@link ServerSocket}
 	 */
@@ -33,12 +35,26 @@ public class PluginServer implements Runnable {
 		try {
 			serverSocket = new ServerSocket(34000, 50,
 					InetAddress.getByName("127.0.0.1"));
-			serverSocket.setSoTimeout(0);
+			serverSocket.setSoTimeout(0);			
 		} catch (IOException e) {
 			TDILogger.logError(e.getMessage());
 		}
 	}
 	
+	/**
+	 * @return the tdis
+	 */
+	public ArrayList<TDI> getTdis() {
+		return tdis;
+	}
+
+	/**
+	 * @param tdis the tdis to set
+	 */
+	public void setTdis(ArrayList<TDI> tdis) {
+		this.tdis = tdis;
+	}
+
 	public void setServer(Server server){
 		this.server = server;
 	}
@@ -73,24 +89,18 @@ public class PluginServer implements Runnable {
 						{
 							byte b[] = new byte[4];
 							try {								
-								byte id = (byte) socket.getInputStream().read();																
-								
+								socket.getInputStream().read(b);
+								byte id = (byte)ByteBuffer.wrap(b).getFloat();																
+									
 								socket.getInputStream().read(b);
 								float x = ByteBuffer.wrap(b).getFloat();								
 								socket.getInputStream().read(b);
 								float y = ByteBuffer.wrap(b).getFloat();								
 								socket.getInputStream().read(b);
 								float z = ByteBuffer.wrap(b).getFloat();
-								float[] pos = {x,y,z};
-								
-								socket.getInputStream().read(b);
-								x = ByteBuffer.wrap(b).getFloat();								
-								socket.getInputStream().read(b);
-								y = ByteBuffer.wrap(b).getFloat();								
-								socket.getInputStream().read(b);
-								z = ByteBuffer.wrap(b).getFloat();
-								float[] rot = {x,y,z};
-								server.setPose(id, pos, rot);
+								float[] pos = {x,y,z};								
+								server.setTrans(id, pos);
+								tdis.get(tdis.indexOf(new TDI(id, 0, 0, 0, null))).setMoving(true);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -119,15 +129,12 @@ public class PluginServer implements Runnable {
 	 * @param rot
 	 *            Die Rotation als Array der laenge 3
 	 */
-	public void sendMessage(float id, float[] pos, float[] rot) {
+	public void sendMessage(float id, float[] pos) {
 		final byte[][] messages = {
 				ByteBuffer.allocate(4).putFloat(id).array(),
 				ByteBuffer.allocate(4).putFloat(pos[0]).array(),
 				ByteBuffer.allocate(4).putFloat(pos[1]).array(),
-				ByteBuffer.allocate(4).putFloat(pos[2]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[0]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[1]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[2]).array(), };
+				ByteBuffer.allocate(4).putFloat(pos[2]).array()};
 		new Runnable() {
 			@Override
 			public void run() {

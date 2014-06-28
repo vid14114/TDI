@@ -30,7 +30,10 @@ public final class Executor {
 	 */
 	public static void executeProgram(String[] exec) {
 		try {
-			Runtime.getRuntime().exec(exec);
+			if(exec[0].contains("-jar"))
+				Runtime.getRuntime().exec(new String[] {"java","-jar",exec[1]});
+			else
+				Runtime.getRuntime().exec(exec);
 		} catch (IOException e) {
 			TDILogger
 					.logError("Unable to start program, is xdg-open installed?");

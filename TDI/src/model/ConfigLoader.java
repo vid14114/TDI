@@ -70,11 +70,20 @@ public class ConfigLoader {
 			}
 		});
 	}
+	
+	private static File[] returnJarFiles(File f) {
+		return f.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String filename) {
+				return filename.endsWith(".jar");
+			}
+		});
+	}
 
 	private static File[] returnDirectoriesAndFiles(File f) {
 		return f.listFiles(new FileFilter() {
 			public boolean accept(File file) {
-				return (file.isDirectory() || !file.getName().contains(
+				return (file.isDirectory() || file.getName().endsWith(".jar") || !file.getName().contains(
 						".desktop")
 						&& !file.getName().startsWith("."));
 			}
@@ -203,6 +212,9 @@ public class ConfigLoader {
 			// files
 			File[] desktopDirectoriesAndFiles = returnDirectoriesAndFiles(new File(
 					System.getProperty("user.home") + "/Desktop"));// directories
+			
+			File[] desktopJarFiles = returnJarFiles(new File(
+					System.getProperty("user.home") + "/Desktop"));
 
 			// xdg-open: everything inside ~/Desktop
 			if (desktopDirectoriesAndFiles == null)
@@ -231,11 +243,17 @@ public class ConfigLoader {
 			}
 
 			// directories + NOT .desktop files
-			for (File file : desktopDirectoriesAndFiles)
+			for (File file : desktopDirectoriesAndFiles)				
 				icons.get(icons.indexOf(new Icon(file.getName(), null)))
 						.setExecPath(
 								new String[] { "xdg-open", file.getPath() });
-
+			
+			//Jar files
+			for (File file : desktopJarFiles)				
+				icons.get(icons.indexOf(new Icon(file.getName(), null)))
+						.setExecPath(
+								new String[] { "java -jar", file.getPath() });
+			
 			// default icons (home & trash & file system)
 			{
 				int index;

@@ -67,6 +67,7 @@ public class MoveHandler implements MoveListener {
 			System.out.println("Desktop Mode enter");
 			System.out.println(bigLogic.getTaskbarLocation());
 			if (bigLogic.checkMovedToTaskbar(tdi.getPosition()[0])) {
+				System.out.println("Starting programm");
 				ProgramHandler.openProgram(tdi.getIcons().get(0));
 				try{
 					tdi.setRotationLimit((360 / ProgramHandler.getRunningPrograms()
@@ -204,8 +205,8 @@ public class MoveHandler implements MoveListener {
 	 *            TDI, der bewegt wurde
 	 */
 	private void moveWindowMode(TDI tdi) {
-		ProgramHandler.moveProgram((int) tdi.getPosition()[0]
-				* (int) bigLogic.scaleX, (int) tdi.getPosition()[1]
+		ProgramHandler.moveProgram(-(int) tdi.getPosition()[1]
+				* (int) bigLogic.scaleX, -(int) tdi.getPosition()[0]
 				* (int) bigLogic.scaleY);
 	}
 
@@ -216,7 +217,7 @@ public class MoveHandler implements MoveListener {
 	 * @return true, Scalemodus aktiviert, false falls nicht
 	 */
 	private boolean startScaleMode(TDI tdi) {
-		int range = 10; // TODO Range for closeness of TDI can and should be
+		int range = 30; // TODO Range for closeness of TDI can and should be
 						// changed
 		for (TDI tdi2 : bigLogic.getTdis()) {
 			if (tdi.getId() == tdi2.getId())

@@ -36,7 +36,7 @@ public class Move {
 	 * Die Kompensationswerte fuer die Bewegung eines TDIs. Da die Werte vom
 	 * Handy sehr ungenau werden koennen.
 	 */
-	static final int compensation = 50;
+	static final int compensation = 80;
 
 	/**
 	 * Der Konstuktor nimmt die TDIs an, und initialisert die moveflags

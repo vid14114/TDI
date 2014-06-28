@@ -43,6 +43,11 @@ public class TutorialView {
 		w.setVisible(true);
 		w.setAlwaysOnTop(true);
 	}
+	
+	public void exit(){
+		jt.setVisible(false);
+		w.dispose();
+	}
 
 	/**
 	 * @param text

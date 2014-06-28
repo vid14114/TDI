@@ -64,7 +64,7 @@ public class BigLogic implements ActionListener {
 	 * Die maximalen Dimensionen(x,y) des Playgrounds werden in diesem Array
 	 * gespeichert
 	 */
-	public static float[] playFieldMaxValues = { 800, 600 };
+	public static float[] playFieldMaxValues = { 750, 600 };
 	/**
 	 * Die minimalen Dimensionen(x,y) des Playgrounds werden in diesem Array
 	 * gespeichert
@@ -132,6 +132,7 @@ public class BigLogic implements ActionListener {
 				configLoader.getBlockSize(), configLoader.getPanelSize(),
 				configLoader.getPlacementRatio(), configLoader.loadScreensize());
 		calculateScale();
+		new Thread(plugserv).start();
 	}
 	
 	public void calculatePosition(){
@@ -151,7 +152,7 @@ public class BigLogic implements ActionListener {
 			if(yPos < 20)
 				yPos = 20;
 			if(xPos > getTaskbarLocation())
-				xPos = getTaskbarLocation()-20;
+				xPos = getTaskbarLocation()-100;
 			server.setPose(tdi.getId(), new float[]{xPos, yPos, 0}, new float[]{90,0,0});
 			tdi.setMoving(true);
 		}
@@ -204,7 +205,7 @@ public class BigLogic implements ActionListener {
 					configLoader.savePlugins(plugins);
 				}
 			}.run();
-			server = new Server("192.168.43.210");
+			server = new Server(ip);
 			try {
 				server.setPlSize(new int[] { 800, 600, 100 });
 				tdis = server.fullPose();
@@ -228,6 +229,10 @@ public class BigLogic implements ActionListener {
 
 			move = new Move(tdis);
 			move.setMoveListener(new MoveHandler(this));
+			
+			plugserv.setServer(server);
+			plugserv.setTdis(tdis);
+			
 			Timer mo = new Timer();
 			mo.scheduleAtFixedRate(new TimerTask() {
 
@@ -403,7 +408,7 @@ public class BigLogic implements ActionListener {
 	 * @return Location von der Taskbar
 	 */
 	public float getTaskbarLocation() {
-		return playFieldMaxValues[0] * 0.9f;
+		return playFieldMaxValues[0] * 0.85f;
 	}
 
 	/**
@@ -427,7 +432,24 @@ public class BigLogic implements ActionListener {
 	public Wallpaper getWallpaper() {
 		return wallpaper;
 	}	
-
+	
+	/**
+	 * Kontrolliert ob sich die TDIs bewegt haben oder nicht. Indem er die
+	 * Kompensationswerte beruecksichtigt
+	 * 
+	 * @param oldPos
+	 *            Die alte TDI Position
+	 * @param newPos
+	 *            Die neue TDI Position
+	 * @return true, falls dich das TDI tatsaechlich bewegt hat, sonst false
+	 */
+	public boolean moveChanged(float oldPos, float newPos) {
+		float compensation = 30;
+		if (oldPos + compensation  < newPos || oldPos - compensation > newPos)
+			return true;
+		return false;
+	}
+	
 	/**
 	 * Wenn der Server mit {@link Server#fullPose()} neue TDI Werte bekommt,
 	 * ruft er die Methode um diese weiterzugeben. Die Methode ruft dann alle
@@ -438,20 +460,19 @@ public class BigLogic implements ActionListener {
 	 */
 	public void newCommand(TDI command) {			
 		try {
-//			if (tdis.get(tdis.indexOf(command)).isMoving()) {
-//				TDI tdi = tdis.get(tdis.indexOf(command));
-//				if (move.moveChanged(tdi.getPosition()[0], command.getPosition()[0])
-//						|| move.moveChanged(tdi.getPosition()[1],
-//								command.getPosition()[1]))
-//					return;
-//				else
-//					tdi.setMoving(false);
-//			}
+			if (tdis.get(tdis.indexOf(command)).isMoving()) {
+				TDI tdi = tdis.get(tdis.indexOf(command));
+				if (moveChanged(tdi.getPosition()[0], command.getPosition()[0])
+						|| moveChanged(tdi.getPosition()[1],
+								command.getPosition()[1]))
+					return;
+				else
+					tdi.setMoving(false);
+			}
 			tilt.tilt(command); // Checks whether the user exists inapp mode
 			if (tdis.get(tdis.indexOf(command)).getState()
 					.equals(TDIState.inapp))
-				plugserv.sendMessage(command.getId(), command.getPosition(),
-						command.getRotation());
+				plugserv.sendMessage(command.getId(), command.getPosition());
 			else {
 				move.move(command);
 				rotation.rotate(command);

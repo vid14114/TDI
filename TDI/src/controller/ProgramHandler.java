@@ -191,6 +191,8 @@ public class ProgramHandler {
 							&& !runningPrograms.contains(new ProgramInfo(line
 									.split(" ")[0], false)))
 						wmctrlID = line.split(" ")[0];
+					else if (icon.getExecPath()[1].contains("mpc") && line.contains("Tangible Musicplayer"))
+						wmctrlID = line.split(" ")[0];
 					else if (line.split(" ")[1].equals("-1")
 							&& line.contains(icon.getName())
 							&& runningPrograms.contains(new ProgramInfo(line

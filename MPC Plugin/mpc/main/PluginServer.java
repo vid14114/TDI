@@ -1,14 +1,9 @@
 package main;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 /**
@@ -23,11 +18,6 @@ public class PluginServer implements Runnable{
 	 * Der Client
 	 */
 	private Socket client;
-	
-	/**
-	 * Das was geschickt wird
-	 */
-	private static DataOutputStream send;
 	
 	/**
 	 * Das was empfangen wird
@@ -56,7 +46,6 @@ public class PluginServer implements Runnable{
 			client = new Socket(ip, 34000);
 			client.setKeepAlive(true);
 			client.setSoTimeout(0);
-			send = new DataOutputStream(client.getOutputStream());
 			read = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -84,12 +73,11 @@ public class PluginServer implements Runnable{
 					float y = ByteBuffer.wrap(by).getFloat();
 					
 					read.read(by);
-					float z = ByteBuffer.wrap(by).getFloat();
-					
-					read.skip(by.length*3);
+					float z = ByteBuffer.wrap(by).getFloat();								
 					
 					//Finished receiving
-					m.TDIMoved(id,x,y,z);
+					if(m.TDIMoved(id,x,y,z))
+						sendMessage(m.getId(), new float[]{m.getXPos(), m.getYPos(), m.getZPos()});
 				}
 				
 			}
@@ -98,14 +86,12 @@ public class PluginServer implements Runnable{
 		}
 	}
 	
-	public void sendMessage(float id, float[] pos, float[] rot) {
-		final byte[][] messages = {ByteBuffer.allocate(4).putFloat(id).array(), 
+	public void sendMessage(float id, float[] pos) {
+		final byte[][] messages = {
+				ByteBuffer.allocate(4).putFloat(id).array(), 
 				ByteBuffer.allocate(4).putFloat(pos[0]).array(),
 				ByteBuffer.allocate(4).putFloat(pos[1]).array(),
-				ByteBuffer.allocate(4).putFloat(pos[2]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[0]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[1]).array(),
-				ByteBuffer.allocate(4).putFloat(rot[2]).array(),};
+				ByteBuffer.allocate(4).putFloat(pos[2]).array()};
 		new Runnable() {			
 			@Override
 			public void run() {
